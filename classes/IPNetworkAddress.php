@@ -10,7 +10,7 @@ abstract class IPNetworkAddress
 	
 	public static function factory($address, $cidr = NULL)
 	{
-		if ($cidr == NULL)
+		if ($cidr === NULL)
 		{
 			$parts = explode('/', $string, 2);
 			
@@ -78,7 +78,7 @@ abstract class IPNetworkAddress
 	
 	public function getSubnetMask()
 	{
-		return self::generateSubnetMask($this->cidr);
+		return $this->generateSubnetMask($this->cidr);
 	}
 	
 	/**
