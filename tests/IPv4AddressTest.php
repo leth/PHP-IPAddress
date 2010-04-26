@@ -1,6 +1,14 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 
+class TestingIPv4Address extends IPv4Address
+{
+	public function callBitwiseOperation($flag, IPAddress $other = NULL)
+	{
+		$this->bitwiseOperation($flag, $other);
+	}
+}
+
 /**
  * Tests for the IPv4Address Class
  *
@@ -99,6 +107,23 @@ class IPv4AddressTest extends PHPUnit_Framework_TestCase
 		$ip = new IPv4Address($v4);
 		
 		$this->assertEquals($v6, (string) $ip->asIPv6Address());
+	}
+	
+	public function testBitwiseException()
+	{
 		
+		$ip = new TestingIPv4Address('0.0.0.1');
+		
+		try
+		{
+			$ip->callBitwiseOperation('!', $ip);
+			$this->fail('An expected exception has not been raised.');
+		}
+		catch (InvalidArgumentException $e){}
+		
+		$ip->callBitwiseOperation('&', $ip);
+		$ip->callBitwiseOperation('|', $ip);
+		$ip->callBitwiseOperation('^', $ip);
+		$ip->callBitwiseOperation('~');
 	}
 }
