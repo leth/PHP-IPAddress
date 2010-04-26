@@ -11,7 +11,7 @@ class IPv4Address extends IPAddress
 	function __construct($address)
 	{
 		if(!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-			throw new Exception("'$address' is not a valid IPv4 Address");
+			throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
 		
 		parent::__construct(ip2long($address));
 	}

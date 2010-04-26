@@ -26,7 +26,7 @@ abstract class IPAddress
 		else if (strpos($address, ':') !== FALSE)
 			return new IPv6Address($address);
 		else
-			throw new Exception("Unable to guess IP address type from '$address'.");
+			throw new InvalidArgumentException("Unable to guess IP address type from '$address'.");
 	}
 	
 	/**

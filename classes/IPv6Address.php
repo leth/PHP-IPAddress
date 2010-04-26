@@ -52,23 +52,26 @@ class IPv6Address extends IPAddress
 
 		return join(':', $ippad);
 	}
-	
-	public function isEncodedV4Address()
-	{
-		$address = (string) $this;
-		return preg_match("/^0000:0000:0000:ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/","\\1", $address) != 0;
-	}
-	
-	public function asIPv4Address()
-	{
-		$address = (string) $this;
-		$match_count = preg_match("/^0000:0000:0000:ffff:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/","\\1", $address, $matches);
-		
-		if ($match_count == 0)
-			throw new Exception("Not an IPv4 Address encoded in an IPv6 Address");
-		
-		return new IPv4Address($matches[1]);
-	}
+
+	// TODO fix this.
+	// public function isEncodedIPv4Address()
+	// {
+	// 	$address = (string) $this;
+	// 	return preg_match("/^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$/","\\1", $address) != 0;
+	// }
+	// 
+	// public function asIPv4Address()
+	// {
+	// 	$address = (string) $this;
+	// 	$match_count = preg_match("/^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$/","\\1", $address, $matches);
+	// 	
+	// 	if ($match_count == 0)
+	// 		throw new Exception("Not an IPv4 Address encoded in an IPv6 Address");
+	// 	
+	// 	$address = join('.', array_map('intval', explode(':', $matches[1])));
+	// 	
+	// 	return new IPv4Address();
+	// }
 	
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
