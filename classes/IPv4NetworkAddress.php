@@ -19,6 +19,27 @@ class IPv4NetworkAddress extends IPNetworkAddress
 		return new IPv4NetworkAddress($this->getNetworkStart(), $this->cidr);
 	}
 	
+	public function getNetworkClass()
+	{
+		if ($this->cidr > 24)
+		{
+			return '1/' . pow(2, $this->cidr - 24) . ' C';
+		}
+		else if ($this->cidr > 16)
+		{
+			return pow(2, 24 - $this->cidr). ' C';
+			
+		}
+		else if ($this->cidr > 8)
+		{
+			return pow(2, 16 - $this->cidr). ' B';
+		}
+		else
+		{
+			return pow(2, 8 - $this->cidr) . ' A';
+		}
+	}
+	
 	/**
 	 * Calculates the Broadcast Address for this address.
 	 * 
