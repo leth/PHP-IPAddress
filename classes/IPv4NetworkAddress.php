@@ -10,6 +10,17 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	}
 	
 	/**
+	 * Gets the Global subnet mask for this IP Protocol
+	 *
+	 * @return IPAddress An IP Address representing the mask.
+	 * @author Marcus Cobden
+	 */
+	public static function getGlobalNetmask()
+	{
+		return self::generateSubnetMask(self::max_subnet);
+	}
+	
+	/**
 	 * Calculates the Network Address for this address (IPv4) or the first ip of the subnet (IPv6)
 	 *
 	 * @return IPv4NetworkAddress TODO
