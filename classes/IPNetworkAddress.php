@@ -27,7 +27,7 @@ abstract class IPNetworkAddress
 	 * @param int $cidr The CIDR number
 	 * @return IPAddress An IP address representing the mask.
 	 */
-	public static abstract function getSubnetMask($cidr);
+	public static abstract function generateSubnetMask($cidr);
 	
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
@@ -128,6 +128,17 @@ abstract class IPNetworkAddress
 	}
 	
 	/**
+	 * Calculates the number of address in this subnet.
+	 *
+	 * @return integer
+	 */
+	public function getNetworkAddressCount()
+	{
+		$class_name = get_class($this);
+		return pow(2, $class_name::max_subnet - $this->cidr);
+	}
+	
+	/**
 	 * Checks whether this is a Network Identifier
 	 *
 	 * @return boolean
@@ -155,7 +166,8 @@ abstract class IPNetworkAddress
 	 */
 	public function getSubnetMask()
 	{
-		return $this->generateSubnetMask($this->cidr);
+		$class_name = get_class($this);
+		return $class_name::generateSubnetMask($this->cidr);
 	}
 	
 	/**
