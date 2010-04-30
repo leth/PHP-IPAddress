@@ -22,15 +22,58 @@ class IPv4Address extends IPAddress
 	
 	public static function factory($address)
 	{
+		if (is_string($address))
+		{
+			if(!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
+		}
+		else if ($address instanceOf Math_BigInteger)
+		{
+			$address = intval($address->toString());
+		}
+		else if (is_int($address))
+		{
+			if ($address < 0)
+				throw new InvalidArgumentException("Argument out of range.");
+		}
+		else
+		{
+			throw new InvalidArgumentException("Unsupported argument type.");
+		}
+		
 		return new IPv4Address($address);
 	}
 	
-	function __construct($address)
+	protected function __construct($address)
 	{
-		if(!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-			throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
-		
-		parent::__construct(ip2long($address));
+		if (is_int($address))
+			parent::__construct($address);
+		else
+			parent::__construct(ip2long($address));
+	}
+	
+	/**
+	 * Add the given address to this one.
+	 *
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
+	 */
+	public function add(IPAddress $other)
+	{
+		$this->checkTypes($other);
+		return new IPv4Address($this->address + $other->address);
+	}
+	
+	/**
+	 * Subtract the given address from this one.
+	 *
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
+	 */
+	public function subtract(IPAddress $other)
+	{
+		$this->checkTypes($other);
+		return new IPv4Address($this->address - $other->address);
 	}
 	
 	/**
@@ -107,13 +150,13 @@ class IPv4Address extends IPAddress
 
 		return new IPv4Address(long2ip($res));
 	}
-	
-	public function asIPv6Address()
-	{
-		$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
-		
-		return new IPv6Address($address);
-	}
+	// TODO Check this
+	// public function asIPv6Address()
+	// {
+	// 	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
+	// 	
+	// 	return IPv6Address::factory($address);
+	// }
 	
 	public function compareTo(IPAddress $other)
 	{

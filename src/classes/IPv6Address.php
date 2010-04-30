@@ -22,19 +22,33 @@ class IPv6Address extends IPAddress
 	
 	public static function factory($address)
 	{
+		if (is_string($address))
+		{
+			if(!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
+		
+			$address = IPv6Address::padV6AddressString($address);
+			$address = pack("H*", str_replace(':', '', $address));
+		}
+		else if ($address instanceOf Math_BigInteger)
+		{
+			// Do nothing
+		}
+		else
+		{
+			throw new InvalidArgumentException("Unsupported argument type.");
+		}
+		
 		return new IPv6Address($address);
 	}
 	
-	function __construct($address)
+	protected function __construct($address)
 	{
-		if(!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
-			throw new Exception("'$address' is not a valid IPv6 Address");
-		
-		$address = IPv6Address::padV6AddressString($address);
-		
-		$address = pack("H*", str_replace(':', '', $address));
-		
-		parent::__construct($address);
+		if ($address instanceOf Math_BigInteger){
+			parent::__construct(str_pad($address->abs()->toBytes(), 16, chr(0), STR_PAD_LEFT));
+		}
+		else
+			parent::__construct($address);
 	}
 	
 	/**
@@ -91,6 +105,34 @@ class IPv6Address extends IPAddress
 	// }
 	
 	/**
+	 * Add the given address to this one.
+	 *
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
+	 */
+	public function add(IPAddress $other)
+	{
+		$this->checkTypes($other);
+		$left = new Math_BigInteger($this->address, 256);
+		$right = new Math_BigInteger($other->address, 256);
+		return new IPv6Address($left->add($right));
+	}
+	
+	/**
+	 * Subtract the given address from this one.
+	 *
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
+	 */
+	public function subtract(IPAddress $other)
+	{
+		$this->checkTypes($other);
+		$left = new Math_BigInteger($this->address, 256);
+		$right = new Math_BigInteger($other->address, 256);
+		return new IPv6Address($left->subtract($right));
+	}
+	
+	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
 	  * @returns IPAddress
@@ -138,27 +180,21 @@ class IPv6Address extends IPAddress
 		switch ($operation) {
 			case '&':
 				$result = $other->address & $this->address;
-				$bits = min($args[0]->subnet, $args[1]->subnet);
 				break;
 			case '|':
 				$reult = $other->address | $this->address;
-				$bits = min($args[0]->subnet, $args[1]->subnet);
 				break;
 			case '^':
 				$result = $other->address ^ $this->address;
-				$bits = min($args[0]->subnet, $args[1]->subnet);
 				break;
 			case '~':
 				$result = ~$this->address;
-				$bits = $args[0]->subnet;
 				break;
 			
 			default:
 				throw new Exception('Unknown Operation.');
 				break;
 		}
-		
-		$res = join(':', str_split(unpack("H*", $result, 4)));
 
 		return new IPv6Address($res);
 	}
@@ -167,22 +203,17 @@ class IPv6Address extends IPAddress
 	{
 		$this->checkTypes($other);
 		
-		// TODO can this be done with binary data?
-		$ip1 = str_replace(":", "", (string) $this);
-		$ip2 = str_replace(":", "", (string) $other);
-
-		$ip1 = str_split($ip1);
-		$ip2 = str_split($ip2);
-		foreach($ip1 as $idx=>$val) {
-			if($val < $ip2[$idx]) return -1;
-			else if($val > $ip2[$idx]) return 1;
-		}
-		return 0;
+		if ($this->address < $other->address)
+			return -1;
+		elseif ($this->address > $other->address)
+			return 1;
+		else
+			return 0;
 	}
 	
 	public function __toString()
 	{
 		$tmp = unpack("H*", $this->address);
 		return join(':', str_split($tmp[1], 4));
-	}
+	}	
 }

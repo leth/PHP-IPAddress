@@ -38,10 +38,10 @@ abstract class IPAddress
 	 */
 	public static function factory($address)
 	{
-		if (strpos($address, '.') !== FALSE)
-			return new IPv4Address($address);
-		else if (strpos($address, ':') !== FALSE)
-			return new IPv6Address($address);
+		if (is_int($address) || is_string($address) && strpos($address, '.') !== FALSE)
+			return IPv4Address::factory($address);
+		else if ($address instanceof Math_BigInteger || strpos($address, ':') !== FALSE)
+			return IPv6Address::factory($address);
 		else
 			throw new InvalidArgumentException("Unable to guess IP address type from '$address'.");
 	}
@@ -66,10 +66,26 @@ abstract class IPAddress
 	 *
 	 * @param string $address The address to represent.
 	 */
-	public function __construct($address)
+	protected function __construct($address)
 	{
 		$this->address = $address;
 	}
+	
+	/**
+	 * Add the given address to this one.
+	 *
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
+	 */
+	public abstract function add(IPAddress $other);
+	
+	/**
+	 * Subtract the given address from this one.
+	 *
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
+	 */
+	public abstract function subtract(IPAddress $other);
 	
 	/**
 	 * Compute the bitwise AND of this address and another.

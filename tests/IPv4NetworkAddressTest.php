@@ -68,4 +68,9 @@ class IPv4NetworkAddressTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($address_count, $net->getNetworkAddressCount());
 		$this->assertEquals($network_class, $net->getNetworkClass());
 	}
+	
+	public function testGlobalNetmask()
+	{
+		$this->assertEquals('255.255.255.255', (string) IPv4NetworkAddress::getGlobalNetmask());
+	}
 }

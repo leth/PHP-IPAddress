@@ -28,7 +28,7 @@ class IPv6NetworkAddress extends IPNetworkAddress
 			PHP_INT_MAX << min(32, max(0, 64  - $subnet)),
 			PHP_INT_MAX << min(32, max(0, 96  - $subnet)),
 			PHP_INT_MAX << min(32, max(0, 128 - $subnet))));
-		return new IPv6Address(join(':', str_split($result[1],4)));
+		return IPv6Address::factory(join(':', str_split($result[1],4)));
 	}
 	
 	/**

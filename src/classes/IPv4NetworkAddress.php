@@ -17,14 +17,13 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-
 class IPv4NetworkAddress extends IPNetworkAddress
 {
 	const max_subnet = 32;
 
 	public static function generateSubnetMask($subnet)
 	{
-		return new IPv4Address(join('.', unpack('C*', pack('N', PHP_INT_MAX << (self::max_subnet - $subnet)))));
+		return IPv4Address::factory(join('.', unpack('C*', pack('N', PHP_INT_MAX << (self::max_subnet - $subnet)))));
 	}
 	
 	/**
@@ -81,7 +80,7 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	public function asIPv6NetworkAddress()
 	{
 		$address = $this->address->asIPv6Address();
-		$cidr = (IPv6NetworkAddress::max_subnet - self::max_subnet) + $this->cidr;
+		$cidr = (IPv6NetworkAddress::max_subnet - IPv4NetworkAddress::max_subnet) + $this->cidr;
 		return new IPv6NetworkAddress($address, $cidr);
 	}
 }

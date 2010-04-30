@@ -58,7 +58,62 @@ class IPv6AddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactoryException($input)
 	{
-		IPv4Address::factory($input);
+		IPv6Address::factory($input);
+	}
+	
+	public function providerAddSubtract()
+	{
+		$data = array(
+			array('::', '::', '::' ),
+			array('::1', '::', '::1' ),
+			array('::1', '::1', '::2' ),
+			array('::1', '::2', '::3' ),
+			array('::5', '::6', '::b' ),
+			array('::10', '::1', '::11' ),
+		);
+		
+		for ($i=0; $i < count($data); $i++)
+			for ($j=0; $j < count($data[$i]); $j++)
+				$data[$i][$j] = IPv6Address::factory($data[$i][$j]);
+		
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider providerAddSubtract
+	 */
+	public function testAddSubtract($left, $right, $expected)
+	{
+		$result = $left->add($right);
+		$this->assertEquals(0, $result->compareTo($expected));
+		$again = $result->subtract($right);
+		$this->assertEquals(0, $again->compareTo($left));
+	}
+	
+	public function providerCompareTo()
+	{
+		$data = array(
+			array('::', '::', 0),
+			array('::1', '::1', 0),
+			array('::1', '::2', -1),
+			array('::2', '::1', 1),
+			array('::f', '::1', 1),
+			array('::a', '::b', -1),
+		);
+		
+		for ($i=0; $i < count($data); $i++){
+			$data[$i][0] = IPv6Address::factory($data[$i][0]);
+			$data[$i][1] = IPv6Address::factory($data[$i][1]);
+		}
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider providerCompareTo
+	 */
+	public function testCompareTo($left, $right, $expected)
+	{
+		$this->assertEquals($expected, $left->compareTo($right));
 	}
 	
 	// public function providerBitwise()

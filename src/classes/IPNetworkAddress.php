@@ -114,7 +114,7 @@ abstract class IPNetworkAddress
 	 * @param IPAddress $address The IP Address of the host
 	 * @param string $cidr The CIDR size of the network
 	 */
-	function __construct(IPAddress $address, $cidr)
+	protected function __construct(IPAddress $address, $cidr)
 	{
 		$classname = get_class($this);
 		if (!is_int($cidr) || $cidr < 0 || $cidr > $classname::max_subnet)
@@ -154,6 +154,27 @@ abstract class IPNetworkAddress
 	{
 		$class_name = get_class($this);
 		return pow(2, $class_name::max_subnet - $this->cidr);
+	}
+	
+	public function getAddressInNetwork($offset, $from_start = NULL)
+	{
+		if ($from_start === NULL)
+		{
+			if (is_int($other))
+				$from_start = $offset >= 0;
+			elseif ($offset instanceOf Math_BigInteger)
+				$from_start = $offset->compare(new Math_BigInteger(0)) >= 0;
+		}
+		
+		if ($from_start)
+			$point = $this->getNetworkStart();
+		else
+			$point = $this->getNetworkEnd();
+		
+		if ($from_start)
+			return $point->add($point->factory($offset));
+		else
+			return $point->subtract($point->factory($offset));
 	}
 	
 	/**
