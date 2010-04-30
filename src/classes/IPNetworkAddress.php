@@ -67,10 +67,10 @@ abstract class IPNetworkAddress
 	{
 		if ($cidr === NULL)
 		{
-			$parts = explode('/', $string, 2);
+			$parts = explode('/', $address, 2);
 			
 			if (count($parts) != 2)
-				throw new InvalidArgumentException("Missing CIDR notation on '$string'.");
+				throw new InvalidArgumentException("Missing CIDR notation on '$address'.");
 			
 			list($address, $cidr) = $parts;
 		}
@@ -122,6 +122,16 @@ abstract class IPNetworkAddress
 		
 		$this->address = $address;
 		$this->cidr = $cidr;
+	}
+	
+	public function getAddress()
+	{
+		return $this->address;
+	}
+	
+	public function getCIDR()
+	{
+		return $this->cidr;
 	}
 	
 	/**

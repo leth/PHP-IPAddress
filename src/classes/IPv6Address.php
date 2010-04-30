@@ -182,7 +182,7 @@ class IPv6Address extends IPAddress
 				$result = $other->address & $this->address;
 				break;
 			case '|':
-				$reult = $other->address | $this->address;
+				$result = $other->address | $this->address;
 				break;
 			case '^':
 				$result = $other->address ^ $this->address;
@@ -196,7 +196,7 @@ class IPv6Address extends IPAddress
 				break;
 		}
 
-		return new IPv6Address($res);
+		return new IPv6Address($result);
 	}
 	
 	public function compareTo(IPAddress $other)
