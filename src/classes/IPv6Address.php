@@ -192,7 +192,7 @@ class IPv6Address extends IPAddress
 				break;
 			
 			default:
-				throw new Exception('Unknown Operation.');
+				throw new InvalidArgumentException('Unknown Operation.');
 				break;
 		}
 

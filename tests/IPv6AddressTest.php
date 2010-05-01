@@ -1,6 +1,19 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 
+class TestingIPv6Address extends IPv6Address
+{
+	public static function factory($address)
+	{
+		return new TestingIPv6Address($address);
+	}
+	
+	public function callBitwiseOperation($flag, IPAddress $other = NULL)
+	{
+		$this->bitwiseOperation($flag, $other);
+	}
+}
+
 /**
  * Tests for the IPv6Address Class
  *
@@ -116,30 +129,54 @@ class IPv6AddressTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $left->compareTo($right));
 	}
 	
-	// public function providerBitwise()
-	// {
-	// 	return array(
-	// 		//     OP1    OP2        AND        OR         XOR        NOT
-	// 		array('::1', '::1', '0.0.0.1', '0.0.0.1', '0.0.0.0', '255.255.255.254'),
-	// 		array('::' , '::1', '0.0.0.0', '0.0.0.1', '0.0.0.1', '255.255.255.255'),
-	// 		array('::1', '::' , '0.0.0.0', '0.0.0.1', '0.0.0.1', '255.255.255.254'),
-	// 		array('::' , '::' , '0.0.0.0', '0.0.0.0', '0.0.0.0', '255.255.255.255'),
-	// 	);
-	// }
-	// 
-	// /**
-	//  * @dataProvider providerBitwise
-	//  */
-	// public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
-	// {
-	// 	$ip1    = new IPv4Address($ip1);
-	// 	$ip2    = new IPv4Address($ip2);
-	// 	
-	// 	$this->assertEquals($ex_and, (string) $ip1->bitwiseAND($ip2));
-	// 	$this->assertEquals($ex_or , (string) $ip1->bitwiseOR($ip2));
-	// 	$this->assertEquals($ex_xor, (string) $ip1->bitwiseXOR($ip2));
-	// 	$this->assertEquals($ex_not, (string) $ip1->bitwiseNOT());
-	// }
+	public function providerBitwise()
+	{
+		$data = array(
+			//     OP1    OP2    AND    OR     XOR     NOT
+			array('::1', '::1', '::1', '::1', '::0', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe'),
+			array('::' , '::1', '::0', '::1', '::1', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'),
+			array('::1', '::' , '::0', '::1', '::1', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe'),
+			array('::' , '::' , '::0', '::0', '::0', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'),
+		);
+		
+		for ($i=0; $i < count($data); $i++) { 
+			for ($j=0; $j < 6; $j++) { 
+				$data[$i][$j] = IPv6Address::factory($data[$i][$j]);
+			}
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider providerBitwise
+	 */
+	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
+	{		
+		$this->assertEquals((string) $ex_and, (string) $ip1->bitwiseAND($ip2));
+		$this->assertEquals((string) $ex_or , (string) $ip1->bitwiseOR($ip2));
+		$this->assertEquals((string) $ex_xor, (string) $ip1->bitwiseXOR($ip2));
+		$this->assertEquals((string) $ex_not, (string) $ip1->bitwiseNOT());
+	}
+	
+	public function testBitwiseException()
+	{
+		
+		$ip = TestingIPv6Address::factory('::1');
+		
+		try
+		{
+			$ip->callBitwiseOperation('!', $ip);
+			$this->fail('An expected exception has not been raised.');
+		}
+		catch (InvalidArgumentException $e){}
+		
+		$ip->callBitwiseOperation('&', $ip);
+		$ip->callBitwiseOperation('|', $ip);
+		$ip->callBitwiseOperation('^', $ip);
+		$ip->callBitwiseOperation('~');
+	}
+	
 	// 
 	// public function providerAsIPv4Address()
 	// {

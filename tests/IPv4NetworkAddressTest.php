@@ -73,4 +73,22 @@ class IPv4NetworkAddressTest extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals('255.255.255.255', (string) IPv4NetworkAddress::getGlobalNetmask());
 	}
+	
+	
+	public function providerNetworkBroadcastAddress()
+	{
+		return array(
+			array(IPv4NetworkAddress::factory('192.168.1.1/24'), '192.168.1.0/24', '192.168.1.255/24'),
+			array(IPv4NetworkAddress::factory('192.168.0.10/24'), '192.168.0.0/24', '192.168.0.255/24'),
+		);
+	}
+	
+	/**
+	 * @dataProvider providerNetworkBroadcastAddress
+	 */
+	public function testNetworkBroadcastAddress($ip, $ex_network, $ex_broadcast)
+	{
+		$this->assertEquals($ex_network, (string) $ip->getNetworkAddress());
+		$this->assertEquals($ex_broadcast, (string) $ip->getBroadcastAddress());
+	}
 }

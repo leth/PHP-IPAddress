@@ -71,16 +71,17 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	/**
 	 * Calculates the Broadcast Address for this address.
 	 * 
-	 * @return IPv4NetworkAddress TODO
+	 * @return IPv4NetworkAddress
 	 */
 	function getBroadcastAddress() {
 		return new IPv4NetworkAddress($this->getNetworkEnd(), $this->cidr);
 	}
-	
-	public function asIPv6NetworkAddress()
-	{
-		$address = $this->address->asIPv6Address();
-		$cidr = (IPv6NetworkAddress::max_subnet - IPv4NetworkAddress::max_subnet) + $this->cidr;
-		return new IPv6NetworkAddress($address, $cidr);
-	}
+
+	// TODO Check this
+	// public function asIPv6NetworkAddress()
+	// {
+	// 	$address = $this->address->asIPv6Address();
+	// 	$cidr = (IPv6NetworkAddress::max_subnet - IPv4NetworkAddress::max_subnet) + $this->cidr;
+	// 	return new IPv6NetworkAddress($address, $cidr);
+	// }
 }

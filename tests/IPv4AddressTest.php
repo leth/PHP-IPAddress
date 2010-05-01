@@ -120,7 +120,7 @@ class IPv4AddressTest extends PHPUnit_Framework_TestCase
 	// 	
 	// 	$this->assertEquals($v6, (string) $ip->asIPv6Address());
 	// }
-	
+
 	public function testBitwiseException()
 	{
 		
