@@ -60,6 +60,8 @@ class IPv4AddressTest extends PHPUnit_Framework_TestCase
 			array('127.-1.0.1'),
 			array('127.128.256.1'),
 			array(-12345),
+			array(123.45),
+			array(-123.45),
 			array('cake'),
 			array('12345'),
 			array('-12345'),
@@ -135,5 +137,36 @@ class IPv4AddressTest extends PHPUnit_Framework_TestCase
 		$ip->callBitwiseOperation('|', $ip);
 		$ip->callBitwiseOperation('^', $ip);
 		$ip->callBitwiseOperation('~');
+	}
+	
+	public function providerAddSubtract()
+	{
+		$data = array(
+			array('0.0.0.0', '0.0.0.0', '0.0.0.0'),
+			array('0.0.0.0', '0.0.0.1', '0.0.0.1'),
+			array('0.0.0.1', '0.0.0.0', '0.0.0.1'),
+			array('0.0.0.1', '0.0.0.1', '0.0.0.2'),
+			array('0.0.0.10', '0.0.0.1', '0.0.0.11'),
+			array('0.0.0.255', '0.0.0.1', '0.0.1.0'),
+			array('0.0.255.0', '0.0.1.1', '0.1.0.1'),
+		);
+		
+		for ($i=0; $i < count($data); $i++) { 
+			for ($j=0; $j < 3; $j++)
+				$data[$i][$j] = IPv4Address::factory($data[$i][$j]);
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider providerAddSubtract
+	 */
+	public function testAddSubtract($left, $right, $expected)
+	{
+		$result = $left->add($right);
+		$this->assertEquals(0, $result->compareTo($expected));
+		$result = $result->subtract($right);
+		$this->assertEquals(0, $result->compareTo($left));
 	}
 }
