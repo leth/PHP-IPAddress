@@ -89,8 +89,9 @@ abstract class IPNetworkAddress
 			return new IPv4NetworkAddress($ip, $cidr);
 		elseif ($ip instanceof IPv6Address)
 			return new IPv6NetworkAddress($ip, $cidr);
-		else
+		else // @codeCoverageIgnoreStart
 			throw new InvalidArgumentException('Unsupported IPAddress type \'' . get_class($ip) . '\'.');
+		// @codeCoverageIgnoreEnd
 	}
 	
 	/**
@@ -168,20 +169,30 @@ abstract class IPNetworkAddress
 	
 	public function getAddressInNetwork($offset, $from_start = NULL)
 	{
+		if (is_int($offset))
+			$positive = ($offset >= 0);
+		elseif ($offset instanceOf Math_BigInteger)
+			$positive = ($offset->compare(new Math_BigInteger(0)) >= 0);
+		
 		if ($from_start === NULL)
-		{
-			if (is_int($other))
-				$from_start = $offset >= 0;
-			elseif ($offset instanceOf Math_BigInteger)
-				$from_start = $offset->compare(new Math_BigInteger(0)) >= 0;
-		}
+			$from_start = $positive;
+		else
+			$from_start = ($from_start == TRUE);
 		
 		if ($from_start)
 			$point = $this->getNetworkStart();
 		else
 			$point = $this->getNetworkEnd();
 		
-		if ($from_start)
+		if (!$positive)
+		{
+			if (is_int($offset))
+				$offset = abs($offset);
+			elseif ($offset instanceOf Math_BigInteger)
+				$offset = $offset->abs();
+		}
+		
+		if ($positive AND $from_start)
 			return $point->add($point->factory($offset));
 		else
 			return $point->subtract($point->factory($offset));
