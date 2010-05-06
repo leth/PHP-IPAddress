@@ -204,4 +204,91 @@ class IPNetworkAddressTest extends PHPUnit_Framework_TestCase
 			$this->fail('An unexpected exception was raised.' . $e->getMessage());
 		}
 	}
+	
+	public function providerSubnets()
+	{
+		$data = array(
+			array('2000::/3','2001:630:d0:f104::80a/128', true, true),
+			array('2000::/3','2001:630:d0:f104::80a/96', true, true),
+			array('2000::/3','2001:630:d0:f104::80a/48', true, true),
+
+			array('2001:630:d0:f104::80a/96', '2000::/3', true, false),
+			array('2001:630:d0:f104::80a/48', '2000::/3', true, false),
+
+			array('2000::/3','4000::/3', false, false),
+			array('2000::/3','1000::/3', false, false),
+		);
+		
+		for ($i=0; $i < count($data); $i++) { 
+			$data[$i][0] = IPNetworkAddress::factory($data[$i][0]);
+			$data[$i][1] = IPNetworkAddress::factory($data[$i][1]);
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider providerSubnets
+	 */
+	public function testSubnets($sub1, $sub2, $shares, $encloses)
+	{
+		$this->assertEquals($shares, $sub1->sharesSubnetSpace($sub2));
+		$this->assertEquals($encloses, $sub1->enclosesSubnet($sub2));
+	}
+	
+	public function providerEnclosesAddress()
+	{
+		$data = array(
+			array('2000::/3','2001:630:d0:f104::80a', true),
+			array('2000::/3','2001:630:d0:f104::80a', true),
+			array('2000::/3','2001:630:d0:f104::80a', true),
+                                                         
+			array('2001:630:d0:f104::80a/96', '2000::', false),
+			array('2001:630:d0:f104::80a/48', '2000::', false),
+
+			array('2000::/3','4000::', false),
+			array('2000::/3','1000::', false),
+		);
+		
+		for ($i=0; $i < count($data); $i++) { 
+			$data[$i][0] = IPNetworkAddress::factory($data[$i][0]);
+			$data[$i][1] = IPAddress::factory($data[$i][1]);
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider providerEnclosesAddress
+	 */
+	public function testEnclosesAddress($subnet, $address, $expected)
+	{
+		$this->assertEquals($expected, $subnet->enclosesAddress($address));
+	}
+	
+	public function provideNetworkIdentifiers()
+	{
+		$data = array(
+			array('2000::/3', true),
+			array('2000::1/3', false),
+			
+			array('2000::/3', true),
+			array('2000::1/3', false),
+		);
+		
+		for ($i=0; $i < count($data); $i++) { 
+			$data[$i][0] = IPNetworkAddress::factory($data[$i][0]);
+		}
+		
+		return $data;
+	}
+	
+	/**
+	 * @dataProvider provideNetworkIdentifiers
+	 */
+	public function testNetworkIdentifiers($subnet, $expected)
+	{
+		$this->assertEquals($expected, $subnet->isNetworkIdentifier());
+		$this->assertTrue($subnet->getNetworkIdentifier()->isNetworkIdentifier());
+	}
 }

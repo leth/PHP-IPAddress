@@ -206,7 +206,7 @@ abstract class IPNetworkAddress
 	 */
 	public function isNetworkIdentifier()
 	{
-		return $this->address->compareTo($this-getNetworkStart()) == 0;
+		return $this->address->compareTo($this->getNetworkStart()) == 0;
 	}
 	
 	/**
@@ -217,7 +217,7 @@ abstract class IPNetworkAddress
 	public function getNetworkIdentifier()
 	{
 		$classname = get_class($this);
-		return new $classname($this-getNetworkStart(), $this->cidr);
+		return new $classname($this->getNetworkStart(), $this->cidr);
 	}
 	
 	/**
@@ -241,16 +241,19 @@ abstract class IPNetworkAddress
 	{
 		$this->checkTypes($other);
 		
-		$this_start  = $this ->getNetworkStart();
+		$first = $this;
+		
+		if($this->cidr > $other->cidr)
+			list($first, $other) = array($other, $first);
+		
+		$first_start = $first->getNetworkStart();
 		$other_start = $other->getNetworkStart();
-		$this_end    = $this ->getNetworkEnd();
+		$first_end   = $first->getNetworkEnd();
 		$other_end   = $other->getNetworkEnd();
 		
 		return 
-			($this_start->compareTo($other_start) >= 0 && 
-			 $this_start->compareTo($other_end  ) <= 0) ||
-			($this_end  ->compareTo($other_start) >= 0 &&
-			 $this_end  ->compareTo($other_end  ) <= 0);
+			($first->getNetworkStart()->compareTo($other->getNetworkStart()) <= 0) && 
+			($first->getNetworkEnd()  ->compareTo($other->getNetworkEnd()  ) >= 0);
 	}
 	
 	/**
@@ -264,11 +267,9 @@ abstract class IPNetworkAddress
 		$this->checkTypes($other);
 		
 		if($this->cidr > $other->cidr)
-			throw new Exception("Invalid Usage: $this is smaller than $other");
-
-		return 
-			($this->getNetworkStart()->compareTo($other->getNetworkStart()) <= 0) && 
-			($this->getNetworkEnd()  ->compareTo($other->getNetworkEnd()  ) >= 0);
+			return false;
+		
+		return $this->sharesSubnetSpace($other);
 	}
 	
 	/**
