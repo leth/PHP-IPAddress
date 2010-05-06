@@ -19,6 +19,7 @@
 
 class IPv4NetworkAddress extends IPNetworkAddress
 {
+	const ip_version = 4;
 	const max_subnet = 32;
 
 	public static function generateSubnetMask($subnet)

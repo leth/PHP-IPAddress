@@ -1,6 +1,33 @@
 <?php
 require_once 'PHPUnit/Framework.php';
 
+class IPv4NetworkAddressTester extends IPv4NetworkAddress
+{
+	public static function factory($address, $cidr)
+	{
+		$ip = IPv4Address::factory($address);
+		return new IPv4NetworkAddressTester($ip, $cidr);
+	}
+	
+	public function testCheckIPVersion($other)
+	{
+		return $this->checkIPVersion($other->address);
+	}
+}
+
+class IPv6NetworkAddressTester extends IPv6NetworkAddress
+{
+	public static function factory($address, $cidr)
+	{
+		$ip = IPv6Address::factory($address);
+		return new IPv6NetworkAddressTester($ip, $cidr);
+	}
+	public function testCheckIPVersion($other)
+	{
+		return $this->checkIPVersion($other->address);
+	}
+}
+
 /**
  * Tests for the IPNetworkAddress Class
  *
@@ -108,5 +135,73 @@ class IPNetworkAddressTest extends PHPUnit_Framework_TestCase
 	{
 		$address = $network->getAddressInNetwork($index, $from_start);
 		$this->assertEquals($expected, (string) $address);
+	}
+
+	public function providerCheckIPVersion()
+	{
+		return array(
+			array(
+				IPv4NetworkAddressTester::factory('10.1.0.0', 24),
+				IPv4NetworkAddressTester::factory('10.2.0.0', 24),
+				IPv6NetworkAddressTester::factory('::1', 24),
+				IPv6NetworkAddressTester::factory('1::1', 24)
+			)
+		);
+	}
+	
+	public function providerCheckIPVersionFail()
+	{
+		list(list($a4, $b4, $a6, $b6)) = $this->providerCheckIPVersion();
+		return array(
+			array($a4, $a6),
+			array($a4, $b6),
+			array($a6, $a4),
+			array($a6, $b4),
+
+			array($b4, $a6),
+			array($b4, $b6),
+			array($b6, $a4),
+			array($b6, $b4),
+		);
+	}
+	
+	/**
+	 * @dataProvider providerCheckIPVersionFail
+	 */
+	public function testCheckIPVersionFail($left, $right)
+	{
+		try
+		{
+			$left->testCheckIPVersion($right);
+			$this->fail('An expected exception was not raised.');
+		}
+		catch (InvalidArgumentException $e) {
+			// We expect this
+		}
+		catch (PHPUnit_Framework_AssertionFailedError $e)
+		{
+			// We expect this
+		}
+		catch (Exception $e) {
+			$this->fail('An unexpected exception was raised.' . $e->getMessage());
+		}
+	}
+	
+	/**
+	 * @dataProvider providerCheckIPVersion
+	 */
+	public function testCheckIPVersion($a4, $b4, $a6, $b6)
+	{
+		try
+		{
+			$a4->testCheckIPVersion($b4);
+			$b4->testCheckIPVersion($a4);
+
+			$a6->testCheckIPVersion($b6);
+			$b6->testCheckIPVersion($a6);
+		}
+		catch (Exception $e) {
+			$this->fail('An unexpected exception was raised.' . $e->getMessage());
+		}
 	}
 }

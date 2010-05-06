@@ -19,6 +19,7 @@
 
 class IPv6NetworkAddress extends IPNetworkAddress
 {
+	const ip_version = 6;
 	const max_subnet = 128;
 	
 	public static function generateSubnetMask($subnet)

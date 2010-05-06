@@ -25,6 +25,9 @@
  */
 abstract class IPNetworkAddress
 {
+	const ip_version = -1;
+	const max_subnet = -1;
+	
 	/**
 	 * The IP Address
 	 *
@@ -117,9 +120,8 @@ abstract class IPNetworkAddress
 	 */
 	protected function __construct(IPAddress $address, $cidr)
 	{
-		$classname = get_class($this);
-		if (!is_int($cidr) || $cidr < 0 || $cidr > $classname::max_subnet)
-			throw new InvalidArgumentException("Invalid CIDR '$cidr'. Invalid type or out of range for class $classname.");
+		if (!is_int($cidr) || $cidr < 0 || $cidr > $this::max_subnet)
+			throw new InvalidArgumentException("Invalid CIDR '$cidr'. Invalid type or out of range for class ". get_class($this) .".");
 		
 		$this->address = $address;
 		$this->cidr = $cidr;
@@ -163,8 +165,7 @@ abstract class IPNetworkAddress
 	 */
 	public function getNetworkAddressCount()
 	{
-		$class_name = get_class($this);
-		return pow(2, $class_name::max_subnet - $this->cidr);
+		return pow(2, $this::max_subnet - $this->cidr);
 	}
 	
 	public function getAddressInNetwork($offset, $from_start = NULL)
@@ -290,12 +291,12 @@ abstract class IPNetworkAddress
 	 *
 	 * @param IPNetworkAddress $other The object to check.
 	 * @return void
-	 * @throws IllegalArgumentException If they are not of the same type.
+	 * @throws InvalidArgumentException If they are not of the same type.
 	 */
 	protected function checkTypes($other)
 	{
 		if (get_class($this) != get_class($other))
-			throw new IllegalArgumentException('Incompatible types.');
+			throw new InvalidArgumentException('Incompatible types.');
 	}
 	
 	/**
@@ -303,15 +304,12 @@ abstract class IPNetworkAddress
 	 *
 	 * @param IPAddress $other 
 	 * @return void
-	 * @throws IllegalArgumentException If they are not of the same type.
+	 * @throws InvalidArgumentException If they are not of the same type.
 	 */
 	protected function checkIPVersion(IPAddress $other)
 	{
-		$this_class = get_class($this);
-		$other_class = get_class($other);
-		
-		if (str_replace('Network','', $this_class) != $other_class)
-			throw new IllegalArgumentException("Incompatible types ('$this_class' and '$other_class').");
+		if ($this->ip_version != $other->ip_version)
+			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 	
 	/**

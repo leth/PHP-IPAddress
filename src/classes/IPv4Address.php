@@ -19,6 +19,7 @@
 
 class IPv4Address extends IPAddress
 {
+	const ip_version = 4;
 	
 	public static function factory($address)
 	{

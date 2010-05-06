@@ -19,6 +19,7 @@
 
 class IPv6Address extends IPAddress
 {
+	const ip_version = 6;
 	
 	public static function factory($address)
 	{

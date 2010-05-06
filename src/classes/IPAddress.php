@@ -24,6 +24,8 @@
  */
 abstract class IPAddress
 {
+	const ip_version = -1;
+	
 	/**
 	 * Internal representation of the address. Format may vary.
 	 * @var mixed
