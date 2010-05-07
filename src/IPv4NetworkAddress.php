@@ -45,7 +45,7 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	 */
 	function getNetworkAddress() 
 	{
-		return new IPv4NetworkAddress($this->getNetworkStart(), $this->cidr);
+		return $this->getNetworkStart();
 	}
 	
 	public function getNetworkClass()
@@ -75,7 +75,7 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	 * @return IPv4NetworkAddress
 	 */
 	function getBroadcastAddress() {
-		return new IPv4NetworkAddress($this->getNetworkEnd(), $this->cidr);
+		return $this->getNetworkEnd();
 	}
 
 	// TODO Check this

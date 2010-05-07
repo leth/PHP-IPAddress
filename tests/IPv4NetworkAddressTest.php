@@ -78,8 +78,8 @@ class IPv4NetworkAddressTest extends PHPUnit_Framework_TestCase
 	public function providerNetworkBroadcastAddress()
 	{
 		return array(
-			array(IPv4NetworkAddress::factory('192.168.1.1/24'), '192.168.1.0/24', '192.168.1.255/24'),
-			array(IPv4NetworkAddress::factory('192.168.0.10/24'), '192.168.0.0/24', '192.168.0.255/24'),
+			array(IPv4NetworkAddress::factory('192.168.1.1/24'), '192.168.1.0', '192.168.1.255'),
+			array(IPv4NetworkAddress::factory('192.168.0.10/24'), '192.168.0.0', '192.168.0.255'),
 		);
 	}
 	
