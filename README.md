@@ -5,7 +5,8 @@ Supports both IPv4 and IPv6 schemes.
 
 ### Requirements
 
-Some IPv6 address operations require the [PEAR](http://pear.php.net/) [Math_BigInteger](http://pear.php.net/package/Math_BigInteger/) class to perform the arithmetic.
+*	PHP version 5.3.0 or greater.
+*	The [PEAR](http://pear.php.net/) [Math_BigInteger](http://pear.php.net/package/Math_BigInteger/) class to perform arithmetic for some IPv6 address operations.
 
 ## Examples
 
