@@ -154,8 +154,7 @@ abstract class IPNetworkAddress
 	 */
 	public function getNetworkEnd()
 	{
-		$classname = get_class($this);
-		return $this->getSubnetMask()->bitwiseXOR($classname::getGlobalNetmask())->bitwiseOR($this->address);
+		return $this->getSubnetMask()->bitwiseXOR($this::getGlobalNetmask())->bitwiseOR($this->address);
 	}
 	
 	/**
@@ -227,8 +226,7 @@ abstract class IPNetworkAddress
 	 */
 	public function getSubnetMask()
 	{
-		$class_name = get_class($this);
-		return $class_name::generateSubnetMask($this->cidr);
+		return $this::generateSubnetMask($this->cidr);
 	}
 	
 	/**
