@@ -291,4 +291,13 @@ class IPNetworkAddressTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, $subnet->isNetworkIdentifier());
 		$this->assertTrue($subnet->getNetworkIdentifier()->isNetworkIdentifier());
 	}
+	
+	public function test__toString()
+	{
+		$ip = '192.128.1.1/24';
+		$this->assertEquals($ip, (string) IPNetworkAddress::factory($ip));
+
+		$ip = '0000:0000:0000:0000:0000:0000:0000:0001/24';
+		$this->assertEquals($ip, (string) IPNetworkAddress::factory($ip));
+	}
 }
