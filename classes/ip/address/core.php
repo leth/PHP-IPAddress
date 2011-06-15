@@ -26,6 +26,8 @@ abstract class IP_Address_Core
 {
 	const ip_version = -1;
 
+	protected $_db;
+
 	/**
 	 * Internal representation of the address. Format may vary.
 	 * @var mixed
@@ -73,6 +75,11 @@ abstract class IP_Address_Core
 		$this->address = $address;
 	}
 
+	public function db(Database $db)
+	{
+		$this->_db = $db;
+	}
+	
 	/**
 	 * Add the given address to this one.
 	 *
@@ -129,13 +136,16 @@ abstract class IP_Address_Core
 	public abstract function compare_to(IP_Address $other);
 
 	/**
-	 * Convert this object to a string representation
+	 * Convert this object to a string representation for inserting into Database
 	 *
-	 * @return string This IP address expressed as a string.
+	 * @return string This IP address expressed as a quoted string.
 	 */
 	public function __toString()
 	{
-		return $this->address();
+		if(isset($this->_db))
+			return $this->_db->quote($this->address());
+		else
+			return $this->address();
 	}
 
 	/**
