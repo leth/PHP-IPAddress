@@ -12,7 +12,7 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,13 +25,13 @@
 abstract class IPAddress
 {
 	const ip_version = -1;
-	
+
 	/**
 	 * Internal representation of the address. Format may vary.
 	 * @var mixed
 	 */
 	protected $address;
-	
+
 	/**
 	 * Create an IP address object from the supplied address.
 	 *
@@ -47,10 +47,10 @@ abstract class IPAddress
 		else
 			throw new InvalidArgumentException("Unable to guess IP address type from '$address'.");
 	}
-	
+
 	/**
 	 * Compare 2 IP Address objects.
-	 * 
+	 *
 	 * This method is a wrapper for the compareTo method and is useful in callback situations, e.g.
 	 * usort($addresses, array('IPAddress', 'compare'));
 	 *
@@ -62,7 +62,7 @@ abstract class IPAddress
 	{
 		return $a->compareTo($b);
 	}
-	
+
 	/**
 	 * Create a new IP Address object.
 	 *
@@ -72,7 +72,7 @@ abstract class IPAddress
 	{
 		$this->address = $address;
 	}
-	
+
 	/**
 	 * Add the given address to this one.
 	 *
@@ -80,7 +80,7 @@ abstract class IPAddress
 	 * @return IPAddress An address representing the result of the operation.
 	 */
 	public abstract function add(IPAddress $other);
-	
+
 	/**
 	 * Subtract the given address from this one.
 	 *
@@ -88,7 +88,7 @@ abstract class IPAddress
 	 * @return IPAddress An address representing the result of the operation.
 	 */
 	public abstract function subtract(IPAddress $other);
-	
+
 	/**
 	 * Compute the bitwise AND of this address and another.
 	 *
@@ -122,19 +122,19 @@ abstract class IPAddress
 
 	/**
 	 * Compare this IP Address with another.
-	 * 
+	 *
 	 * @param IPAddress $other The instance to compare to.
 	 * @return int The result of the comparison.
 	 */
 	public abstract function compareTo(IPAddress $other);
-	
+
 	/**
 	 * Convert this object to a string representation
 	 *
 	 * @return string This IP address expressed as a string.
 	 */
 	public abstract function __toString();
-	
+
 	/**
 	 * Check that this instance and the supplied instance are of the same class.
 	 *
@@ -146,4 +146,18 @@ abstract class IPAddress
 		if (get_class($this) != get_class($other))
 			throw new Exception('Incompatible types.');
 	}
+
+	/**
+	 *
+	 * Adds leading zeros and fully pads out an IP address
+	 * @param string $address string representation of an IP Address
+	 */
+	public abstract function pad($address);
+
+	/**
+	 *
+	 * Removes leading zeros and truncates multiple 0 blocks in the case of IPv6 Address
+	 * @param string $address string representation of an IP Address
+	 */
+	public abstract function strip($address);
 }

@@ -45,6 +45,27 @@ class IPv4_Address_Core extends Ip_Address
 		return new Ipv4_Address($address);
 	}
 
+
+	public static function pad($address)
+	{
+		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+		$parts = array();
+		foreach (explode('.', $address) as $part)
+		{
+			$parts[] = str_pad($part, 3, '0', STR_PAD_LEFT);
+		}
+		return implode('.', $parts);
+	}
+
+	public static function strip($address)
+	{
+		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+		// Lazy way of doing it...
+		return long2ip(ip2long($address));
+	}
+
 	protected function __construct($address)
 	{
 		if (is_int($address))
