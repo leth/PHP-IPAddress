@@ -8,7 +8,7 @@ class TestingIPv4Address extends IPv4Address
 		return new TestingIPv4Address($address);
 	}
 	
-	public function callBitwiseOperation($flag, IPAddress $other = NULL)
+	public function callBitwiseOperation($flag, IP_Address $other = NULL)
 	{
 		$this->bitwiseOperation($flag, $other);
 	}

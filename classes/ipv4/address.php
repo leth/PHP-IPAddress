@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv4Address extends IPAddress
+class IPv4_Address extends IP_Address
 {
 	const ip_version = 4;
 	
@@ -56,10 +56,10 @@ class IPv4Address extends IPAddress
 	/**
 	 * Add the given address to this one.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public function add(IPAddress $other)
+	public function add(IP_Address $other)
 	{
 		$this->checkTypes($other);
 		return new IPv4Address($this->address + $other->address);
@@ -68,10 +68,10 @@ class IPv4Address extends IPAddress
 	/**
 	 * Subtract the given address from this one.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public function subtract(IPAddress $other)
+	public function subtract(IP_Address $other)
 	{
 		$this->checkTypes($other);
 		return new IPv4Address($this->address - $other->address);
@@ -80,9 +80,9 @@ class IPv4Address extends IPAddress
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IPAddress
+	  * @returns IP_Address
 	  */
-	public function bitwiseAND(IPAddress $other)
+	public function bitwiseAND(IP_Address $other)
 	{
 		return $this->bitwiseOperation('&', $other);
 	}
@@ -90,9 +90,9 @@ class IPv4Address extends IPAddress
 	/**
 	  * Calculates the Bitwise | (OR) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IPAddress
+	  * @returns IP_Address
 	  */
-	public function bitwiseOR(IPAddress $other)
+	public function bitwiseOR(IP_Address $other)
 	{
 		return $this->bitwiseOperation('|', $other);
 	}
@@ -100,9 +100,9 @@ class IPv4Address extends IPAddress
 	/**
 	  * Calculates the Bitwise ^ (XOR) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IPAddress
+	  * @returns IP_Address
 	  */
-	public function bitwiseXOR(IPAddress $other)
+	public function bitwiseXOR(IP_Address $other)
 	{
 		return $this->bitwiseOperation('^', $other);
 	}
@@ -110,7 +110,7 @@ class IPv4Address extends IPAddress
 	/**
 	  * Calculates the Bitwise ~ (NOT) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IPAddress
+	  * @returns IP_Address
 	  */
 	public function bitwiseNOT()
 	{
@@ -159,7 +159,7 @@ class IPv4Address extends IPAddress
 	// 	return IPv6Address::factory($address);
 	// }
 	
-	public function compareTo(IPAddress $other)
+	public function compareTo(IP_Address $other)
 	{
 		$this->checkTypes($other);
 		

@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv4NetworkAddress extends IPNetworkAddress
+class IPv4_Network_Address extends IP_Network_Address
 {
 	const ip_version = 4;
 	const max_subnet = 32;
@@ -30,7 +30,7 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IPAddress An IP Address representing the mask.
+	 * @return IP_Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
 	public static function getGlobalNetmask()
@@ -41,9 +41,9 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	/**
 	 * Calculates the Network Address for this address (IPv4) or the first ip of the subnet (IPv6)
 	 *
-	 * @return IPv4NetworkAddress TODO
+	 * @return IPv4_Network_Address TODO
 	 */
-	function getNetworkAddress() 
+	function get_Network_Address() 
 	{
 		return $this->getNetworkStart();
 	}
@@ -72,17 +72,17 @@ class IPv4NetworkAddress extends IPNetworkAddress
 	/**
 	 * Calculates the Broadcast Address for this address.
 	 * 
-	 * @return IPv4NetworkAddress
+	 * @return IPv4_Network_Address
 	 */
 	function getBroadcastAddress() {
 		return $this->getNetworkEnd();
 	}
 
 	// TODO Check this
-	// public function asIPv6NetworkAddress()
+	// public function asIPv6_Network_Address()
 	// {
 	// 	$address = $this->address->asIPv6Address();
-	// 	$cidr = (IPv6NetworkAddress::max_subnet - IPv4NetworkAddress::max_subnet) + $this->cidr;
-	// 	return new IPv6NetworkAddress($address, $cidr);
+	// 	$cidr = (IPv6_Network_Address::max_subnet - IPv4_Network_Address::max_subnet) + $this->cidr;
+	// 	return new IPv6_Network_Address($address, $cidr);
 	// }
 }

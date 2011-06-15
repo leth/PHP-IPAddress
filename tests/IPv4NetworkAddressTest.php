@@ -2,12 +2,12 @@
 require_once 'PHPUnit/Framework.php';
 
 /**
- * Tests for the IPv4NetworkAddress Class
+ * Tests for the IPv4_Network_Address Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IPv4NetworkAddressTest extends PHPUnit_Framework_TestCase
+class IPv4_Network_AddressTest extends PHPUnit_Framework_TestCase
 {
 
 	public function providerSubnet()
@@ -62,24 +62,24 @@ class IPv4NetworkAddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testSubnets($cidr, $subnet, $address_count, $network_class)
 	{
-		$net = IPv4NetworkAddress::factory('0.0.0.0', $cidr);
+		$net = IPv4_Network_Address::factory('0.0.0.0', $cidr);
 		
 		$this->assertEquals($subnet, (string) $net->getSubnetMask());
-		$this->assertEquals($address_count, $net->getNetworkAddressCount());
+		$this->assertEquals($address_count, $net->get_Network_AddressCount());
 		$this->assertEquals($network_class, $net->getNetworkClass());
 	}
 	
 	public function testGlobalNetmask()
 	{
-		$this->assertEquals('255.255.255.255', (string) IPv4NetworkAddress::getGlobalNetmask());
+		$this->assertEquals('255.255.255.255', (string) IPv4_Network_Address::getGlobalNetmask());
 	}
 	
 	
 	public function providerNetworkBroadcastAddress()
 	{
 		return array(
-			array(IPv4NetworkAddress::factory('192.168.1.1/24'), '192.168.1.0', '192.168.1.255'),
-			array(IPv4NetworkAddress::factory('192.168.0.10/24'), '192.168.0.0', '192.168.0.255'),
+			array(IPv4_Network_Address::factory('192.168.1.1/24'), '192.168.1.0', '192.168.1.255'),
+			array(IPv4_Network_Address::factory('192.168.0.10/24'), '192.168.0.0', '192.168.0.255'),
 		);
 	}
 	
@@ -88,7 +88,7 @@ class IPv4NetworkAddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testNetworkBroadcastAddress($ip, $ex_network, $ex_broadcast)
 	{
-		$this->assertEquals($ex_network, (string) $ip->getNetworkAddress());
+		$this->assertEquals($ex_network, (string) $ip->get_Network_Address());
 		$this->assertEquals($ex_broadcast, (string) $ip->getBroadcastAddress());
 	}
 }

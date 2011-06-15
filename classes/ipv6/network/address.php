@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv6NetworkAddress extends IPNetworkAddress
+class IPv6_Network_Address extends IP_Network_Address
 {
 	const ip_version = 6;
 	const max_subnet = 128;
@@ -35,7 +35,7 @@ class IPv6NetworkAddress extends IPNetworkAddress
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IPAddress An IP Address representing the mask.
+	 * @return IP_Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
 	public static function getGlobalNetmask()

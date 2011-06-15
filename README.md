@@ -12,32 +12,32 @@ Supports both IPv4 and IPv6 schemes.
 
 	<?php
 	// Creates an instance
-	$ip = IPAddress::factory('127.0.0.1');
+	$ip = IP_Address::factory('127.0.0.1');
 	
 	// Prints "127.0.0.1"
 	echo $ip . "\n";
 	
 	/**
-	 * IPAddress::factory(...) will attempt to guess the address version from the arguments 
+	 * IP_Address::factory(...) will attempt to guess the address version from the arguments 
 	 */
 	// Returns an instance of IPv4Address
-	$ip = IPAddress::factory('127.0.0.1');
+	$ip = IP_Address::factory('127.0.0.1');
 	$ip = IPv4Address::factory('127.0.0.1');
 	
 	// Returns an instance of IPv6Address
-	$ip = IPAddress::factory('::1');
+	$ip = IP_Address::factory('::1');
 	$ip = IPv6Address::factory('::1');
 	
 	/**
-	 * IPNetworkAddress::factory(...) will also attempt to guess protocol versions
+	 * IP_Network_Address::factory(...) will also attempt to guess protocol versions
 	 */
 	// Can either be called with the subnet size encoded in the address string,
-	$net_addr = IPNetworkAddress::factory('192.168.0.1/24');
+	$net_addr = IP_Network_Address::factory('192.168.0.1/24');
 	// Or as the second parameter
-	$net_addr = IPNetworkAddress::factory('192.168.0.1', 24);
+	$net_addr = IP_Network_Address::factory('192.168.0.1', 24);
 	
 	// Prints '192.168.0.0'
-	echo $net_addr->getNetworkAddress() . "\n";
+	echo $net_addr->get_Network_Address() . "\n";
 	// Prints '192.168.0.255'
 	echo $net_addr->getBroadcastAddress() . "\n";
 	// Prints '255.255.255.0'

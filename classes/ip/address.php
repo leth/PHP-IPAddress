@@ -22,7 +22,7 @@
  *
  * @author Marcus Cobden
  */
-abstract class IPAddress
+abstract class IP_Address
 {
 	const ip_version = -1;
 	
@@ -36,7 +36,7 @@ abstract class IPAddress
 	 * Create an IP address object from the supplied address.
 	 *
 	 * @param string $address The address to represent.
-	 * @return IPAddress An instance of a subclass of IPAddress either IPv4Address or IPv6Address
+	 * @return IP_Address An instance of a subclass of IP_Address either IPv4Address or IPv6Address
 	 */
 	public static function factory($address)
 	{
@@ -52,13 +52,13 @@ abstract class IPAddress
 	 * Compare 2 IP Address objects.
 	 * 
 	 * This method is a wrapper for the compareTo method and is useful in callback situations, e.g.
-	 * usort($addresses, array('IPAddress', 'compare'));
+	 * usort($addresses, array('IP_Address', 'compare'));
 	 *
-	 * @param IPAddress $a The left hand side of the comparison.
-	 * @param IPAddress $b The right hand side of the comparison.
+	 * @param IP_Address $a The left hand side of the comparison.
+	 * @param IP_Address $b The right hand side of the comparison.
 	 * @return int The result of the comparison.
 	 */
-	public static function compare(IPAddress $a, IPAddress $b)
+	public static function compare(IP_Address $a, IP_Address $b)
 	{
 		return $a->compareTo($b);
 	}
@@ -76,57 +76,57 @@ abstract class IPAddress
 	/**
 	 * Add the given address to this one.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function add(IPAddress $other);
+	public abstract function add(IP_Address $other);
 	
 	/**
 	 * Subtract the given address from this one.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function subtract(IPAddress $other);
+	public abstract function subtract(IP_Address $other);
 	
 	/**
 	 * Compute the bitwise AND of this address and another.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function bitwiseAND(IPAddress $other);
+	public abstract function bitwiseAND(IP_Address $other);
 
 	/**
 	 * Compute the bitwise OR of this address and another.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function bitwiseOR(IPAddress $other);
+	public abstract function bitwiseOR(IP_Address $other);
 
 	/**
 	 * Compute the bitwise XOR (Exclusive OR) of this address and another.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param IP_Address $other The other operand.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function bitwiseXOR(IPAddress $other);
+	public abstract function bitwiseXOR(IP_Address $other);
 
 	/**
 	 * Compute the bitwise NOT of this address.
 	 *
-	 * @return IPAddress An address representing the result of the operation.
+	 * @return IP_Address An address representing the result of the operation.
 	 */
 	public abstract function bitwiseNOT();
 
 	/**
 	 * Compare this IP Address with another.
 	 * 
-	 * @param IPAddress $other The instance to compare to.
+	 * @param IP_Address $other The instance to compare to.
 	 * @return int The result of the comparison.
 	 */
-	public abstract function compareTo(IPAddress $other);
+	public abstract function compareTo(IP_Address $other);
 	
 	/**
 	 * Convert this object to a string representation
@@ -138,10 +138,10 @@ abstract class IPAddress
 	/**
 	 * Check that this instance and the supplied instance are of the same class.
 	 *
-	 * @param IPAddress $other The object to check.
+	 * @param IP_Address $other The object to check.
 	 * @return boolean True if objects are of the same class.
 	 */
-	protected function checkTypes(IPAddress $other)
+	protected function checkTypes(IP_Address $other)
 	{
 		if (get_class($this) != get_class($other))
 			throw new Exception('Incompatible types.');

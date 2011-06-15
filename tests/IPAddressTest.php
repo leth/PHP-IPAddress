@@ -2,12 +2,12 @@
 require_once 'PHPUnit/Framework.php';
 
 /**
- * Tests for the IPAddress Class
+ * Tests for the IP_Address Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IPAddressTest extends PHPUnit_Framework_TestCase
+class IP_AddressTest extends PHPUnit_Framework_TestCase
 {
 
 	public function providerFactory()
@@ -33,7 +33,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactory($input, $output, $expected_class)
 	{
-		$instance = IPAddress::factory($input);
+		$instance = IP_Address::factory($input);
 		
 		$this->assertNotNull($instance);
 		$this->assertEquals($output, (string) $instance);
@@ -56,7 +56,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactoryException($input)
 	{
-		IPAddress::factory($input);
+		IP_Address::factory($input);
 	}
 	
 	public function providerCompare()
@@ -76,7 +76,7 @@ class IPAddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testCompare($a, $b, $expected)
 	{
-		$result = IPAddress::compare(IPAddress::factory($a), IPAddress::factory($b));
+		$result = IP_Address::compare(IP_Address::factory($a), IP_Address::factory($b));
 		
 		// Division is to ensure things are either -1, 0 or 1. abs() is to preseve sign.
 		$this->assertEquals($expected, $result == 0 ? 0: $result / abs($result));

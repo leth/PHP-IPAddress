@@ -23,7 +23,7 @@
  * @package default
  * @author Marcus Cobden
  */
-abstract class IPNetworkAddress
+abstract class IP_Network_Address
 {
 	const ip_version = -1;
 	const max_subnet = -1;
@@ -31,7 +31,7 @@ abstract class IPNetworkAddress
 	/**
 	 * The IP Address
 	 *
-	 * @var IPAddress
+	 * @var IP_Address
 	 */
 	protected $address;
 	
@@ -46,25 +46,25 @@ abstract class IPNetworkAddress
 	 * Generates the subnet mask for a given CIDR
 	 *
 	 * @param int $cidr The CIDR number
-	 * @return IPAddress An IP address representing the mask.
+	 * @return IP_Address An IP address representing the mask.
 	 */
 	public static abstract function generateSubnetMask($cidr);
 	
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IPAddress An IP Address representing the mask.
+	 * @return IP_Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
 	public static abstract function getGlobalNetmask();
 	
 
 	/**
-	 * Creates an IPNetworkAddress for the supplied string
+	 * Creates an IP_Network_Address for the supplied string
 	 *
 	 * @param string $address IP Network Address string.
 	 * @param string $cidr Optional CIDR number. If not supplied It is assumed to be part of the address string
-	 * @return IPNetworkAddress 
+	 * @return IP_Network_Address 
 	 */
 	public static function factory($address, $cidr = NULL)
 	{
@@ -86,14 +86,14 @@ abstract class IPNetworkAddress
 			$cidr = intval($cidr);
 		}
 		
-		$ip = IPAddress::factory($address);
+		$ip = IP_Address::factory($address);
 		
 		if ($ip instanceof IPv4Address)
-			return new IPv4NetworkAddress($ip, $cidr);
+			return new IPv4_Network_Address($ip, $cidr);
 		elseif ($ip instanceof IPv6Address)
-			return new IPv6NetworkAddress($ip, $cidr);
+			return new IPv6_Network_Address($ip, $cidr);
 		else // @codeCoverageIgnoreStart
-			throw new InvalidArgumentException('Unsupported IPAddress type \'' . get_class($ip) . '\'.');
+			throw new InvalidArgumentException('Unsupported IP_Address type \'' . get_class($ip) . '\'.');
 		// @codeCoverageIgnoreEnd
 	}
 	
@@ -101,24 +101,24 @@ abstract class IPNetworkAddress
 	 * Compare 2 IP Network Address objects.
 	 * 
 	 * This method is a wrapper for the compareTo method and is useful in callback situations, e.g.
-	 * usort($addresses, array('IPNetworkAddress', 'compare'));
+	 * usort($addresses, array('IP_Network_Address', 'compare'));
 	 *
-	 * @param IPAddress $a The left hand side of the comparison.
-	 * @param IPAddress $b The right hand side of the comparison.
+	 * @param IP_Address $a The left hand side of the comparison.
+	 * @param IP_Address $b The right hand side of the comparison.
 	 * @return int The result of the comparison.
 	 */
-	public static function compare(IPNetworkAddress $a, IPNetworkAddress $b)
+	public static function compare(IP_Network_Address $a, IP_Network_Address $b)
 	{
 		return $a->compareTo($b);
 	}
 	
 	/**
-	 * Construct an IPNetworkAddress.
+	 * Construct an IP_Network_Address.
 	 *
-	 * @param IPAddress $address The IP Address of the host
+	 * @param IP_Address $address The IP Address of the host
 	 * @param string $cidr The CIDR size of the network
 	 */
-	protected function __construct(IPAddress $address, $cidr)
+	protected function __construct(IP_Address $address, $cidr)
 	{
 		if (!is_int($cidr) || $cidr < 0 || $cidr > $this::max_subnet)
 			throw new InvalidArgumentException("Invalid CIDR '$cidr'. Invalid type or out of range for class ". get_class($this) .".");
@@ -162,7 +162,7 @@ abstract class IPNetworkAddress
 	 *
 	 * @return integer
 	 */
-	public function getNetworkAddressCount()
+	public function get_Network_AddressCount()
 	{
 		return pow(2, $this::max_subnet - $this->cidr);
 	}
@@ -211,7 +211,7 @@ abstract class IPNetworkAddress
 	/**
 	 * Get the Network Identifier for the network this address is in.
 	 *
-	 * @return IPNetworkAddress
+	 * @return IP_Network_Address
 	 */
 	public function getNetworkIdentifier()
 	{
@@ -222,7 +222,7 @@ abstract class IPNetworkAddress
 	/**
 	 * Get the subnet mask for this network
 	 *
-	 * @return IPAddress
+	 * @return IP_Address
 	 */
 	public function getSubnetMask()
 	{
@@ -232,10 +232,10 @@ abstract class IPNetworkAddress
 	/**
 	 * Calculates whether two subnets share any portion of their address space.
 	 *
-	 * @param IPAddress $other The other subnet to compare to.
+	 * @param IP_Address $other The other subnet to compare to.
 	 * @return void
 	 */
-	public function sharesSubnetSpace(IPNetworkAddress $other)
+	public function sharesSubnetSpace(IP_Network_Address $other)
 	{
 		$this->checkTypes($other);
 		
@@ -257,10 +257,10 @@ abstract class IPNetworkAddress
 	/**
 	 * Checks whether this subnet encloses the supplied subnet.
 	 *
-	 * @param IPAddress $other Subnet to test against.
+	 * @param IP_Address $other Subnet to test against.
 	 * @return boolean
 	 */
-	public function enclosesSubnet(IPNetworkAddress $other)
+	public function enclosesSubnet(IP_Network_Address $other)
 	{
 		$this->checkTypes($other);
 		
@@ -273,10 +273,10 @@ abstract class IPNetworkAddress
 	/**
 	 * Checks whether the supplied IP fits within this subnet.
 	 *
-	 * @param IPAddress $ip IP to test against.
+	 * @param IP_Address $ip IP to test against.
 	 * @return boolean
 	 */
-	function enclosesAddress(IPAddress $ip)
+	function enclosesAddress(IP_Address $ip)
 	{
 		$this->checkIPVersion($ip);
 		
@@ -288,7 +288,7 @@ abstract class IPNetworkAddress
 	/**
 	 * Check that this and the argument are of the same type.
 	 *
-	 * @param IPNetworkAddress $other The object to check.
+	 * @param IP_Network_Address $other The object to check.
 	 * @return void
 	 * @throws InvalidArgumentException If they are not of the same type.
 	 */
@@ -301,23 +301,23 @@ abstract class IPNetworkAddress
 	/**
 	 * Check that this and the argument are of the same IP protocol version
 	 *
-	 * @param IPAddress $other 
+	 * @param IP_Address $other 
 	 * @return void
 	 * @throws InvalidArgumentException If they are not of the same type.
 	 */
-	protected function checkIPVersion(IPAddress $other)
+	protected function checkIPVersion(IP_Address $other)
 	{
 		if ($this->ip_version != $other->ip_version)
 			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 	
 	/**
-	 * Compare this instance to another IPNetworkAddress
+	 * Compare this instance to another IP_Network_Address
 	 *
-	 * @param IPNetworkAddress $other The instance to compare to
+	 * @param IP_Network_Address $other The instance to compare to
 	 * @return integer
 	 */
-	public function compareTo(IPNetworkAddress $other)
+	public function compareTo(IP_Network_Address $other)
 	{
 		$cmp = $this->address->compareTo($other->address);
 		
