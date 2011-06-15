@@ -28,7 +28,7 @@ class IPv6_Address_Core extends IP_Address
 			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
 
-			$address = IPv6_Address::pad_v6_address_string($address);
+			$address = IPv6_Address::pad($address);
 			$address = pack('H*', str_replace(':', '', $address));
 		}
 		elseif ($address instanceOf Math_BigInteger)
