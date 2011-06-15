@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv6_Network_Address extends IP_Network_Address
+class IPv6_Network_Address_Core extends IP_Network_Address
 {
 	const ip_version = 6;
 	const max_subnet = 128;

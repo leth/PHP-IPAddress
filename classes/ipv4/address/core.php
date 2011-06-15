@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv4_Address extends IP_Address
+class IPv4_Address_Core extends IP_Address
 {
 	const ip_version = 4;
 	

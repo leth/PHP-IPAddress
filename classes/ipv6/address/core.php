@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv6_Address extends IP_Address
+class IPv6_Address_Core extends IP_Address
 {
 	const ip_version = 6;
 	

@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 
-class IPv4_Network_Address extends IP_Network_Address
+class IPv4_Network_Address_Core extends IP_Network_Address
 {
 	const ip_version = 4;
 	const max_subnet = 32;

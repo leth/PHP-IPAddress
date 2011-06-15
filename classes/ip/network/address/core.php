@@ -23,7 +23,7 @@
  * @package default
  * @author Marcus Cobden
  */
-abstract class IP_Network_Address
+abstract class IP_Network_Address_Core
 {
 	const ip_version = -1;
 	const max_subnet = -1;
