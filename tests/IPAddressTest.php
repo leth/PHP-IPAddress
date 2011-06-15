@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 /**
  * Tests for the IP_Address Class
@@ -7,24 +6,24 @@ require_once 'PHPUnit/Framework.php';
  * @package default
  * @author Marcus Cobden
  */
-class IP_AddressTest extends PHPUnit_Framework_TestCase
+class IP_Address_Test extends PHPUnit_Framework_TestCase
 {
 
 	public function providerFactory()
 	{
 		return array(
-			array('127.0.0.1',  '127.0.0.1',   'IPv4Address'),
-			array('127.0.0.0',  '127.0.0.0',   'IPv4Address'),
-			array('127.0.0.2',  '127.0.0.2',   'IPv4Address'),
-			array('192.168.1.1','192.168.1.1', 'IPv4Address'),
-			array('192.168.2.1','192.168.2.1', 'IPv4Address'),
-			array('192.168.1.2','192.168.1.2', 'IPv4Address'),
-			array('10.0.0.2',   '10.0.0.2',    'IPv4Address'),
-			array('10.0.0.1',   '10.0.0.1',    'IPv4Address'),
-			array(257,   '0.0.1.1',    'IPv4Address'),
-			array(new Math_BigInteger(257), '0000:0000:0000:0000:0000:0000:0000:0101', 'IPv6Address'),
-			array('::1', '0000:0000:0000:0000:0000:0000:0000:0001', 'IPv6Address'),
-			array('fe80::62fb:42ff:feeb:727c', 'fe80:0000:0000:0000:62fb:42ff:feeb:727c', 'IPv6Address')
+			array('127.0.0.1',  '127.0.0.1',   'IPv4_Address'),
+			array('127.0.0.0',  '127.0.0.0',   'IPv4_Address'),
+			array('127.0.0.2',  '127.0.0.2',   'IPv4_Address'),
+			array('192.168.1.1','192.168.1.1', 'IPv4_Address'),
+			array('192.168.2.1','192.168.2.1', 'IPv4_Address'),
+			array('192.168.1.2','192.168.1.2', 'IPv4_Address'),
+			array('10.0.0.2',   '10.0.0.2',    'IPv4_Address'),
+			array('10.0.0.1',   '10.0.0.1',    'IPv4_Address'),
+			array(257,          '0.0.1.1',     'IPv4_Address'),
+			array(new Math_BigInteger(257), '0000:0000:0000:0000:0000:0000:0000:0101', 'IPv6_Address'),
+			array('::1', '0000:0000:0000:0000:0000:0000:0000:0001', 'IPv6_Address'),
+			array('fe80::62fb:42ff:feeb:727c', 'fe80:0000:0000:0000:62fb:42ff:feeb:727c', 'IPv6_Address')
 		);
 	}
 

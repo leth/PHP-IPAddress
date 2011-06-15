@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -12,7 +12,7 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
@@ -20,12 +20,12 @@
 class IPv4_Address_Core extends IP_Address
 {
 	const ip_version = 4;
-	
+
 	public static function factory($address)
 	{
 		if (is_string($address))
 		{
-			if(!filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
 				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
 		}
 		else if ($address instanceOf Math_BigInteger)
@@ -41,10 +41,10 @@ class IPv4_Address_Core extends IP_Address
 		{
 			throw new InvalidArgumentException("Unsupported argument type.");
 		}
-		
-		return new IPv4Address($address);
+
+		return new IPv4_Address($address);
 	}
-	
+
 	protected function __construct($address)
 	{
 		if (is_int($address))
@@ -52,84 +52,84 @@ class IPv4_Address_Core extends IP_Address
 		else
 			parent::__construct(ip2long($address));
 	}
-	
+
 	/**
 	 * Add the given address to this one.
 	 *
-	 * @param IP_Address $other The other operand.
-	 * @return IP_Address An address representing the result of the operation.
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
 	 */
 	public function add(IP_Address $other)
 	{
-		$this->checkTypes($other);
-		return new IPv4Address($this->address + $other->address);
+		$this->check_types($other);
+		return IPv4_Address::factory($this->address + $other->address);
 	}
-	
+
 	/**
 	 * Subtract the given address from this one.
 	 *
-	 * @param IP_Address $other The other operand.
-	 * @return IP_Address An address representing the result of the operation.
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
 	 */
 	public function subtract(IP_Address $other)
 	{
-		$this->checkTypes($other);
-		return new IPv4Address($this->address - $other->address);
+		$this->check_types($other);
+		return IPv4_Address::factory($this->address - $other->address);
 	}
-	
+
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IP_Address
+	  * @returns IPAddress
 	  */
-	public function bitwiseAND(IP_Address $other)
+	public function bitwise_and(IP_Address $other)
 	{
-		return $this->bitwiseOperation('&', $other);
+		return $this->bitwise_operation('&', $other);
 	}
-	
+
 	/**
 	  * Calculates the Bitwise | (OR) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IP_Address
+	  * @returns IPAddress
 	  */
-	public function bitwiseOR(IP_Address $other)
+	public function bitwise_or(IP_Address $other)
 	{
-		return $this->bitwiseOperation('|', $other);
+		return $this->bitwise_operation('|', $other);
 	}
-	
+
 	/**
 	  * Calculates the Bitwise ^ (XOR) of a given IP address.
-	  * @param IPv4Address $other is the ip to be compared against
+	  * @param IPv4_Address $other is the ip to be compared against
 	  * @returns IP_Address
 	  */
-	public function bitwiseXOR(IP_Address $other)
+	public function bitwise_xor(IP_Address $other)
 	{
-		return $this->bitwiseOperation('^', $other);
+		return $this->bitwise_operation('^', $other);
 	}
-	
+
 	/**
 	  * Calculates the Bitwise ~ (NOT) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
 	  * @returns IP_Address
 	  */
-	public function bitwiseNOT()
+	public function bitwise_not()
 	{
-		return $this->bitwiseOperation('~');
+		return $this->bitwise_operation('~');
 	}
-	
-	protected function bitwiseOperation($operation)
+
+	protected function bitwise_operation($operation)
 	{
 		$args = func_get_args();
 		$operation = array_shift($args);
 		array_unshift($args, $this);
-		
+
 		$addr[0] = $args[0]->address;
 		if ($operation != '~')
 		{
-			$this->checkTypes($args[1]);
+			$this->check_types($args[1]);
 			$addr[1] = $args[1]->address;
 		}
-		
+
 		switch ($operation) {
 			case '&':
 				$res = $addr[1] & $addr[0];
@@ -143,31 +143,33 @@ class IPv4_Address_Core extends IP_Address
 			case '~':
 				$res = ~ $addr[0];
 				break;
-			
+
 			default:
 				throw new InvalidArgumentException("Unknown operation flag '$operation'.");
 				break;
 		}
 
-		return new IPv4Address(long2ip($res));
+		return IPv4_Address::factory(long2ip($res));
 	}
 	// TODO Check this
-	// public function asIPv6Address()
+	// public function as_IPv6_Address()
 	// {
 	// 	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
-	// 	
+	//
 	// 	return IPv6Address::factory($address);
 	// }
-	
-	public function compareTo(IP_Address $other)
+
+	public function compare_to(IP_Address $other)
 	{
-		$this->checkTypes($other);
-		
+		$this->check_types($other);
+
 		return $this->address - $other->address;
 	}
-	
-	public function __toString()
+
+	public function address()
 	{
 		return long2ip($this->address);
 	}
+
+
 }

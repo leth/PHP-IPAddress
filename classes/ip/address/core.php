@@ -1,4 +1,4 @@
-<?php
+<?php defined('SYSPATH') or die('No direct script access.');
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -12,7 +12,7 @@
  * warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
  * See the GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU Lesser General Public 
+ * You should have received a copy of the GNU Lesser General Public
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
@@ -25,34 +25,34 @@
 abstract class IP_Address_Core
 {
 	const ip_version = -1;
-	
+
 	/**
 	 * Internal representation of the address. Format may vary.
 	 * @var mixed
 	 */
 	protected $address;
-	
+
 	/**
 	 * Create an IP address object from the supplied address.
 	 *
 	 * @param string $address The address to represent.
-	 * @return IP_Address An instance of a subclass of IP_Address either IPv4Address or IPv6Address
+	 * @return IP_Address An instance of a subclass of IP_Address either IPv4_Address or IPv6_Address
 	 */
 	public static function factory($address)
 	{
-		if (is_int($address) || is_string($address) && strpos($address, '.') !== FALSE)
-			return IPv4Address::factory($address);
-		else if ($address instanceof Math_BigInteger || strpos($address, ':') !== FALSE)
-			return IPv6Address::factory($address);
+		if (is_int($address) OR is_string($address) AND strpos($address, '.') !== FALSE)
+			return IPv4_Address::factory($address);
+		elseif ($address instanceof Math_BigInteger OR strpos($address, ':') !== FALSE)
+			return IPv6_Address::factory($address);
 		else
-			throw new InvalidArgumentException("Unable to guess IP address type from '$address'.");
+			throw new InvalidArgumentException('Unable to guess IP address type from \''.$address.'\'.');
 	}
-	
+
 	/**
 	 * Compare 2 IP Address objects.
-	 * 
-	 * This method is a wrapper for the compareTo method and is useful in callback situations, e.g.
-	 * usort($addresses, array('IP_Address', 'compare'));
+	 *
+	 * This method is a wrapper for the compare_to method and is useful in callback situations, e.g.
+	 * usort($addresses, array('IPAddress', 'compare'));
 	 *
 	 * @param IP_Address $a The left hand side of the comparison.
 	 * @param IP_Address $b The right hand side of the comparison.
@@ -60,9 +60,9 @@ abstract class IP_Address_Core
 	 */
 	public static function compare(IP_Address $a, IP_Address $b)
 	{
-		return $a->compareTo($b);
+		return $a->compare_to($b);
 	}
-	
+
 	/**
 	 * Create a new IP Address object.
 	 *
@@ -72,7 +72,7 @@ abstract class IP_Address_Core
 	{
 		$this->address = $address;
 	}
-	
+
 	/**
 	 * Add the given address to this one.
 	 *
@@ -80,7 +80,7 @@ abstract class IP_Address_Core
 	 * @return IP_Address An address representing the result of the operation.
 	 */
 	public abstract function add(IP_Address $other);
-	
+
 	/**
 	 * Subtract the given address from this one.
 	 *
@@ -88,14 +88,14 @@ abstract class IP_Address_Core
 	 * @return IP_Address An address representing the result of the operation.
 	 */
 	public abstract function subtract(IP_Address $other);
-	
+
 	/**
 	 * Compute the bitwise AND of this address and another.
 	 *
 	 * @param IP_Address $other The other operand.
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function bitwiseAND(IP_Address $other);
+	public abstract function bitwise_and(IP_Address $other);
 
 	/**
 	 * Compute the bitwise OR of this address and another.
@@ -103,47 +103,57 @@ abstract class IP_Address_Core
 	 * @param IP_Address $other The other operand.
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function bitwiseOR(IP_Address $other);
+	public abstract function bitwise_or(IP_Address $other);
 
 	/**
 	 * Compute the bitwise XOR (Exclusive OR) of this address and another.
 	 *
-	 * @param IP_Address $other The other operand.
-	 * @return IP_Address An address representing the result of the operation.
+	 * @param IPAddress $other The other operand.
+	 * @return IPAddress An address representing the result of the operation.
 	 */
-	public abstract function bitwiseXOR(IP_Address $other);
+	public abstract function bitwise_xor(IP_Address $other);
 
 	/**
 	 * Compute the bitwise NOT of this address.
 	 *
-	 * @return IP_Address An address representing the result of the operation.
+	 * @return IPAddress An address representing the result of the operation.
 	 */
-	public abstract function bitwiseNOT();
+	public abstract function bitwise_not();
 
 	/**
 	 * Compare this IP Address with another.
-	 * 
-	 * @param IP_Address $other The instance to compare to.
+	 *
+	 * @param IPAddress $other The instance to compare to.
 	 * @return int The result of the comparison.
 	 */
-	public abstract function compareTo(IP_Address $other);
-	
+	public abstract function compare_to(IP_Address $other);
+
 	/**
 	 * Convert this object to a string representation
 	 *
 	 * @return string This IP address expressed as a string.
 	 */
-	public abstract function __toString();
-	
+	public function __toString()
+	{
+		return $this->address();
+	}
+
+	/**
+	 * Return the string representation of the address
+	 *
+	 * @return string This IP address expressed as a string.
+	 */
+	public abstract function address();
+
 	/**
 	 * Check that this instance and the supplied instance are of the same class.
 	 *
 	 * @param IP_Address $other The object to check.
-	 * @return boolean True if objects are of the same class.
+	 * @throws Kohana_Exception if objects are of the same class.
 	 */
-	protected function checkTypes(IP_Address $other)
+	protected function check_types(IP_Address $other)
 	{
 		if (get_class($this) != get_class($other))
-			throw new Exception('Incompatible types.');
+			throw new Kohana_Exception('Incompatible types.');
 	}
 }

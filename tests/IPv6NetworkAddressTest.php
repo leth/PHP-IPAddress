@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 /**
  * Tests for the IP_Network_Address Class
@@ -7,9 +6,9 @@ require_once 'PHPUnit/Framework.php';
  * @package default
  * @author Marcus Cobden
  */
-class IPv6_Network_AddressTest extends PHPUnit_Framework_TestCase
+class IPv6_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 {
-	public function testGlobalNetmask()
+	public function test_global_netmask()
 	{
 		$this->assertEquals('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', (string) IPv6_Network_Address::getGlobalNetmask());
 	}

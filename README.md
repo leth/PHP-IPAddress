@@ -37,11 +37,11 @@ Supports both IPv4 and IPv6 schemes.
 	$net_addr = IP_Network_Address::factory('192.168.0.1', 24);
 	
 	// Prints '192.168.0.0'
-	echo $net_addr->get_Network_Address() . "\n";
+	echo $net_addr->get_network_address() . "\n";
 	// Prints '192.168.0.255'
-	echo $net_addr->getBroadcastAddress() . "\n";
+	echo $net_addr->get_broadcast_address() . "\n";
 	// Prints '255.255.255.0'
-	echo $net_addr->getSubnetMask() . "\n";
+	echo $net_addr->get_subnet_mask() . "\n";
 		
 ## Test Cases
 

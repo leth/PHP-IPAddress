@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 class TestingIPv4Address extends IPv4Address
 {
@@ -8,7 +7,7 @@ class TestingIPv4Address extends IPv4Address
 		return new TestingIPv4Address($address);
 	}
 	
-	public function callBitwiseOperation($flag, IP_Address $other = NULL)
+	public function call_bitwise_operation($flag, IP_Address $other = NULL)
 	{
 		$this->bitwiseOperation($flag, $other);
 	}
@@ -20,7 +19,7 @@ class TestingIPv4Address extends IPv4Address
  * @package default
  * @author Marcus Cobden
  */
-class IPv4AddressTest extends PHPUnit_Framework_TestCase
+class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 {
 
 	public function providerFactory()
@@ -128,15 +127,15 @@ class IPv4AddressTest extends PHPUnit_Framework_TestCase
 		
 		try
 		{
-			$ip->callBitwiseOperation('!', $ip);
+			$ip->call_bitwise_operation('!', $ip);
 			$this->fail('An expected exception has not been raised.');
 		}
 		catch (InvalidArgumentException $e){}
 		
-		$ip->callBitwiseOperation('&', $ip);
-		$ip->callBitwiseOperation('|', $ip);
-		$ip->callBitwiseOperation('^', $ip);
-		$ip->callBitwiseOperation('~');
+		$ip->call_bitwise_operation('&', $ip);
+		$ip->call_bitwise_operation('|', $ip);
+		$ip->call_bitwise_operation('^', $ip);
+		$ip->call_bitwise_operation('~');
 	}
 	
 	public function providerAddSubtract()
@@ -165,8 +164,8 @@ class IPv4AddressTest extends PHPUnit_Framework_TestCase
 	public function testAddSubtract($left, $right, $expected)
 	{
 		$result = $left->add($right);
-		$this->assertEquals(0, $result->compareTo($expected));
+		$this->assertEquals(0, $result->compare_to($expected));
 		$result = $result->subtract($right);
-		$this->assertEquals(0, $result->compareTo($left));
+		$this->assertEquals(0, $result->compare_to($left));
 	}
 }

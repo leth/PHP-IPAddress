@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 /**
  * Tests for the IPv4_Network_Address Class
@@ -7,7 +6,7 @@ require_once 'PHPUnit/Framework.php';
  * @package default
  * @author Marcus Cobden
  */
-class IPv4_Network_AddressTest extends PHPUnit_Framework_TestCase
+class IPv4_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 {
 
 	public function providerSubnet()
@@ -64,8 +63,8 @@ class IPv4_Network_AddressTest extends PHPUnit_Framework_TestCase
 	{
 		$net = IPv4_Network_Address::factory('0.0.0.0', $cidr);
 		
-		$this->assertEquals($subnet, (string) $net->getSubnetMask());
-		$this->assertEquals($address_count, $net->get_Network_AddressCount());
+		$this->assertEquals($subnet, (string) $net->get_subnet_mask());
+		$this->assertEquals($address_count, $net->get_network_addressCount());
 		$this->assertEquals($network_class, $net->getNetworkClass());
 	}
 	
@@ -88,7 +87,7 @@ class IPv4_Network_AddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testNetworkBroadcastAddress($ip, $ex_network, $ex_broadcast)
 	{
-		$this->assertEquals($ex_network, (string) $ip->get_Network_Address());
-		$this->assertEquals($ex_broadcast, (string) $ip->getBroadcastAddress());
+		$this->assertEquals($ex_network, (string) $ip->get_network_address());
+		$this->assertEquals($ex_broadcast, (string) $ip->get_broadcast_address());
 	}
 }

@@ -1,30 +1,29 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
-class IPv4_Network_AddressTester extends IPv4_Network_Address
+class IPv4_Network_Address_Tester_Core extends IPv4_Network_Address
 {
 	public static function factory($address, $cidr)
 	{
 		$ip = IPv4Address::factory($address);
-		return new IPv4_Network_AddressTester($ip, $cidr);
+		return new IPv4_Network_Address_Tester($ip, $cidr);
 	}
 	
-	public function testCheckIPVersion($other)
+	public function test_check_ip_version($other)
 	{
-		return $this->checkIPVersion($other->address);
+		return $this->check_ip_version($other->address);
 	}
 }
 
-class IPv6_Network_AddressTester extends IPv6_Network_Address
+class IPv6_Network_Address_Tester_Core extends IPv6_Network_Address
 {
 	public static function factory($address, $cidr)
 	{
 		$ip = IPv6Address::factory($address);
-		return new IPv6_Network_AddressTester($ip, $cidr);
+		return new IPv6_Network_Address_Tester($ip, $cidr);
 	}
-	public function testCheckIPVersion($other)
+	public function test_check_ip_version($other)
 	{
-		return $this->checkIPVersion($other->address);
+		return $this->check_ip_version($other->address);
 	}
 }
 
@@ -34,7 +33,7 @@ class IPv6_Network_AddressTester extends IPv6_Network_Address
  * @package default
  * @author Marcus Cobden
  */
-class IP_Network_AddressTest extends PHPUnit_Framework_TestCase
+class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 {
 	public function providerFactory()
 	{
@@ -56,7 +55,7 @@ class IP_Network_AddressTest extends PHPUnit_Framework_TestCase
 		
 		$this->assertEquals($expected_cidr, $ip->getCIDR());
 		$this->assertEquals($expected_address, (string) $ip->getAddress());
-		$this->assertEquals($expected_subnet, (string) $ip->getNetworkStart());
+		$this->assertEquals($expected_subnet, (string) $ip->get_network_start());
 	}
 	
 	public function providerFactoryException()
@@ -137,21 +136,21 @@ class IP_Network_AddressTest extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, (string) $address);
 	}
 
-	public function providerCheckIPVersion()
+	public function providerCheck_ip_version()
 	{
 		return array(
 			array(
-				IPv4_Network_AddressTester::factory('10.1.0.0', 24),
-				IPv4_Network_AddressTester::factory('10.2.0.0', 24),
-				IPv6_Network_AddressTester::factory('::1', 24),
-				IPv6_Network_AddressTester::factory('1::1', 24)
+				IPv4_Network_Address_Tester::factory('10.1.0.0', 24),
+				IPv4_Network_Address_Tester::factory('10.2.0.0', 24),
+				IPv6_Network_Address_Tester::factory('::1', 24),
+				IPv6_Network_Address_Tester::factory('1::1', 24)
 			)
 		);
 	}
 	
-	public function providerCheckIPVersionFail()
+	public function providerCheck_ip_versionFail()
 	{
-		list(list($a4, $b4, $a6, $b6)) = $this->providerCheckIPVersion();
+		list(list($a4, $b4, $a6, $b6)) = $this->providerCheck_ip_version();
 		return array(
 			array($a4, $a6),
 			array($a4, $b6),
@@ -166,13 +165,13 @@ class IP_Network_AddressTest extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @dataProvider providerCheckIPVersionFail
+	 * @dataProvider providerCheck_ip_versionFail
 	 */
-	public function testCheckIPVersionFail($left, $right)
+	public function test_check_ip_versionFail($left, $right)
 	{
 		try
 		{
-			$left->testCheckIPVersion($right);
+			$left->test_check_ip_version($right);
 			$this->fail('An expected exception was not raised.');
 		}
 		catch (InvalidArgumentException $e) {
@@ -188,17 +187,17 @@ class IP_Network_AddressTest extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @dataProvider providerCheckIPVersion
+	 * @dataProvider providerCheck_ip_version
 	 */
-	public function testCheckIPVersion($a4, $b4, $a6, $b6)
+	public function test_check_ip_version($a4, $b4, $a6, $b6)
 	{
 		try
 		{
-			$a4->testCheckIPVersion($b4);
-			$b4->testCheckIPVersion($a4);
+			$a4->test_check_ip_version($b4);
+			$b4->test_check_ip_version($a4);
 
-			$a6->testCheckIPVersion($b6);
-			$b6->testCheckIPVersion($a6);
+			$a6->test_check_ip_version($b6);
+			$b6->test_check_ip_version($a6);
 		}
 		catch (Exception $e) {
 			$this->fail('An unexpected exception was raised.' . $e->getMessage());

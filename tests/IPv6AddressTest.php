@@ -1,5 +1,4 @@
 <?php
-require_once 'PHPUnit/Framework.php';
 
 class TestingIPv6Address extends IPv6Address
 {
@@ -8,7 +7,7 @@ class TestingIPv6Address extends IPv6Address
 		return new TestingIPv6Address($address);
 	}
 	
-	public function callBitwiseOperation($flag, IP_Address $other = NULL)
+	public function call_bitwise_operation($flag, IP_Address $other = NULL)
 	{
 		$this->bitwiseOperation($flag, $other);
 	}
@@ -20,7 +19,7 @@ class TestingIPv6Address extends IPv6Address
  * @package default
  * @author Marcus Cobden
  */
-class IPv6AddressTest extends PHPUnit_Framework_TestCase
+class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 {
 
 	public function providerFactory()
@@ -98,9 +97,9 @@ class IPv6AddressTest extends PHPUnit_Framework_TestCase
 	public function testAddSubtract($left, $right, $expected)
 	{
 		$result = $left->add($right);
-		$this->assertEquals(0, $result->compareTo($expected));
+		$this->assertEquals(0, $result->compare_to($expected));
 		$again = $result->subtract($right);
-		$this->assertEquals(0, $again->compareTo($left));
+		$this->assertEquals(0, $again->compare_to($left));
 	}
 	
 	public function providerCompareTo()
@@ -126,7 +125,7 @@ class IPv6AddressTest extends PHPUnit_Framework_TestCase
 	 */
 	public function testCompareTo($left, $right, $expected)
 	{
-		$this->assertEquals($expected, $left->compareTo($right));
+		$this->assertEquals($expected, $left->compare_to($right));
 	}
 	
 	public function providerBitwise()
@@ -166,19 +165,19 @@ class IPv6AddressTest extends PHPUnit_Framework_TestCase
 		
 		try
 		{
-			$ip->callBitwiseOperation('!', $ip);
+			$ip->call_bitwise_operation('!', $ip);
 			$this->fail('An expected exception has not been raised.');
 		}
 		catch (InvalidArgumentException $e){}
 		
-		$ip->callBitwiseOperation('&', $ip);
-		$ip->callBitwiseOperation('|', $ip);
-		$ip->callBitwiseOperation('^', $ip);
-		$ip->callBitwiseOperation('~');
+		$ip->call_bitwise_operation('&', $ip);
+		$ip->call_bitwise_operation('|', $ip);
+		$ip->call_bitwise_operation('^', $ip);
+		$ip->call_bitwise_operation('~');
 	}
 	
 	// 
-	// public function providerAsIPv4Address()
+	// public function provider_as_IPv4_Address()
 	// {
 	// 	return array(
 	// 		array('0000:0000:0000:ffff:0127:0000:0000:0001', '127.0.0.1'),
@@ -186,9 +185,9 @@ class IPv6AddressTest extends PHPUnit_Framework_TestCase
 	// }
 	// 
 	// /**
-	//  * @dataProvider providerAsIPv4Address
+	//  * @dataProvider provider_as_IPv4_Address
 	//  */
-	// public function testAsIPv4Address($v6, $v4 = NULL)
+	// public function test_as_IPv4_Address($v6, $v4 = NULL)
 	// {
 	// 	$ip = new IPv6Address($v6);
 	// 	
