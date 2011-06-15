@@ -43,18 +43,6 @@ class IPv6_Address_Core extends IP_Address
 		return new IPv6_Address($address);
 	}
 
-	protected function __construct($address)
-	{
-		if ($address instanceOf Math_BigInteger)
-		{
-			parent::__construct(str_pad($address->abs()->toBytes(), 16, chr(0), STR_PAD_LEFT));
-		}
-		else
-		{
-			parent::__construct($address);
-		}
-	}
-
 	/**
 	 * This makes an IPv6 address fully qualified. It replaces :: with appropriate 0000 blocks, and
 	 * pads out all dropped 0s
@@ -62,16 +50,14 @@ class IPv6_Address_Core extends IP_Address
 	 * IE: 2001:630:d0:: becomes 2001:0630:00d0:0000:0000:0000:0000:0000
 	 *
 	 * @param string $address IPv6 address to be padded
-	 * @return string A fully padded string ipv6 address
+	 * @return string A fully padded string IPv6 address
 	 */
-	public static function pad_v6_address_string($address)
+	public static function pad($address)
 	{
 		$ipparts = explode('::', $address, 2);
+
 		$head = $ipparts[0];
-		if (isset($ipparts[1]))
-		$tail = $ipparts[1];
-		else
-		$tail = array();
+		$tail = isset($ipparts[1]) ? $ipparts[1] : array();
 
 		$headparts = explode(':', $head);
 		$ippad = array();
@@ -96,6 +82,93 @@ class IPv6_Address_Core extends IP_Address
 		}
 
 		return join(':', $ippad);
+	}
+
+	/**
+	 * Function to compact the address
+	 *
+	 * Strips leading zeros from prefix notation and consolidates (0000:)+ into :: where appropriate
+	 * This algorithm will convert multiple 16 bit 0 blocks into :: with the following priority:
+	 * <ol>
+	 * 	<li>number of contiguous 0 blocks</li>
+	 * 	<li>order in the address (first blocks first)</li>
+	 * </ol>
+	 *
+	 *  Will normalise IPv6 address first.
+	 * @param string $address un stripped address.
+	 */
+	public static function compact($address)
+	{
+		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
+
+		// Check that the address is a padded address first - if not, pad it out to full length
+		if (strlen($address) < 39)
+		{
+			$address = self::pad($address);
+		}
+
+		$parts = explode(':', $address);
+
+		$largest_zero_pos = NULL;
+		$largest_zero_size = 0;
+
+		$current_zero_pos = NULL;
+		$current_zero_size = 0;
+
+		foreach ($parts as $k => $part)
+		{
+			if ($part == '0000')
+			{
+				// Contender for largest group
+				if ( ! isset($current_zero_pos))
+				{
+					$current_zero_pos = $k;
+				}
+				$current_zero_size++;
+				if ($largest_zero_size < $current_zero_size)
+				{
+					$largest_zero_size = $current_zero_size;
+					$largest_zero_pos = $current_zero_pos;
+				}
+				$parts[$k] = '0';
+			}
+			else
+			{
+				// Remove left zeros
+				unset ($current_zero_pos);
+				$current_zero_size = 0;
+				$parts[k] = ltrim($part, '0');
+			}
+		}
+
+		$end = isset($largest_zero_pos) ? $largest_zero_pos : 8;
+		$addr = '';
+
+		if ($end > 0)
+		{
+			$addr .= implode(':', array_slice($parts, 0, $end));
+		}
+
+		if ( isset($largest_zero_pos))
+		{
+			$addr .= '::';
+			$addr .= implode(':', array_slice($parts, $largest_zero_pos + $largest_zero_size));
+		}
+
+		return $addr;
+	}
+
+	protected function __construct($address)
+	{
+		if ($address instanceOf Math_BigInteger)
+		{
+			parent::__construct(str_pad($address->abs()->toBytes(), 16, chr(0), STR_PAD_LEFT));
+		}
+		else
+		{
+			parent::__construct($address);
+		}
 	}
 
 	// TODO Add support for NAT64 addresses

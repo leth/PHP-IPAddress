@@ -45,6 +45,26 @@ class IPv4_Address_Core extends IP_Address
 		return new IPv4_Address($address);
 	}
 
+	public static function pad($address)
+	{
+		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+		$parts = array();
+		foreach (explode('.', $address) as $part)
+		{
+			$parts[] = str_pad($part, 3, '0', STR_PAD_LEFT);
+		}
+		return implode('.', $parts);
+	}
+
+	public static function compact($address)
+	{
+		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+		// Lazy way of doing it...
+		return long2ip(ip2long($address));
+	}
+
 	protected function __construct($address)
 	{
 		if (is_int($address))
@@ -151,6 +171,7 @@ class IPv4_Address_Core extends IP_Address
 
 		return IPv4_Address::factory(long2ip($res));
 	}
+	
 	// TODO Check this
 	// public function as_IPv6_Address()
 	// {
