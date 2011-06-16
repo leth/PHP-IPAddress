@@ -68,6 +68,16 @@ abstract class IP_Network_Address_Core
 	 */
 	public static function factory($address, $cidr = NULL)
 	{
+		if ($address instanceof IP_Network_Address)
+		{
+			if ($cidr !== NULL AND $cidr !== $address->cidr)
+			{
+				$class = get_class($address);
+				return new $class($address->address, $cidr);
+			}
+			return $address;
+		}
+		
 		if ($cidr === NULL)
 		{
 			$parts = explode('/', $address, 2);
@@ -86,12 +96,15 @@ abstract class IP_Network_Address_Core
 			$cidr = intval($cidr);
 		}
 
-		$ip = IP_Address::factory($address);
+		if (! $ip instanceof IP_Address)
+		{
+			$ip = IP_Address::factory($address);
+		}
 
 		if ($ip instanceof IPv4_Address)
-			return IPv4_Network_Address::factory($ip, $cidr);
+			return new IPv4_Network_Address($ip, $cidr);
 		elseif ($ip instanceof IPv6_Address)
-			return IPv6_Network_Address::factory($ip, $cidr);
+			return new IPv6_Network_Address($ip, $cidr);
 		else
 			throw new InvalidArgumentException('Unsupported IP_Address type \'' . get_class($ip) . '\'.');
 	}
@@ -119,7 +132,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function __construct(IP_Address $address, $cidr)
 	{
-		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > self::max_subnet)
+		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::max_subnet)
 			throw new InvalidArgumentException("Invalid CIDR '$cidr'. Invalid type or out of range for class ". get_class($this) .".");
 
 		$this->address = $address;
@@ -153,7 +166,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_end()
 	{
-		return $this->get_subnet_mask()->bitwise_xor(self::get_global_netmask())->bitwise_or($this->address);
+		return $this->get_subnet_mask()->bitwise_xor(static::get_global_netmask())->bitwise_or($this->address);
 	}
 
 	/**
@@ -163,7 +176,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_address_count()
 	{
-		return pow(2, self::max_subnet - $this->cidr);
+		return pow(2, static::max_subnet - $this->cidr);
 	}
 
 	public function get_address_in_network($offset, $from_start = NULL)
@@ -240,7 +253,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_subnet_mask()
 	{
-		return self::generate_subnet_mask($this->cidr);
+		return static::generate_subnet_mask($this->cidr);
 	}
 
 	/**

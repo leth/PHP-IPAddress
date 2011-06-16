@@ -26,8 +26,9 @@ class IPv6_Address_Core extends IP_Address
 		if (is_string($address))
 		{
 			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+			{
 				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
-
+			}
 			$address = IPv6_Address::pad($address);
 			$address = pack('H*', str_replace(':', '', $address));
 		}
@@ -105,7 +106,7 @@ class IPv6_Address_Core extends IP_Address
 		// Check that the address is a padded address first - if not, pad it out to full length
 		if (strlen($address) < 39)
 		{
-			$address = self::pad($address);
+			$address = static::pad($address);
 		}
 
 		$parts = explode(':', $address);
@@ -203,7 +204,7 @@ class IPv6_Address_Core extends IP_Address
 		$this->check_types($other);
 		$left = new Math_BigInteger($this->address, 256);
 		$right = new Math_BigInteger($other->address, 256);
-		return IPv6_Address::factory($left->add($right));
+		return new IPv6_Address($left->add($right));
 	}
 
 	/**
@@ -217,7 +218,7 @@ class IPv6_Address_Core extends IP_Address
 		$this->check_types($other);
 		$left = new Math_BigInteger($this->address, 256);
 		$right = new Math_BigInteger($other->address, 256);
-		return IPv6_Address::factory($left->subtract($right));
+		return new IPv6_Address($left->subtract($right));
 	}
 
 	/**
@@ -285,7 +286,7 @@ class IPv6_Address_Core extends IP_Address
 				break;
 		}
 
-		return IPv6_Address::factory($result);
+		return new IPv6_Address($result);
 	}
 
 	public function compare_to(IP_Address $other)

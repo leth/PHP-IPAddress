@@ -26,7 +26,7 @@ Supports both IPv4 and IPv6 schemes.
 	
 	// Returns an instance of IPv6Address
 	$ip = IP_Address::factory('::1');
-	$ip = IPv6Address::factory('::1');
+	$ip = IPv6_Address::factory('::1');
 	
 	/**
 	 * IP_Network_Address::factory(...) will also attempt to guess protocol versions

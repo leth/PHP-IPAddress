@@ -1,25 +1,25 @@
 <?php
 
-class TestingIPv4Address extends IPv4Address
+class Testing_IPv4_Address extends IPv4_Address
 {
 	public static function factory($address)
 	{
-		return new TestingIPv4Address($address);
+		return new Testing_IPv4_Address($address);
 	}
 	
 	public function call_bitwise_operation($flag, IP_Address $other = NULL)
 	{
-		$this->bitwiseOperation($flag, $other);
+		$this->bitwise_operation($flag, $other);
 	}
 }
 
 /**
- * Tests for the IPv4Address Class
+ * Tests for the IPv4_Address Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
+class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 {
 
 	public function providerFactory()
@@ -37,19 +37,18 @@ class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 			array(new Math_BigInteger(2),'0.0.0.2'),
 			array(new Math_BigInteger(3),'0.0.0.3'),
 			array(new Math_BigInteger(256), '0.0.1.0'),
-			
 		);
 	}
 
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($input, $output)
+	public function testFactory($input, $expected)
 	{
-		$instance = IPv4Address::factory($input);
+		$instance = IPv4_Address::factory($input);
 		
 		$this->assertNotNull($instance);
-		$this->assertEquals($output, (string) $instance);
+		$this->assertEquals($expected, (string) $instance);
 	}
 	
 	public function providerFactoryException()
@@ -74,7 +73,7 @@ class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactoryException($input)
 	{
-		IPv4Address::factory($input);
+		IPv4_Address::factory($input);
 	}
 	
 	public function providerBitwise()
@@ -93,13 +92,13 @@ class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
 	{
-		$ip1 = IPv4Address::factory($ip1);
-		$ip2 = IPv4Address::factory($ip2);
+		$ip1 = IPv4_Address::factory($ip1);
+		$ip2 = IPv4_Address::factory($ip2);
 		
-		$this->assertEquals($ex_and, (string) $ip1->bitwiseAND($ip2));
-		$this->assertEquals($ex_or , (string) $ip1->bitwiseOR($ip2));
-		$this->assertEquals($ex_xor, (string) $ip1->bitwiseXOR($ip2));
-		$this->assertEquals($ex_not, (string) $ip1->bitwiseNOT());
+		$this->assertEquals($ex_and, (string) $ip1->bitwise_and($ip2));
+		$this->assertEquals($ex_or , (string) $ip1->bitwise_or($ip2));
+		$this->assertEquals($ex_xor, (string) $ip1->bitwise_xor($ip2));
+		$this->assertEquals($ex_not, (string) $ip1->bitwise_not());
 	}
 	
 	// TODO Check this
@@ -115,7 +114,7 @@ class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 	//  */
 	// public function testAsIPv6Address($v4, $v6)
 	// {
-	// 	$ip = IPv4Address::factory($v4);
+	// 	$ip = IPv4_Address::factory($v4);
 	// 	
 	// 	$this->assertEquals($v6, (string) $ip->asIPv6Address());
 	// }
@@ -123,7 +122,7 @@ class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 	public function testBitwiseException()
 	{
 		
-		$ip = TestingIPv4Address::factory('0.0.0.1');
+		$ip = Testing_IPv4_Address::factory('0.0.0.1');
 		
 		try
 		{
@@ -152,7 +151,7 @@ class IPv4Address_Test_Core extends PHPUnit_Framework_TestCase
 		
 		for ($i=0; $i < count($data); $i++) { 
 			for ($j=0; $j < 3; $j++)
-				$data[$i][$j] = IPv4Address::factory($data[$i][$j]);
+				$data[$i][$j] = IPv4_Address::factory($data[$i][$j]);
 		}
 		
 		return $data;
