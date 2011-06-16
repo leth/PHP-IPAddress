@@ -1,25 +1,25 @@
 <?php
 
-class TestingIPv6Address extends IPv6Address
+class TestingIPv6_Address extends IPv6_Address
 {
 	public static function factory($address)
 	{
-		return new TestingIPv6Address($address);
+		return new TestingIPv6_Address($address);
 	}
 	
 	public function call_bitwise_operation($flag, IP_Address $other = NULL)
 	{
-		$this->bitwiseOperation($flag, $other);
+		$this->bitwise_operation($flag, $other);
 	}
 }
 
 /**
- * Tests for the IPv6Address Class
+ * Tests for the IPv6_Address Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
+class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 {
 
 	public function providerFactory()
@@ -42,7 +42,7 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactory($input, $output)
 	{
-		$instance = IPv6Address::factory($input);
+		$instance = IPv6_Address::factory($input);
 		
 		$this->assertNotNull($instance);
 		$this->assertEquals($output, (string) $instance);
@@ -70,7 +70,7 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactoryException($input)
 	{
-		IPv6Address::factory($input);
+		IPv6_Address::factory($input);
 	}
 	
 	public function providerAddSubtract()
@@ -86,7 +86,7 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 		
 		for ($i=0; $i < count($data); $i++)
 			for ($j=0; $j < count($data[$i]); $j++)
-				$data[$i][$j] = IPv6Address::factory($data[$i][$j]);
+				$data[$i][$j] = IPv6_Address::factory($data[$i][$j]);
 		
 		return $data;
 	}
@@ -114,8 +114,8 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 		);
 		
 		for ($i=0; $i < count($data); $i++){
-			$data[$i][0] = IPv6Address::factory($data[$i][0]);
-			$data[$i][1] = IPv6Address::factory($data[$i][1]);
+			$data[$i][0] = IPv6_Address::factory($data[$i][0]);
+			$data[$i][1] = IPv6_Address::factory($data[$i][1]);
 		}
 		return $data;
 	}
@@ -140,7 +140,7 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 		
 		for ($i=0; $i < count($data); $i++) { 
 			for ($j=0; $j < 6; $j++) { 
-				$data[$i][$j] = IPv6Address::factory($data[$i][$j]);
+				$data[$i][$j] = IPv6_Address::factory($data[$i][$j]);
 			}
 		}
 		
@@ -152,16 +152,16 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
 	{		
-		$this->assertEquals((string) $ex_and, (string) $ip1->bitwiseAND($ip2));
-		$this->assertEquals((string) $ex_or , (string) $ip1->bitwiseOR($ip2));
-		$this->assertEquals((string) $ex_xor, (string) $ip1->bitwiseXOR($ip2));
-		$this->assertEquals((string) $ex_not, (string) $ip1->bitwiseNOT());
+		$this->assertEquals((string) $ex_and, (string) $ip1->bitwise_and($ip2));
+		$this->assertEquals((string) $ex_or , (string) $ip1->bitwise_or($ip2));
+		$this->assertEquals((string) $ex_xor, (string) $ip1->bitwise_xor($ip2));
+		$this->assertEquals((string) $ex_not, (string) $ip1->bitwise_not());
 	}
 	
 	public function testBitwiseException()
 	{
 		
-		$ip = TestingIPv6Address::factory('::1');
+		$ip = TestingIPv6_Address::factory('::1');
 		
 		try
 		{
@@ -189,7 +189,7 @@ class IPv6Address_Test_Core extends PHPUnit_Framework_TestCase
 	//  */
 	// public function test_as_IPv4_Address($v6, $v4 = NULL)
 	// {
-	// 	$ip = new IPv6Address($v6);
+	// 	$ip = new IPv6_Address($v6);
 	// 	
 	// 	if ($v4 === NULL)
 	// 		$this->assertFalse($ip->isEncodedIPv4Address());

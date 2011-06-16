@@ -30,6 +30,7 @@ class IPv4_Address_Core extends IP_Address
 		}
 		else if ($address instanceOf Math_BigInteger)
 		{
+			// TODO range check
 			$address = intval($address->toString());
 		}
 		else if (is_int($address))

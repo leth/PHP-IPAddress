@@ -6,10 +6,10 @@
  * @package default
  * @author Marcus Cobden
  */
-class IPv6_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
+class IPv6_Network_Address_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_global_netmask()
 	{
-		$this->assertEquals('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', (string) IPv6_Network_Address::getGlobalNetmask());
+		$this->assertEquals('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', (string) IPv6_Network_Address::get_global_netmask());
 	}
 }

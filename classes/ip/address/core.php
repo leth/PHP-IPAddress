@@ -42,12 +42,22 @@ abstract class IP_Address_Core
 	 */
 	public static function factory($address)
 	{
-		if (is_int($address) OR is_string($address) AND strpos($address, '.') !== FALSE)
+		if ($address instanceof IP_Address)
+		{
+			return $address;
+		}
+		elseif (is_int($address) OR (is_string($address) AND strpos($address, '.')) !== FALSE)
+		{
 			return IPv4_Address::factory($address);
-		elseif ($address instanceof Math_BigInteger OR strpos($address, ':') !== FALSE)
+		}
+		elseif ($address instanceof Math_BigInteger OR (is_string($address) AND strpos($address, ':') !== FALSE))
+		{
 			return IPv6_Address::factory($address);
+		}
 		else
+		{
 			throw new InvalidArgumentException('Unable to guess IP address type from \''.$address.'\'.');
+		}
 	}
 
 	/**

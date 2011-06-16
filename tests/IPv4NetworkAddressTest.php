@@ -6,7 +6,7 @@
  * @package default
  * @author Marcus Cobden
  */
-class IPv4_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
+class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 {
 
 	public function providerSubnet()
@@ -64,13 +64,13 @@ class IPv4_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 		$net = IPv4_Network_Address::factory('0.0.0.0', $cidr);
 		
 		$this->assertEquals($subnet, (string) $net->get_subnet_mask());
-		$this->assertEquals($address_count, $net->get_network_addressCount());
-		$this->assertEquals($network_class, $net->getNetworkClass());
+		$this->assertEquals($address_count, $net->get_network_address_count());
+		$this->assertEquals($network_class, $net->get_network_class());
 	}
 	
 	public function testGlobalNetmask()
 	{
-		$this->assertEquals('255.255.255.255', (string) IPv4_Network_Address::getGlobalNetmask());
+		$this->assertEquals('255.255.255.255', (string) IPv4_Network_Address::get_global_netmask());
 	}
 	
 	

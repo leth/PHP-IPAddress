@@ -12,6 +12,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerFactory()
 	{
 		return array(
+			array(IPv4_Address::factory('127.0.0.1'),  '127.0.0.1',   'IPv4_Address'),
 			array('127.0.0.1',  '127.0.0.1',   'IPv4_Address'),
 			array('127.0.0.0',  '127.0.0.0',   'IPv4_Address'),
 			array('127.0.0.2',  '127.0.0.2',   'IPv4_Address'),

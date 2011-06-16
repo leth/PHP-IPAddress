@@ -1,10 +1,27 @@
 <?php
 
-class IPv4_Network_Address_Tester_Core extends IPv4_Network_Address
+class IP_Address_Tester extends IP_Address
+{
+	public function __construct() {}
+	
+	public function add(IP_Address $other) {}
+	public function subtract(IP_Address $other) {}
+		
+	public function bitwise_and(IP_Address $other) {}
+	public function bitwise_or(IP_Address $other) {}
+	public function bitwise_xor(IP_Address $other) {}
+	public function bitwise_not() {}
+	
+	public function address() { return __CLASS__; }
+	public function compare_to(IP_Address $other) {}
+}
+
+
+class IPv4_Network_Address_Tester extends IPv4_Network_Address
 {
 	public static function factory($address, $cidr)
 	{
-		$ip = IPv4Address::factory($address);
+		$ip = IPv4_Address::factory($address);
 		return new IPv4_Network_Address_Tester($ip, $cidr);
 	}
 	
@@ -14,11 +31,11 @@ class IPv4_Network_Address_Tester_Core extends IPv4_Network_Address
 	}
 }
 
-class IPv6_Network_Address_Tester_Core extends IPv6_Network_Address
+class IPv6_Network_Address_Tester extends IPv6_Network_Address
 {
 	public static function factory($address, $cidr)
 	{
-		$ip = IPv6Address::factory($address);
+		$ip = IPv6_Address::factory($address);
 		return new IPv6_Network_Address_Tester($ip, $cidr);
 	}
 	public function test_check_ip_version($other)
@@ -33,16 +50,18 @@ class IPv6_Network_Address_Tester_Core extends IPv6_Network_Address
  * @package default
  * @author Marcus Cobden
  */
-class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
+class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 {
 	public function providerFactory()
 	{
 		return array(
 			array('127.0.0.1/16', NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array('127.0.0.1', 16, '127.0.0.1', 16, '127.0.0.0'),
+			array(IP_Network_Address::factory('127.0.0.1/16'), NULL, '127.0.0.1', 16, '127.0.0.0'),
+			array(IP_Network_Address::factory('127.0.0.1/16'), 10, '127.0.0.1', 10, '127.0.0.0'),
 
-			array('::1/16', NULL, IPv6Address::padV6AddressString('::1'), 16, IPv6Address::padV6AddressString('::0')),
-			array('::1', 16, IPv6Address::padV6AddressString('::1'), 16, IPv6Address::padV6AddressString('::0')),
+			array('::1/16', NULL, IPv6_Address::pad('::1'), 16, IPv6_Address::pad('::0')),
+			array('::1', 16, IPv6_Address::pad('::1'), 16, IPv6_Address::pad('::0')),
 		);
 	}
 	
@@ -53,9 +72,27 @@ class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 	{
 		$ip = IP_Network_Address::factory($address, $cidr);
 		
-		$this->assertEquals($expected_cidr, $ip->getCIDR());
-		$this->assertEquals($expected_address, (string) $ip->getAddress());
+		$this->assertEquals($expected_cidr, $ip->get_cidr());
+		$this->assertEquals($expected_address, (string) $ip->get_address());
 		$this->assertEquals($expected_subnet, (string) $ip->get_network_start());
+	}
+	
+	
+	public function providerFactoryThrowsException()
+	{
+		return array(
+			array(new IP_Address_Tester(), 1),
+			array(new IP_Address_Tester(), 3)
+		);
+	}
+	
+	/**
+	 * @dataProvider providerFactoryThrowsException
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testFactoryThrowsException($address, $cidr)
+	{
+		IP_Network_Address::factory($address, $cidr);
 	}
 	
 	public function providerFactoryException()
@@ -132,7 +169,7 @@ class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testAddressInNetwork($network, $index, $from_start, $expected)
 	{
-		$address = $network->getAddressInNetwork($index, $from_start);
+		$address = $network->get_address_in_network($index, $from_start);
 		$this->assertEquals($expected, (string) $address);
 	}
 
@@ -231,8 +268,8 @@ class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testSubnets($sub1, $sub2, $shares, $encloses)
 	{
-		$this->assertEquals($shares, $sub1->sharesSubnetSpace($sub2));
-		$this->assertEquals($encloses, $sub1->enclosesSubnet($sub2));
+		$this->assertEquals($shares, $sub1->shares_subnet_space($sub2));
+		$this->assertEquals($encloses, $sub1->encloses_subnet($sub2));
 	}
 	
 	public function providerEnclosesAddress()
@@ -262,7 +299,7 @@ class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testEnclosesAddress($subnet, $address, $expected)
 	{
-		$this->assertEquals($expected, $subnet->enclosesAddress($address));
+		$this->assertEquals($expected, $subnet->encloses_address($address));
 	}
 	
 	public function provideNetworkIdentifiers()
@@ -287,8 +324,8 @@ class IP_Network_Address_Test_Core extends PHPUnit_Framework_TestCase
 	 */
 	public function testNetworkIdentifiers($subnet, $expected)
 	{
-		$this->assertEquals($expected, $subnet->isNetworkIdentifier());
-		$this->assertTrue($subnet->getNetworkIdentifier()->isNetworkIdentifier());
+		$this->assertEquals($expected, $subnet->is_network_identifier());
+		$this->assertTrue($subnet->get_network_identifier()->is_network_identifier());
 	}
 	
 	public function test__toString()
