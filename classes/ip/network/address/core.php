@@ -25,8 +25,8 @@
  */
 abstract class IP_Network_Address_Core
 {
-	const ip_version = -1;
-	const max_subnet = -1;
+	const IP_VERSION = -1;
+	const MAX_SUBNET = -1;
 
 	/**
 	 * The IP Address
@@ -96,7 +96,7 @@ abstract class IP_Network_Address_Core
 			$cidr = intval($cidr);
 		}
 
-		if (! $ip instanceof IP_Address)
+		if ( ! $ip instanceof IP_Address)
 		{
 			$ip = IP_Address::factory($address);
 		}
@@ -106,7 +106,7 @@ abstract class IP_Network_Address_Core
 		elseif ($ip instanceof IPv6_Address)
 			return new IPv6_Network_Address($ip, $cidr);
 		else
-			throw new InvalidArgumentException('Unsupported IP_Address type \'' . get_class($ip) . '\'.');
+			throw new InvalidArgumentException('Unsupported IP_Address type \''.get_class($ip).'\'.');
 	}
 
 	/**
@@ -132,8 +132,8 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function __construct(IP_Address $address, $cidr)
 	{
-		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::max_subnet)
-			throw new InvalidArgumentException("Invalid CIDR '$cidr'. Invalid type or out of range for class ". get_class($this) .".");
+		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::MAX_SUBNET)
+			throw new InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
 
 		$this->address = $address;
 		$this->cidr = $cidr;
@@ -176,7 +176,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_address_count()
 	{
-		return pow(2, static::max_subnet - $this->cidr);
+		return pow(2, static::MAX_SUBNET - $this->cidr);
 	}
 
 	public function get_address_in_network($offset, $from_start = NULL)
@@ -294,7 +294,7 @@ abstract class IP_Network_Address_Core
 	{
 		$this->check_types($other);
 
-		if($this->cidr > $other->cidr)
+		if ($this->cidr > $other->cidr)
 			return false;
 
 		return $this->shares_subnet_space($other);
@@ -306,7 +306,7 @@ abstract class IP_Network_Address_Core
 	 * @param IP_Address $ip IP to test against.
 	 * @return boolean
 	 */
-	function encloses_address(IP_Address $ip)
+	public function encloses_address(IP_Address $ip)
 	{
 		$this->check_ip_version($ip);
 
@@ -367,6 +367,6 @@ abstract class IP_Network_Address_Core
 	 */
 	public function __toString()
 	{
-		return $this->address . '/' . $this->cidr;
+		return $this->address.'/'.$this->cidr;
 	}
 }

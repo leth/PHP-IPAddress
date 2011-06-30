@@ -19,12 +19,12 @@
 
 class IPv4_Network_Address_Core extends IP_Network_Address
 {
-	const ip_version = 4;
-	const max_subnet = 32;
+	const IP_VERSION = 4;
+	const MAX_SUBNET = 32;
 
 	public static function generate_subnet_mask($subnet)
 	{
-		return IPv4_Address::factory(join('.', unpack('C*', pack('N', PHP_INT_MAX << (static::max_subnet - $subnet)))));
+		return IPv4_Address::factory(join('.', unpack('C*', pack('N', PHP_INT_MAX << (static::MAX_SUBNET - $subnet)))));
 	}
 
 	/**
@@ -35,7 +35,7 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	 */
 	public static function get_global_netmask()
 	{
-		return static::generate_subnet_mask(static::max_subnet);
+		return static::generate_subnet_mask(static::MAX_SUBNET);
 	}
 
 	/**
@@ -43,7 +43,7 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	 *
 	 * @return IPv4_Network_Address TODO
 	 */
-	function get_network_address()
+	public function get_network_address()
 	{
 		return $this->get_network_start();
 	}
@@ -52,20 +52,20 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	{
 		if ($this->cidr > 24)
 		{
-			return '1/' . pow(2, $this->cidr - 24) . ' C';
+			return '1/'.pow(2, $this->cidr - 24).' C';
 		}
-		else if ($this->cidr > 16)
+		elseif ($this->cidr > 16)
 		{
-			return pow(2, 24 - $this->cidr). ' C';
+			return pow(2, 24 - $this->cidr).' C';
 
 		}
-		else if ($this->cidr > 8)
+		elseif ($this->cidr > 8)
 		{
-			return pow(2, 16 - $this->cidr). ' B';
+			return pow(2, 16 - $this->cidr).' B';
 		}
 		else
 		{
-			return pow(2, 8 - $this->cidr) . ' A';
+			return pow(2, 8 - $this->cidr).' A';
 		}
 	}
 
@@ -74,7 +74,8 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	 *
 	 * @return IPv4_Network_Address
 	 */
-	function get_broadcast_address() {
+	public function get_broadcast_address()
+	{
 		return $this->get_network_end();
 	}
 
@@ -82,7 +83,7 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	// public function as_ipv6_network_address()
 	// {
 	// 	$address = $this->address->as_ipv6_address();
-	// 	$cidr = (IPv6_Network_Address::max_subnet - IPv4_Network_Address::max_subnet) + $this->cidr;
+	// 	$cidr = (IPv6_Network_Address::MAX_SUBNET - IPv4_Network_Address::MAX_SUBNET) + $this->cidr;
 	// 	return new IPv6_Network_Address($address, $cidr);
 	// }
 }

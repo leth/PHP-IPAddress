@@ -24,7 +24,7 @@
  */
 abstract class IP_Address_Core
 {
-	const ip_version = -1;
+	const IP_VERSION = -1;
 
 	/**
 	 * Internal representation of the address. Format may vary.

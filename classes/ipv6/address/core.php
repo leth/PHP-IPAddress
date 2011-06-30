@@ -19,13 +19,13 @@
 
 class IPv6_Address_Core extends IP_Address
 {
-	const ip_version = 6;
+	const IP_VERSION = 6;
 
 	public static function factory($address)
 	{
 		if (is_string($address))
 		{
-			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+			if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 			{
 				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
 			}
@@ -139,7 +139,7 @@ class IPv6_Address_Core extends IP_Address
 				// Remove left zeros
 				unset ($current_zero_pos);
 				$current_zero_size = 0;
-				$parts[k] = ltrim($part, '0');
+				$parts[$k] = ltrim($part, '0');
 			}
 		}
 
@@ -151,7 +151,7 @@ class IPv6_Address_Core extends IP_Address
 			$addr .= implode(':', array_slice($parts, 0, $end));
 		}
 
-		if ( isset($largest_zero_pos))
+		if (isset($largest_zero_pos))
 		{
 			$addr .= '::';
 			$addr .= implode(':', array_slice($parts, $largest_zero_pos + $largest_zero_size));
@@ -179,17 +179,17 @@ class IPv6_Address_Core extends IP_Address
 	// 	$address = (string) $this;
 	// 	return preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address) != 0;
 	// }
-	//
+	// 
 	// public function as_ipv4_address()
 	// {
 	// 	$address = (string) $this;
 	// 	$match_count = preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address, $matches);
-	//
+	// 
 	// 	if ($match_count == 0)
 	// 		throw new Exception('Not an IPv4 Address encoded in an IPv6 Address');
-	//
+	// 
 	// 	$address = join('.', array_map('intval', explode(':', $matches[1])));
-	//
+	// 
 	// 	return IPv4_Address::factory($address);
 	// }
 

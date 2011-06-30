@@ -19,8 +19,8 @@
 
 class IPv6_Network_Address_Core extends IP_Network_Address
 {
-	const ip_version = 6;
-	const max_subnet = 128;
+	const IP_VERSION = 6;
+	const MAX_SUBNET = 128;
 
 	public static function generate_subnet_mask($subnet)
 	{
@@ -40,6 +40,6 @@ class IPv6_Network_Address_Core extends IP_Network_Address
 	 */
 	public static function get_global_netmask()
 	{
-		return static::generate_subnet_mask(static::max_subnet);
+		return static::generate_subnet_mask(static::MAX_SUBNET);
 	}
 }

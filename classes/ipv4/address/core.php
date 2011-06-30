@@ -19,21 +19,21 @@
 
 class IPv4_Address_Core extends IP_Address
 {
-	const ip_version = 4;
+	const IP_VERSION = 4;
 
 	public static function factory($address)
 	{
 		if (is_string($address))
 		{
-			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+			if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
 				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
 		}
-		else if ($address instanceOf Math_BigInteger)
+		elseif ($address instanceOf Math_BigInteger)
 		{
 			// TODO range check
 			$address = intval($address->toString());
 		}
-		else if (is_int($address))
+		elseif (is_int($address))
 		{
 			if ($address < 0)
 				throw new InvalidArgumentException("Argument out of range.");
@@ -49,7 +49,7 @@ class IPv4_Address_Core extends IP_Address
 	public static function pad($address)
 	{
 		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+			throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
 		$parts = array();
 		foreach (explode('.', $address) as $part)
 		{
@@ -61,17 +61,18 @@ class IPv4_Address_Core extends IP_Address
 	public static function compact($address)
 	{
 		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+			throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
 		// Lazy way of doing it...
 		return long2ip(ip2long($address));
 	}
 
 	protected function __construct($address)
 	{
-		if (is_int($address))
-			parent::__construct($address);
-		else
-			parent::__construct(ip2long($address));
+		if ( ! is_int($address))
+		{
+			$address = ip2long($address);
+		}
+		parent::__construct($address);
 	}
 
 	/**
@@ -176,9 +177,9 @@ class IPv4_Address_Core extends IP_Address
 	// TODO Check this
 	// public function as_IPv6_Address()
 	// {
-	// 	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
-	//
-	// 	return IPv6Address::factory($address);
+	//  	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
+	// 
+	//  	return IPv6Address::factory($address);
 	// }
 
 	public function compare_to(IP_Address $other)
