@@ -48,7 +48,10 @@ abstract class IP_Network_Address_Core
 	 * @param int $cidr The CIDR number
 	 * @return IP_Address An IP address representing the mask.
 	 */
-	public static abstract function generate_subnet_mask($cidr);
+	public static function generate_subnet_mask($cidr)
+	{
+		throw new Exception(__METHOD__.' not implemented in subclass of '.__CLASS__);
+	}
 
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
@@ -56,8 +59,10 @@ abstract class IP_Network_Address_Core
 	 * @return IP_Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
-	public static abstract function get_global_netmask();
-
+	public static function get_global_netmask()
+	{
+		throw new Exception(__METHOD__.' not implemented in subclass of '.__CLASS__);
+	}
 
 	/**
 	 * Creates an IP_Network_Address for the supplied string
@@ -96,17 +101,17 @@ abstract class IP_Network_Address_Core
 			$cidr = intval($cidr);
 		}
 
-		if ( ! $ip instanceof IP_Address)
+		if ( ! $address instanceof IP_Address)
 		{
-			$ip = IP_Address::factory($address);
+			$address = IP_Address::factory($address);
 		}
 
-		if ($ip instanceof IPv4_Address)
-			return new IPv4_Network_Address($ip, $cidr);
-		elseif ($ip instanceof IPv6_Address)
-			return new IPv6_Network_Address($ip, $cidr);
+		if ($address instanceof IPv4_Address)
+			return new IPv4_Network_Address($address, $cidr);
+		elseif ($address instanceof IPv6_Address)
+			return new IPv6_Network_Address($address, $cidr);
 		else
-			throw new InvalidArgumentException('Unsupported IP_Address type \''.get_class($ip).'\'.');
+			throw new InvalidArgumentException('Unsupported IP_Address type \''.get_class($address).'\'.');
 	}
 
 	/**

@@ -36,6 +36,10 @@ class IPv6_Address_Core extends IP_Address
 		{
 			// Do nothing
 		}
+		elseif (is_int($address))
+		{
+			$address = new Math_BigInteger($address);
+		}
 		else
 		{
 			throw new InvalidArgumentException('Unsupported argument type.');
