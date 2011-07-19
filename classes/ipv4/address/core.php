@@ -24,10 +24,17 @@ class IPv4_Address_Core extends IP_Address
 
 	public static function factory($address)
 	{
-		if (is_string($address))
+		if ($address instanceof IPv4_Address)
 		{
-			if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
+			return $address;
+		}
+		elseif (is_string($address))
+		{
+			$tmp = filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+			if ($tmp === FALSE)
 				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
+
+			$address = $tmp;
 		}
 		elseif ($address instanceOf Math_BigInteger)
 		{
@@ -77,25 +84,21 @@ class IPv4_Address_Core extends IP_Address
 		parent::__construct($address);
 	}
 
-	/**
-	 * Add the given value to this address.
-	 *
-	 * @param integer $value
-	 * @return IP_Address An address representing the result of the operation.
-	 */
 	public function add($value)
 	{
+		if ($value instanceof Math_BigInteger)
+		{
+			$value = intval( (string) $value);
+		}
 		return IPv4_Address::factory($this->address + $value);
 	}
 
-	/**
-	 * Subtract the given value from this address.
-	 *
-	 * @param integer $value
-	 * @return IP_Address An address representing the result of the operation.
-	 */
 	public function subtract($value)
 	{
+		if ($value instanceof Math_BigInteger)
+		{
+			$value = intval( (string) $value);
+		}
 		return IPv4_Address::factory($this->address - $value);
 	}
 

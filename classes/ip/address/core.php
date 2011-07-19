@@ -88,6 +88,7 @@ abstract class IP_Address_Core
 	/**
 	 * Add the given value to this address.
 	 *
+	 * @param integer|Math_BigInteger $value
 	 * @return IP_Address An address representing the result of the operation.
 	 */
 	public abstract function add($value);
@@ -95,6 +96,7 @@ abstract class IP_Address_Core
 	/**
 	 * Subtract the given value from this address.
 	 *
+	 * @param integer|Math_BigInteger $value
 	 * @return IP_Address An address representing the result of the operation.
 	 */
 	public abstract function subtract($value);

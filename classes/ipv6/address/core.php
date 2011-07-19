@@ -24,7 +24,11 @@ class IPv6_Address_Core extends IP_Address
 
 	public static function factory($address)
 	{
-		if (is_string($address))
+		if ($address instanceof IPv6_Address)
+		{
+			return $address;
+		}
+		elseif (is_string($address))
 		{
 			if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 			{
@@ -198,12 +202,6 @@ class IPv6_Address_Core extends IP_Address
 	// 	return IPv4_Address::factory($address);
 	// }
 
-	/**
-	 * Add the given value to this address.
-	 *
-	 * @param integer|Math_BigInteger $value
-	 * @return IP_Address An address representing the result of the operation.
-	 */
 	public function add($value)
 	{
 		$left = new Math_BigInteger($this->address, 256);
@@ -211,12 +209,6 @@ class IPv6_Address_Core extends IP_Address
 		return new IPv6_Address($left->add($right));
 	}
 
-	/**
-	 * Subtract the given value from this address.
-	 *
-	 * @param integer|Math_BigInteger $value
-	 * @return IP_Address An address representing the result of the operation.
-	 */
 	public function subtract($value)
 	{
 		$left = new Math_BigInteger($this->address, 256);

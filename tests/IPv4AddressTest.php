@@ -57,7 +57,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 			array('256.0.0.1'),
 			array('127.-1.0.1'),
 			array('127.128.256.1'),
-			array(-12345),
+			array(new Math_BigInteger('99999999999999999')),
 			array(123.45),
 			array(-123.45),
 			array('cake'),
