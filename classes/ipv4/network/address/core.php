@@ -24,7 +24,15 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 
 	public static function generate_subnet_mask($subnet)
 	{
-		return IPv4_Address::factory(join('.', unpack('C*', pack('N', PHP_INT_MAX << (static::MAX_SUBNET - $subnet)))));
+		$mask = 0;
+		// left shift operates over arch-specific integer sizes,
+		// so we have to special case 32 bit shifts
+		if ($subnet > 0)
+		{
+			$mask  = (~$mask) << (static::MAX_SUBNET - $subnet);
+		}
+		
+		return IPv4_Address::factory(implode('.', unpack('C4', pack('N', $mask))));
 	}
 
 	/**

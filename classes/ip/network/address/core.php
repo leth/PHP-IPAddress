@@ -171,7 +171,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_end()
 	{
-		return $this->get_subnet_mask()->bitwise_xor(static::get_global_netmask())->bitwise_or($this->address);
+		return $this->get_subnet_mask()->bitwise_not()->bitwise_or($this->address);
 	}
 
 	/**
