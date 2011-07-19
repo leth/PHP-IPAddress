@@ -343,7 +343,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function check_ip_version(IP_Address $other)
 	{
-		if ($this->ip_version != $other->ip_version)
+		if ($other::IP_VERSION !== static::IP_VERSION)
 			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 
