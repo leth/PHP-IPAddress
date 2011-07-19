@@ -1,5 +1,7 @@
 <?php
 
+error_reporting(E_ALL | E_STRICT);
+
 define('SYSPATH','');
 
 function autoload($class_name) {
