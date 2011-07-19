@@ -24,7 +24,9 @@
  */
 abstract class IP_Address_Core
 {
-	const ip_version = -1;
+	const IP_VERSION = -1;
+	const FORMAT_FULL = 0;
+	const FORMAT_COMPACT = 1;
 
 	protected $_db;
 
@@ -91,20 +93,20 @@ abstract class IP_Address_Core
 	}
 	
 	/**
-	 * Add the given address to this one.
+	 * Add the given value to this address.
 	 *
-	 * @param IP_Address $other The other operand.
+	 * @param integer|Math_BigInteger $value
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function add(IP_Address $other);
+	public abstract function add($value);
 
 	/**
-	 * Subtract the given address from this one.
+	 * Subtract the given value from this address.
 	 *
-	 * @param IP_Address $other The other operand.
+	 * @param integer|Math_BigInteger $value
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function subtract(IP_Address $other);
+	public abstract function subtract($value);
 
 	/**
 	 * Compute the bitwise AND of this address and another.
@@ -152,10 +154,12 @@ abstract class IP_Address_Core
 	 */
 	public function __toString()
 	{
-		if(isset($this->_db))
-			return $this->_db->quote($this->address());
-		else
-			return $this->address();
+		$out = $this->format(IP_Address::FORMAT_COMPACT);
+		if (isset($this->_db))
+		{
+			return $out = $this->_db->quote($out);
+		}
+		return $out;
 	}
 
 	/**
@@ -163,7 +167,7 @@ abstract class IP_Address_Core
 	 *
 	 * @return string This IP address expressed as a string.
 	 */
-	public abstract function address();
+	public abstract function format($mode);
 
 	/**
 	 * Check that this instance and the supplied instance are of the same class.

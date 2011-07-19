@@ -25,8 +25,8 @@
  */
 abstract class IP_Network_Address_Core
 {
-	const ip_version = -1;
-	const max_subnet = -1;
+	const IP_VERSION = -1;
+	const MAX_SUBNET = -1;
 
 	/**
 	 * The IP Address
@@ -48,7 +48,10 @@ abstract class IP_Network_Address_Core
 	 * @param int $cidr The CIDR number
 	 * @return IP_Address An IP address representing the mask.
 	 */
-	public static abstract function generate_subnet_mask($cidr);
+	public static function generate_subnet_mask($cidr)
+	{
+		throw new Exception(__METHOD__.' not implemented in subclass of '.__CLASS__);
+	}
 
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
@@ -56,8 +59,10 @@ abstract class IP_Network_Address_Core
 	 * @return IP_Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
-	public static abstract function get_global_netmask();
-
+	public static function get_global_netmask()
+	{
+		throw new Exception(__METHOD__.' not implemented in subclass of '.__CLASS__);
+	}
 
 	/**
 	 * Creates an IP_Network_Address for the supplied string
@@ -96,17 +101,17 @@ abstract class IP_Network_Address_Core
 			$cidr = intval($cidr);
 		}
 
-		if (! $ip instanceof IP_Address)
+		if ( ! $address instanceof IP_Address)
 		{
-			$ip = IP_Address::factory($address);
+			$address = IP_Address::factory($address);
 		}
 
-		if ($ip instanceof IPv4_Address)
-			return new IPv4_Network_Address($ip, $cidr);
-		elseif ($ip instanceof IPv6_Address)
-			return new IPv6_Network_Address($ip, $cidr);
+		if ($address instanceof IPv4_Address)
+			return new IPv4_Network_Address($address, $cidr);
+		elseif ($address instanceof IPv6_Address)
+			return new IPv6_Network_Address($address, $cidr);
 		else
-			throw new InvalidArgumentException('Unsupported IP_Address type \'' . get_class($ip) . '\'.');
+			throw new InvalidArgumentException('Unsupported IP_Address type \''.get_class($address).'\'.');
 	}
 
 	/**
@@ -132,8 +137,8 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function __construct(IP_Address $address, $cidr)
 	{
-		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::max_subnet)
-			throw new InvalidArgumentException("Invalid CIDR '$cidr'. Invalid type or out of range for class ". get_class($this) .".");
+		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::MAX_SUBNET)
+			throw new InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
 
 		$this->address = $address;
 		$this->cidr = $cidr;
@@ -166,7 +171,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_end()
 	{
-		return $this->get_subnet_mask()->bitwise_xor(static::get_global_netmask())->bitwise_or($this->address);
+		return $this->get_subnet_mask()->bitwise_not()->bitwise_or($this->address);
 	}
 
 	/**
@@ -176,7 +181,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_address_count()
 	{
-		return pow(2, static::max_subnet - $this->cidr);
+		return pow(2, static::MAX_SUBNET - $this->cidr);
 	}
 
 	public function get_address_in_network($offset, $from_start = NULL)
@@ -220,9 +225,9 @@ abstract class IP_Network_Address_Core
 		}
 
 		if ($positive AND $from_start)
-			return $point->add($point->factory($offset));
+			return $point->add($offset);
 		else
-			return $point->subtract($point->factory($offset));
+			return $point->subtract($offset);
 	}
 
 	/**
@@ -294,7 +299,7 @@ abstract class IP_Network_Address_Core
 	{
 		$this->check_types($other);
 
-		if($this->cidr > $other->cidr)
+		if ($this->cidr > $other->cidr)
 			return false;
 
 		return $this->shares_subnet_space($other);
@@ -306,7 +311,7 @@ abstract class IP_Network_Address_Core
 	 * @param IP_Address $ip IP to test against.
 	 * @return boolean
 	 */
-	function encloses_address(IP_Address $ip)
+	public function encloses_address(IP_Address $ip)
 	{
 		$this->check_ip_version($ip);
 
@@ -338,7 +343,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function check_ip_version(IP_Address $other)
 	{
-		if ($this->ip_version != $other->ip_version)
+		if ($other::IP_VERSION !== static::IP_VERSION)
 			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 
@@ -367,6 +372,6 @@ abstract class IP_Network_Address_Core
 	 */
 	public function __toString()
 	{
-		return $this->address . '/' . $this->cidr;
+		return $this->address.'/'.$this->cidr;
 	}
 }

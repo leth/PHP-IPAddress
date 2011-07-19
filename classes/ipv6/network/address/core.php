@@ -19,17 +19,28 @@
 
 class IPv6_Network_Address_Core extends IP_Network_Address
 {
-	const ip_version = 6;
-	const max_subnet = 128;
+	const IP_VERSION = 6;
+	const MAX_SUBNET = 128;
 
 	public static function generate_subnet_mask($subnet)
 	{
-		$result = unpack('H*', pack('N*',
-			PHP_INT_MAX << min(32, max(0, 32  - $subnet)),
-			PHP_INT_MAX << min(32, max(0, 64  - $subnet)),
-			PHP_INT_MAX << min(32, max(0, 96  - $subnet)),
-			PHP_INT_MAX << min(32, max(0, 128 - $subnet))));
-		return IPv6_Address::factory(join(':', str_split($result[1], 4)));
+		$masks = array();
+		for ($i=1; $i <= 4; $i++)
+		{
+			// left shift operates over arch-specific integer sizes,
+			// so we have to special case 32 bit shifts
+			$shift = min(32, max(0, 32*$i  - $subnet));
+			if ($shift == 32)
+			{
+				$masks[] = 0;
+			}
+			else
+			{
+				$masks[] = (~0) << $shift;
+			}
+		}
+		$result = unpack('H*', pack('N4', $masks[0], $masks[1], $masks[2], $masks[3]));
+		return IPv6_Address::factory(implode(':', str_split($result[1], 4)));
 	}
 
 	/**
@@ -40,6 +51,6 @@ class IPv6_Network_Address_Core extends IP_Network_Address
 	 */
 	public static function get_global_netmask()
 	{
-		return static::generate_subnet_mask(static::max_subnet);
+		return static::generate_subnet_mask(static::MAX_SUBNET);
 	}
 }

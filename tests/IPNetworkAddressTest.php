@@ -4,22 +4,26 @@ class IP_Address_Tester extends IP_Address
 {
 	public function __construct() {}
 	
-	public function add(IP_Address $other) {}
-	public function subtract(IP_Address $other) {}
+	public function add($value) {}
+	public function subtract($value) {}
 		
 	public function bitwise_and(IP_Address $other) {}
 	public function bitwise_or(IP_Address $other) {}
 	public function bitwise_xor(IP_Address $other) {}
 	public function bitwise_not() {}
 	
-	public function address() { return __CLASS__; }
+	public function format($mode) { return __CLASS__; }
 	public function compare_to(IP_Address $other) {}
 }
 
+class IP_Network_Address_Tester extends IP_Network_Address
+{
+	
+}
 
 class IPv4_Network_Address_Tester extends IPv4_Network_Address
 {
-	public static function factory($address, $cidr)
+	public static function factory($address, $cidr = NULL)
 	{
 		$ip = IPv4_Address::factory($address);
 		return new IPv4_Network_Address_Tester($ip, $cidr);
@@ -33,7 +37,7 @@ class IPv4_Network_Address_Tester extends IPv4_Network_Address
 
 class IPv6_Network_Address_Tester extends IPv6_Network_Address
 {
-	public static function factory($address, $cidr)
+	public static function factory($address, $cidr = NULL)
 	{
 		$ip = IPv6_Address::factory($address);
 		return new IPv6_Network_Address_Tester($ip, $cidr);
@@ -60,8 +64,8 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array(IP_Network_Address::factory('127.0.0.1/16'), NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array(IP_Network_Address::factory('127.0.0.1/16'), 10, '127.0.0.1', 10, '127.0.0.0'),
 
-			array('::1/16', NULL, IPv6_Address::pad('::1'), 16, IPv6_Address::pad('::0')),
-			array('::1', 16, IPv6_Address::pad('::1'), 16, IPv6_Address::pad('::0')),
+			array('::1/16', NULL, '::1', 16, '::0'),
+			array('::1', 16, '::1', 16, '::0'),
 		);
 	}
 	
@@ -112,6 +116,22 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = IP_Network_Address::factory($address, $cidr);
 	}
 	
+	public function providerUnimplementedException()
+	{
+		return array(
+			array('IP_Network_Address_Tester', 'generate_subnet_mask'),
+			array('IP_Network_Address_Tester', 'get_global_netmask'),
+		);
+	}
+	
+	/**
+	 * @expectedException Exception
+	 * @dataProvider providerUnimplementedException
+	 */
+	public function testUnimplementedException($class, $method)
+	{
+		$class::$method(NULL);
+	}
 	
 	public function providerCompare()
 	{
@@ -156,11 +176,21 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array(IP_Network_Address::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
 			array(IP_Network_Address::factory('192.168.1.1/24'), -3, NULL, '192.168.1.252'),
 
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger( 0), NULL, '192.168.1.0'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger( 1), NULL, '192.168.1.1'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger( 0), FALSE, '192.168.1.255'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger(-1), NULL, '192.168.1.254'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger(-2), NULL, '192.168.1.253'),
+			array(IP_Network_Address::factory('192.168.1.1/24'),  0, NULL, '192.168.1.0'),
+			array(IP_Network_Address::factory('192.168.1.1/24'),  1, NULL, '192.168.1.1'),
+			array(IP_Network_Address::factory('192.168.1.1/24'),  0, FALSE, '192.168.1.255'),
+			array(IP_Network_Address::factory('192.168.1.1/24'), -1, NULL, '192.168.1.254'),
+			array(IP_Network_Address::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
+
+			array(IP_Network_Address::factory('10.13.1.254/24'), 0, NULL, '10.13.1.0'),
+			array(IP_Network_Address::factory('10.13.1.254/24'), 1, NULL, '10.13.1.1'),
+			array(IP_Network_Address::factory('10.13.1.254/24'), 0, FALSE, '10.13.1.255'),
+			array(IP_Network_Address::factory('10.13.1.254/24'), -1, NULL, '10.13.1.254'),
+
+			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger( 0), NULL, '10.13.1.0'),
+			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger( 1), NULL, '10.13.1.1'),
+			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger( 0), FALSE, '10.13.1.255'),
+			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger(-1), NULL, '10.13.1.254'),
 		);
 	}
 	
@@ -185,7 +215,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 	
-	public function providerCheck_ip_versionFail()
+	public function providerCheck_ip_version_fail()
 	{
 		list(list($a4, $b4, $a6, $b6)) = $this->providerCheck_ip_version();
 		return array(
@@ -202,9 +232,9 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @dataProvider providerCheck_ip_versionFail
+	 * @dataProvider providerCheck_ip_version_fail
 	 */
-	public function test_check_ip_versionFail($left, $right)
+	public function test_check_ip_version_fail($left, $right)
 	{
 		try
 		{
@@ -333,7 +363,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = '192.128.1.1/24';
 		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
 
-		$ip = '0000:0000:0000:0000:0000:0000:0000:0001/24';
+		$ip = '::1/24';
 		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
 	}
 }

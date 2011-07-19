@@ -19,13 +19,18 @@
 
 class IPv6_Address_Core extends IP_Address
 {
-	const ip_version = 6;
+	const IP_VERSION = 6;
+	const FORMAT_ABBREVIATED = 2;
 
 	public static function factory($address)
 	{
-		if (is_string($address))
+		if ($address instanceof IPv6_Address)
 		{
-			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
+			return $address;
+		}
+		elseif (is_string($address))
+		{
+			if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 			{
 				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
 			}
@@ -35,6 +40,10 @@ class IPv6_Address_Core extends IP_Address
 		elseif ($address instanceOf Math_BigInteger)
 		{
 			// Do nothing
+		}
+		elseif (is_int($address))
+		{
+			$address = new Math_BigInteger($address);
 		}
 		else
 		{
@@ -82,7 +91,7 @@ class IPv6_Address_Core extends IP_Address
 			}
 		}
 
-		return join(':', $ippad);
+		return implode(':', $ippad);
 	}
 
 	/**
@@ -139,7 +148,7 @@ class IPv6_Address_Core extends IP_Address
 				// Remove left zeros
 				unset ($current_zero_pos);
 				$current_zero_size = 0;
-				$parts[k] = ltrim($part, '0');
+				$parts[$k] = ltrim($part, '0');
 			}
 		}
 
@@ -151,7 +160,7 @@ class IPv6_Address_Core extends IP_Address
 			$addr .= implode(':', array_slice($parts, 0, $end));
 		}
 
-		if ( isset($largest_zero_pos))
+		if (isset($largest_zero_pos))
 		{
 			$addr .= '::';
 			$addr .= implode(':', array_slice($parts, $largest_zero_pos + $largest_zero_size));
@@ -179,45 +188,31 @@ class IPv6_Address_Core extends IP_Address
 	// 	$address = (string) $this;
 	// 	return preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address) != 0;
 	// }
-	//
+	// 
 	// public function as_ipv4_address()
 	// {
 	// 	$address = (string) $this;
 	// 	$match_count = preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address, $matches);
-	//
+	// 
 	// 	if ($match_count == 0)
 	// 		throw new Exception('Not an IPv4 Address encoded in an IPv6 Address');
-	//
-	// 	$address = join('.', array_map('intval', explode(':', $matches[1])));
-	//
+	// 
+	// 	$address = implode('.', array_map('intval', explode(':', $matches[1])));
+	// 
 	// 	return IPv4_Address::factory($address);
 	// }
 
-	/**
-	 * Add the given address to this one.
-	 *
-	 * @param IP_Address $other The other operand.
-	 * @return IP_Address An address representing the result of the operation.
-	 */
-	public function add(IP_Address $other)
+	public function add($value)
 	{
-		$this->check_types($other);
 		$left = new Math_BigInteger($this->address, 256);
-		$right = new Math_BigInteger($other->address, 256);
+		$right = ($value instanceof Math_BigInteger) ? $value : new Math_BigInteger($value);
 		return new IPv6_Address($left->add($right));
 	}
 
-	/**
-	 * Subtract the given address from this one.
-	 *
-	 * @param IP_Address $other The other operand.
-	 * @return IP_Address An address representing the result of the operation.
-	 */
-	public function subtract(IP_Address $other)
+	public function subtract($value)
 	{
-		$this->check_types($other);
 		$left = new Math_BigInteger($this->address, 256);
-		$right = new Math_BigInteger($other->address, 256);
+		$right = ($value instanceof Math_BigInteger) ? $value : new Math_BigInteger($value);
 		return new IPv6_Address($left->subtract($right));
 	}
 
@@ -300,11 +295,77 @@ class IPv6_Address_Core extends IP_Address
 		else
 			return 0;
 	}
-	public function address()
-	{
-		$tmp = unpack('H*', $this->address);
 
-		return join(':', str_split($tmp[1], 4));
+	public function format($mode)
+	{
+		list(,$hex) = unpack('H*', $this->address);
+		$parts = str_split($hex, 4);
+		
+		switch ($mode) {
+			case IP_Address::FORMAT_FULL:
+				// Do nothing
+				break;
+
+			case IPv6_Address::FORMAT_ABBREVIATED:
+				foreach ($parts as $i => $quad)
+				{
+					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
+				}
+				break;
+
+			case IP_Address::FORMAT_COMPACT:
+				$best_pos   = $zeros_pos = FALSE;
+				$best_count = $zeros_count = 0;
+				foreach ($parts as $i => $quad)
+				{
+					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
+
+					if ($quad == '0000')
+					{
+						if ($zeros_pos === FALSE)
+						{
+							$zeros_pos = $i;
+						}
+						$zeros_count++;
+						
+						if ($zeros_count > $best_count)
+						{
+							$best_count = $zeros_count;
+							$best_pos = $zeros_pos;
+						}
+					}
+					else
+					{
+						$zeros_count = 0;
+						$zeros_pos = FALSE;
+						
+						$parts[$i] = ltrim($quad, '0');
+					}
+				}
+
+				
+				if ($best_pos !== FALSE)
+				{
+					$insert = array(NULL);
+					
+					if ($best_pos == 0 OR $best_pos + $best_count == 8)
+					{
+						$insert[] = NULL;
+						if ($best_count == count($parts))
+						{
+							$best_count--;
+						}
+					}
+					array_splice($parts, $best_pos, $best_count, $insert);
+				}
+				
+				break;
+
+			default:
+				throw new Exception('Unsupported format mode '.$mode);
+		}
+		
+		return implode(':', $parts);
 	}
 
 }

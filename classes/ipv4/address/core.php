@@ -19,24 +19,33 @@
 
 class IPv4_Address_Core extends IP_Address
 {
-	const ip_version = 4;
+	const IP_VERSION = 4;
+	const MAX_IP = '255.255.255.255';
 
 	public static function factory($address)
 	{
-		if (is_string($address))
+		if ($address instanceof IPv4_Address)
 		{
-			if( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
+			return $address;
 		}
-		else if ($address instanceOf Math_BigInteger)
+		elseif (is_string($address))
 		{
-			// TODO range check
+			$tmp = filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
+			if ($tmp === FALSE)
+				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
+
+			$address = $tmp;
+		}
+		elseif ($address instanceOf Math_BigInteger)
+		{
+			if ($address->compare(new Math_BigInteger(pack('N', ip2long(static::MAX_IP)), 256)) > 0)
+				throw new InvalidArgumentException("IP value out of range.");
+			
 			$address = intval($address->toString());
 		}
-		else if (is_int($address))
+		elseif (is_int($address))
 		{
-			if ($address < 0)
-				throw new InvalidArgumentException("Argument out of range.");
+			// Assume the input has come from ip2long
 		}
 		else
 		{
@@ -49,7 +58,7 @@ class IPv4_Address_Core extends IP_Address
 	public static function pad($address)
 	{
 		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+			throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
 		$parts = array();
 		foreach (explode('.', $address) as $part)
 		{
@@ -61,41 +70,36 @@ class IPv4_Address_Core extends IP_Address
 	public static function compact($address)
 	{
 		if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4))
-				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
+			throw new InvalidArgumentException("'$address' is not a valid IPv4 Address.");
 		// Lazy way of doing it...
 		return long2ip(ip2long($address));
 	}
 
 	protected function __construct($address)
 	{
-		if (is_int($address))
-			parent::__construct($address);
-		else
-			parent::__construct(ip2long($address));
+		if ( ! is_int($address))
+		{
+			$address = ip2long($address);
+		}
+		parent::__construct($address);
 	}
 
-	/**
-	 * Add the given address to this one.
-	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
-	 */
-	public function add(IP_Address $other)
+	public function add($value)
 	{
-		$this->check_types($other);
-		return IPv4_Address::factory($this->address + $other->address);
+		if ($value instanceof Math_BigInteger)
+		{
+			$value = intval( (string) $value);
+		}
+		return IPv4_Address::factory($this->address + $value);
 	}
 
-	/**
-	 * Subtract the given address from this one.
-	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
-	 */
-	public function subtract(IP_Address $other)
+	public function subtract($value)
 	{
-		$this->check_types($other);
-		return IPv4_Address::factory($this->address - $other->address);
+		if ($value instanceof Math_BigInteger)
+		{
+			$value = intval( (string) $value);
+		}
+		return IPv4_Address::factory($this->address - $value);
 	}
 
 	/**
@@ -176,9 +180,9 @@ class IPv4_Address_Core extends IP_Address
 	// TODO Check this
 	// public function as_IPv6_Address()
 	// {
-	// 	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
-	//
-	// 	return IPv6Address::factory($address);
+	//  	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
+	// 
+	//  	return IPv6Address::factory($address);
 	// }
 
 	public function compare_to(IP_Address $other)
@@ -188,9 +192,20 @@ class IPv4_Address_Core extends IP_Address
 		return $this->address - $other->address;
 	}
 
-	public function address()
+	public function format($mode)
 	{
-		return long2ip($this->address);
+		switch ($mode) {
+			case IP_Address::FORMAT_COMPACT:
+				return long2ip($this->address);
+			case IP_Address::FORMAT_FULL:
+				$parts = explode('.', long2ip($this->address));
+				foreach ($parts as $i => $octet) {
+					$parts[$i] = str_pad($octet, 3, '0', STR_PAD_LEFT);
+				}
+				return implode('.', $parts);
+			default:
+				throw new Exception('Unsupported format mode '.$mode);
+		}
 	}
 
 

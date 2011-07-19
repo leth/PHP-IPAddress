@@ -6,7 +6,7 @@ class Request_Core extends Kohana_Request {
 	{
 		$request = parent::factory($uri, $cache, $injected_routes);
 		
-		$request->client_ip = IP_Address::factory($request->client_ip);
+		Request::$client_ip = IP_Address::factory(Request::$client_ip);
 		
 		return $request;
 	}

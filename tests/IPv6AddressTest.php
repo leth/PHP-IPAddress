@@ -27,12 +27,15 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array(
 				'::1',
+				'0:0:0:0:0:0:0:1',
 				'0000:0000:0000:0000:0000:0000:0000:0001'),
 			array(
 				'fe80::226:bbff:fe14:7372',
+				'fe80:0:0:0:226:bbff:fe14:7372',
 				'fe80:0000:0000:0000:0226:bbff:fe14:7372'),
 			array(
 				'::ffff:127:0:0:1',
+				'0:0:0:ffff:127:0:0:1',
 				'0000:0000:0000:ffff:0127:0000:0000:0001'),
 		);
 	}
@@ -40,12 +43,14 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($input, $output)
+	public function testFactory($input, $abbr, $full)
 	{
 		$instance = IPv6_Address::factory($input);
 		
 		$this->assertNotNull($instance);
-		$this->assertEquals($output, (string) $instance);
+		$this->assertEquals($input, $instance->format(IP_Address::FORMAT_COMPACT));
+		$this->assertEquals($abbr, $instance->format(IPv6_Address::FORMAT_ABBREVIATED));
+		$this->assertEquals($full, $instance->format(IP_Address::FORMAT_FULL));
 	}
 	
 	public function providerFactoryException()
@@ -54,8 +59,6 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array('256.0.0.1'),
 			array('127.-1.0.1'),
 			array('127.128.256.1'),
-			array(12345),
-			array(-12345),
 			array('cake'),
 			array('12345'),
 			array('-12345'),
@@ -76,18 +79,21 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerAddSubtract()
 	{
 		$data = array(
-			array('::', '::', '::' ),
-			array('::1', '::', '::1' ),
-			array('::1', '::1', '::2' ),
-			array('::1', '::2', '::3' ),
-			array('::5', '::6', '::b' ),
-			array('::10', '::1', '::11' ),
+			array('::'  , 0, '::' ),
+			array('::1' , 0, '::1' ),
+			array('::1' , 1, '::2' ),
+			array('::1' , 2, '::3' ),
+			array('::5' , 6, '::b' ),
+			array('::10', 1, '::11' ),
+			array('::10', new Math_BigInteger(1), '::11' ),
+			array('::10', new Math_BigInteger(2), '::12' ),
 		);
 		
 		for ($i=0; $i < count($data); $i++)
-			for ($j=0; $j < count($data[$i]); $j++)
-				$data[$i][$j] = IPv6_Address::factory($data[$i][$j]);
-		
+		{
+			$data[$i][0] = IPv6_Address::factory($data[$i][0]);
+			$data[$i][2] = IPv6_Address::factory($data[$i][2]);
+		}
 		return $data;
 	}
 	
