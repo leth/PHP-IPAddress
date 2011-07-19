@@ -49,12 +49,12 @@ To run the test cases, the following commands will do the trick:
 
 *	No-frills tests
 	
-	phpunit --bootstrap tests/bootstrap.php --include-path src/ tests
+	phpunit --bootstrap tests/bootstrap.php tests
 
 *	Generate code coverage reports to 'phpunit/coverage/'
 
-	phpunit --bootstrap tests/bootstrap.php --include-path src/ --coverage-html phpunit/coverage/ tests
+	phpunit --bootstrap tests/bootstrap.php --coverage-html phpunit/coverage/ tests
 	
 *	With colours and verbose output
 
-	phpunit --bootstrap tests/bootstrap.php --include-path src/ --colors --verbose tests
+	phpunit --bootstrap tests/bootstrap.php --colors --verbose tests
