@@ -199,30 +199,28 @@ class IPv6_Address_Core extends IP_Address
 	// }
 
 	/**
-	 * Add the given address to this one.
+	 * Add the given value to this address.
 	 *
-	 * @param IP_Address $other The other operand.
+	 * @param integer|Math_BigInteger $value
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public function add(IP_Address $other)
+	public function add($value)
 	{
-		$this->check_types($other);
 		$left = new Math_BigInteger($this->address, 256);
-		$right = new Math_BigInteger($other->address, 256);
+		$right = ($value instanceof Math_BigInteger) ? $value : new Math_BigInteger($value);
 		return new IPv6_Address($left->add($right));
 	}
 
 	/**
-	 * Subtract the given address from this one.
+	 * Subtract the given value from this address.
 	 *
-	 * @param IP_Address $other The other operand.
+	 * @param integer|Math_BigInteger $value
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public function subtract(IP_Address $other)
+	public function subtract($value)
 	{
-		$this->check_types($other);
 		$left = new Math_BigInteger($this->address, 256);
-		$right = new Math_BigInteger($other->address, 256);
+		$right = ($value instanceof Math_BigInteger) ? $value : new Math_BigInteger($value);
 		return new IPv6_Address($left->subtract($right));
 	}
 

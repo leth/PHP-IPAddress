@@ -4,8 +4,8 @@ class IP_Address_Tester extends IP_Address
 {
 	public function __construct() {}
 	
-	public function add(IP_Address $other) {}
-	public function subtract(IP_Address $other) {}
+	public function add($value) {}
+	public function subtract($value) {}
 		
 	public function bitwise_and(IP_Address $other) {}
 	public function bitwise_or(IP_Address $other) {}
@@ -156,11 +156,11 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array(IP_Network_Address::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
 			array(IP_Network_Address::factory('192.168.1.1/24'), -3, NULL, '192.168.1.252'),
 
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger( 0), NULL, '192.168.1.0'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger( 1), NULL, '192.168.1.1'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger( 0), FALSE, '192.168.1.255'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger(-1), NULL, '192.168.1.254'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), new Math_BigInteger(-2), NULL, '192.168.1.253'),
+			array(IP_Network_Address::factory('192.168.1.1/24'),  0, NULL, '192.168.1.0'),
+			array(IP_Network_Address::factory('192.168.1.1/24'),  1, NULL, '192.168.1.1'),
+			array(IP_Network_Address::factory('192.168.1.1/24'),  0, FALSE, '192.168.1.255'),
+			array(IP_Network_Address::factory('192.168.1.1/24'), -1, NULL, '192.168.1.254'),
+			array(IP_Network_Address::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
 
 			array(IP_Network_Address::factory('10.13.1.254/24'), 0, NULL, '10.13.1.0'),
 			array(IP_Network_Address::factory('10.13.1.254/24'), 1, NULL, '10.13.1.1'),

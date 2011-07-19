@@ -76,18 +76,21 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerAddSubtract()
 	{
 		$data = array(
-			array('::', '::', '::' ),
-			array('::1', '::', '::1' ),
-			array('::1', '::1', '::2' ),
-			array('::1', '::2', '::3' ),
-			array('::5', '::6', '::b' ),
-			array('::10', '::1', '::11' ),
+			array('::'  , 0, '::' ),
+			array('::1' , 0, '::1' ),
+			array('::1' , 1, '::2' ),
+			array('::1' , 2, '::3' ),
+			array('::5' , 6, '::b' ),
+			array('::10', 1, '::11' ),
+			array('::10', new Math_BigInteger(1), '::11' ),
+			array('::10', new Math_BigInteger(2), '::12' ),
 		);
 		
 		for ($i=0; $i < count($data); $i++)
-			for ($j=0; $j < count($data[$i]); $j++)
-				$data[$i][$j] = IPv6_Address::factory($data[$i][$j]);
-		
+		{
+			$data[$i][0] = IPv6_Address::factory($data[$i][0]);
+			$data[$i][2] = IPv6_Address::factory($data[$i][2]);
+		}
 		return $data;
 	}
 	

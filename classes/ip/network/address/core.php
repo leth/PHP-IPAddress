@@ -225,9 +225,9 @@ abstract class IP_Network_Address_Core
 		}
 
 		if ($positive AND $from_start)
-			return $point->add($point->factory($offset));
+			return $point->add($offset);
 		else
-			return $point->subtract($point->factory($offset));
+			return $point->subtract($offset);
 	}
 
 	/**

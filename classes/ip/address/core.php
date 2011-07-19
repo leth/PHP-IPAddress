@@ -86,20 +86,18 @@ abstract class IP_Address_Core
 	}
 
 	/**
-	 * Add the given address to this one.
+	 * Add the given value to this address.
 	 *
-	 * @param IP_Address $other The other operand.
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function add(IP_Address $other);
+	public abstract function add($value);
 
 	/**
-	 * Subtract the given address from this one.
+	 * Subtract the given value from this address.
 	 *
-	 * @param IP_Address $other The other operand.
 	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public abstract function subtract(IP_Address $other);
+	public abstract function subtract($value);
 
 	/**
 	 * Compute the bitwise AND of this address and another.

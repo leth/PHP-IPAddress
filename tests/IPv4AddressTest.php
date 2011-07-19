@@ -140,18 +140,18 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerAddSubtract()
 	{
 		$data = array(
-			array('0.0.0.0', '0.0.0.0', '0.0.0.0'),
-			array('0.0.0.0', '0.0.0.1', '0.0.0.1'),
-			array('0.0.0.1', '0.0.0.0', '0.0.0.1'),
-			array('0.0.0.1', '0.0.0.1', '0.0.0.2'),
-			array('0.0.0.10', '0.0.0.1', '0.0.0.11'),
-			array('0.0.0.255', '0.0.0.1', '0.0.1.0'),
-			array('0.0.255.0', '0.0.1.1', '0.1.0.1'),
+			array('0.0.0.0'  , 0, '0.0.0.0'),
+			array('0.0.0.0'  , 1, '0.0.0.1'),
+			array('0.0.0.1'  , 0, '0.0.0.1'),
+			array('0.0.0.1'  , 1, '0.0.0.2'),
+			array('0.0.0.10' , 1, '0.0.0.11'),
+			array('0.0.0.255', 1, '0.0.1.0'),
+			array('0.0.255.0', 257, '0.1.0.1'),
 		);
 		
 		for ($i=0; $i < count($data); $i++) { 
-			for ($j=0; $j < 3; $j++)
-				$data[$i][$j] = IPv4_Address::factory($data[$i][$j]);
+			$data[$i][0] = IPv4_Address::factory($data[$i][0]);
+			$data[$i][2] = IPv4_Address::factory($data[$i][2]);
 		}
 		
 		return $data;

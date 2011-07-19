@@ -20,6 +20,7 @@
 class IPv4_Address_Core extends IP_Address
 {
 	const IP_VERSION = 4;
+	const MAX_IP = '255.255.255.255';
 
 	public static function factory($address)
 	{
@@ -30,13 +31,14 @@ class IPv4_Address_Core extends IP_Address
 		}
 		elseif ($address instanceOf Math_BigInteger)
 		{
-			// TODO range check
+			if ($address->compare(new Math_BigInteger(pack('N', ip2long(static::MAX_IP)), 256)) > 0)
+				throw new InvalidArgumentException("IP value out of range.");
+			
 			$address = intval($address->toString());
 		}
 		elseif (is_int($address))
 		{
-			if ($address < 0)
-				throw new InvalidArgumentException("Argument out of range.");
+			// Assume the input has come from ip2long
 		}
 		else
 		{
@@ -76,27 +78,25 @@ class IPv4_Address_Core extends IP_Address
 	}
 
 	/**
-	 * Add the given address to this one.
+	 * Add the given value to this address.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param integer $value
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public function add(IP_Address $other)
+	public function add($value)
 	{
-		$this->check_types($other);
-		return IPv4_Address::factory($this->address + $other->address);
+		return IPv4_Address::factory($this->address + $value);
 	}
 
 	/**
-	 * Subtract the given address from this one.
+	 * Subtract the given value from this address.
 	 *
-	 * @param IPAddress $other The other operand.
-	 * @return IPAddress An address representing the result of the operation.
+	 * @param integer $value
+	 * @return IP_Address An address representing the result of the operation.
 	 */
-	public function subtract(IP_Address $other)
+	public function subtract($value)
 	{
-		$this->check_types($other);
-		return IPv4_Address::factory($this->address - $other->address);
+		return IPv4_Address::factory($this->address - $value);
 	}
 
 	/**
