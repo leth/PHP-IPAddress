@@ -25,6 +25,8 @@
 abstract class IP_Address_Core
 {
 	const IP_VERSION = -1;
+	const FORMAT_FULL = 0;
+	const FORMAT_COMPACT = 1;
 
 	/**
 	 * Internal representation of the address. Format may vary.
@@ -145,7 +147,7 @@ abstract class IP_Address_Core
 	 */
 	public function __toString()
 	{
-		return $this->address();
+		return $this->format(IP_Address::FORMAT_COMPACT);
 	}
 
 	/**
@@ -153,7 +155,7 @@ abstract class IP_Address_Core
 	 *
 	 * @return string This IP address expressed as a string.
 	 */
-	public abstract function address();
+	public abstract function format($mode);
 
 	/**
 	 * Check that this instance and the supplied instance are of the same class.

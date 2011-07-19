@@ -20,6 +20,7 @@
 class IPv6_Address_Core extends IP_Address
 {
 	const IP_VERSION = 6;
+	const FORMAT_ABBREVIATED = 2;
 
 	public static function factory($address)
 	{
@@ -86,7 +87,7 @@ class IPv6_Address_Core extends IP_Address
 			}
 		}
 
-		return join(':', $ippad);
+		return implode(':', $ippad);
 	}
 
 	/**
@@ -192,7 +193,7 @@ class IPv6_Address_Core extends IP_Address
 	// 	if ($match_count == 0)
 	// 		throw new Exception('Not an IPv4 Address encoded in an IPv6 Address');
 	// 
-	// 	$address = join('.', array_map('intval', explode(':', $matches[1])));
+	// 	$address = implode('.', array_map('intval', explode(':', $matches[1])));
 	// 
 	// 	return IPv4_Address::factory($address);
 	// }
@@ -304,11 +305,77 @@ class IPv6_Address_Core extends IP_Address
 		else
 			return 0;
 	}
-	public function address()
-	{
-		$tmp = unpack('H*', $this->address);
 
-		return join(':', str_split($tmp[1], 4));
+	public function format($mode)
+	{
+		list(,$hex) = unpack('H*', $this->address);
+		$parts = str_split($hex, 4);
+		
+		switch ($mode) {
+			case IP_Address::FORMAT_FULL:
+				// Do nothing
+				break;
+
+			case IPv6_Address::FORMAT_ABBREVIATED:
+				foreach ($parts as $i => $quad)
+				{
+					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
+				}
+				break;
+
+			case IP_Address::FORMAT_COMPACT:
+				$best_pos   = $zeros_pos = FALSE;
+				$best_count = $zeros_count = 0;
+				foreach ($parts as $i => $quad)
+				{
+					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
+
+					if ($quad == '0000')
+					{
+						if ($zeros_pos === FALSE)
+						{
+							$zeros_pos = $i;
+						}
+						$zeros_count++;
+						
+						if ($zeros_count > $best_count)
+						{
+							$best_count = $zeros_count;
+							$best_pos = $zeros_pos;
+						}
+					}
+					else
+					{
+						$zeros_count = 0;
+						$zeros_pos = FALSE;
+						
+						$parts[$i] = ltrim($quad, '0');
+					}
+				}
+
+				
+				if ($best_pos !== FALSE)
+				{
+					$insert = array(NULL);
+					
+					if ($best_pos == 0 OR $best_pos + $best_count == 8)
+					{
+						$insert[] = NULL;
+						if ($best_count == count($parts))
+						{
+							$best_count--;
+						}
+					}
+					array_splice($parts, $best_pos, $best_count, $insert);
+				}
+				
+				break;
+
+			default:
+				throw new Exception('Unsupported format mode '.$mode);
+		}
+		
+		return implode(':', $parts);
 	}
 
 }

@@ -12,14 +12,14 @@ class IP_Address_Tester extends IP_Address
 	public function bitwise_xor(IP_Address $other) {}
 	public function bitwise_not() {}
 	
-	public function address() { return __CLASS__; }
+	public function format($mode) { return __CLASS__; }
 	public function compare_to(IP_Address $other) {}
 }
 
 
 class IPv4_Network_Address_Tester extends IPv4_Network_Address
 {
-	public static function factory($address, $cidr)
+	public static function factory($address, $cidr = NULL)
 	{
 		$ip = IPv4_Address::factory($address);
 		return new IPv4_Network_Address_Tester($ip, $cidr);
@@ -33,7 +33,7 @@ class IPv4_Network_Address_Tester extends IPv4_Network_Address
 
 class IPv6_Network_Address_Tester extends IPv6_Network_Address
 {
-	public static function factory($address, $cidr)
+	public static function factory($address, $cidr = NULL)
 	{
 		$ip = IPv6_Address::factory($address);
 		return new IPv6_Network_Address_Tester($ip, $cidr);
@@ -60,8 +60,8 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array(IP_Network_Address::factory('127.0.0.1/16'), NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array(IP_Network_Address::factory('127.0.0.1/16'), 10, '127.0.0.1', 10, '127.0.0.0'),
 
-			array('::1/16', NULL, IPv6_Address::pad('::1'), 16, IPv6_Address::pad('::0')),
-			array('::1', 16, IPv6_Address::pad('::1'), 16, IPv6_Address::pad('::0')),
+			array('::1/16', NULL, '::1', 16, '::0'),
+			array('::1', 16, '::1', 16, '::0'),
 		);
 	}
 	
@@ -190,7 +190,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 	
-	public function providerCheck_ip_versionFail()
+	public function providerCheck_ip_version_fail()
 	{
 		list(list($a4, $b4, $a6, $b6)) = $this->providerCheck_ip_version();
 		return array(
@@ -207,9 +207,9 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @dataProvider providerCheck_ip_versionFail
+	 * @dataProvider providerCheck_ip_version_fail
 	 */
-	public function test_check_ip_versionFail($left, $right)
+	public function test_check_ip_version_fail($left, $right)
 	{
 		try
 		{
@@ -338,7 +338,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = '192.128.1.1/24';
 		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
 
-		$ip = '0000:0000:0000:0000:0000:0000:0000:0001/24';
+		$ip = '::1/24';
 		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
 	}
 }

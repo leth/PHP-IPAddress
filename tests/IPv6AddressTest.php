@@ -45,7 +45,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$instance = IPv6_Address::factory($input);
 		
 		$this->assertNotNull($instance);
-		$this->assertEquals($output, (string) $instance);
+		$this->assertEquals($output, $instance->format(IP_Address::FORMAT_FULL));
 	}
 	
 	public function providerFactoryException()

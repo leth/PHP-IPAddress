@@ -189,9 +189,20 @@ class IPv4_Address_Core extends IP_Address
 		return $this->address - $other->address;
 	}
 
-	public function address()
+	public function format($mode)
 	{
-		return long2ip($this->address);
+		switch ($mode) {
+			case IP_Address::FORMAT_COMPACT:
+				return long2ip($this->address);
+			case IP_Address::FORMAT_FULL:
+				$parts = explode('.', long2ip($this->address));
+				foreach ($parts as $i => $octet) {
+					$parts[$i] = str_pad($octet, 3, '0', STR_PAD_LEFT);
+				}
+				return implode('.', $parts);
+			default:
+				throw new Exception('Unsupported format mode '.$mode);
+		}
 	}
 
 
