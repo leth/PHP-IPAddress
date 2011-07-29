@@ -2,7 +2,7 @@
 
 class Request_Core extends Kohana_Request {
 	
-	public static function factory($uri = TRUE, Cache $cache = NULL, $injected_routes = array())
+	public static function factory($uri = TRUE, HTTP_Cache $cache = NULL, $injected_routes = array())
 	{
 		$request = parent::factory($uri, $cache, $injected_routes);
 		
