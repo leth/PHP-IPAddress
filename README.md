@@ -6,7 +6,8 @@ Supports both IPv4 and IPv6 schemes.
 ### Requirements
 
 *	PHP version 5.3.0 or greater.
-*	The [PEAR](http://pear.php.net/) [Math_BigInteger](http://pear.php.net/package/Math_BigInteger/) class to perform arithmetic for some IPv6 address operations.
+*	(optional) The [PEAR](http://pear.php.net/) [Math_BigInteger](http://pear.php.net/package/Math_BigInteger/) class.
+    *		Required for add & subtract operations on IPv6 addresses, and finding IPs in IPv6 address blocks.
 
 ## Examples
 
@@ -58,3 +59,7 @@ To run the test cases, the following commands will do the trick:
 *	With colours and verbose output
 
 	phpunit --bootstrap tests/bootstrap.php --colors --verbose tests
+
+*	All togeather
+
+	phpunit --bootstrap tests/bootstrap.php --coverage-html phpunit/coverage/ --colors --verbose tests

@@ -27,13 +27,21 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array(
 				'::1',
+				'::1',
+				'0:0:0:0:0:0:0:1',
+				'0000:0000:0000:0000:0000:0000:0000:0001'),
+			array(
+				1,
+				'::1',
 				'0:0:0:0:0:0:0:1',
 				'0000:0000:0000:0000:0000:0000:0000:0001'),
 			array(
 				'fe80::226:bbff:fe14:7372',
+				'fe80::226:bbff:fe14:7372',
 				'fe80:0:0:0:226:bbff:fe14:7372',
 				'fe80:0000:0000:0000:0226:bbff:fe14:7372'),
 			array(
+				'::ffff:127:0:0:1',
 				'::ffff:127:0:0:1',
 				'0:0:0:ffff:127:0:0:1',
 				'0000:0000:0000:ffff:0127:0000:0000:0001'),
@@ -43,16 +51,37 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($input, $abbr, $full)
+	public function testFactory($input, $compact, $abbr, $full)
 	{
 		$instance = IPv6_Address::factory($input);
 		
 		$this->assertNotNull($instance);
-		$this->assertEquals($input, $instance->format(IP_Address::FORMAT_COMPACT));
+		$this->assertEquals($compact, $instance->format(IP_Address::FORMAT_COMPACT));
 		$this->assertEquals($abbr, $instance->format(IPv6_Address::FORMAT_ABBREVIATED));
 		$this->assertEquals($full, $instance->format(IP_Address::FORMAT_FULL));
 	}
-	
+
+	public function providerFormatException()
+	{
+		$bad_mode = -1;
+		$data = static::providerFactory();
+		foreach ($data as $i => $entry) {
+			$data[$i] = array($entry[0], $bad_mode);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @dataProvider providerFormatException
+	 */
+	public function testFormatException($input, $mode)
+	{
+		$instance = IPv6_Address::factory($input);
+		echo $instance->format($mode);
+	}
+
 	public function providerFactoryException()
 	{
 		return array(
@@ -63,7 +92,8 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array('12345'),
 			array('-12345'),
 			array('0000:0000:0000:ffff:0127:0000:0000:000g'),
-			array('000000000000ffff0127000000000001')
+			array('000000000000ffff0127000000000001'),
+			array(array()),
 		);
 	}
 	

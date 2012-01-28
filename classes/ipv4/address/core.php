@@ -174,16 +174,22 @@ class IPv4_Address_Core extends IP_Address
 				break;
 		}
 
-		return IPv4_Address::factory(long2ip($res));
+		return IPv4_Address::factory($res);
 	}
 	
-	// TODO Check this
-	// public function as_IPv6_Address()
-	// {
-	//  	$address = str_replace('.',':','0000:0000:0000:ffff:' . $this);
-	// 
-	//  	return IPv6Address::factory($address);
-	// }
+	/**
+	 * Creates a IPv6 address object representing the 'IPv4-Mapped' IPv6 address of this object
+	 *
+	 * @returns IPv6_Address
+	 */
+	public function as_ipv6_address()
+	{
+		$address = str_split(str_pad(dechex($this->address), 8, '0', STR_PAD_LEFT), 4);
+		$address = array_merge(array('','','ffff'), $address);
+		$address = join(':', $address);
+
+		return IPv6_Address::factory($address);
+	}
 
 	public function compare_to(IP_Address $other)
 	{
@@ -204,7 +210,7 @@ class IPv4_Address_Core extends IP_Address
 				}
 				return implode('.', $parts);
 			default:
-				throw new Exception('Unsupported format mode '.$mode);
+				throw new InvalidArgumentException('Unsupported format mode: '.$mode);
 		}
 	}
 
