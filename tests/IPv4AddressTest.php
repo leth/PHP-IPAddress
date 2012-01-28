@@ -188,4 +188,35 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$result = $result->subtract($right);
 		$this->assertEquals(0, $result->compare_to($left));
 	}
+
+	public function providerAsIPv6Address()
+	{
+		$data = array(
+			array('0.0.0.0'  , '::ffff:0:0'   ),
+			array('0.0.0.1'  , '::ffff:0:1'   ),
+			array('0.0.0.255', '::ffff:0:ff'  ),
+			array('0.0.255.0', '::ffff:0:ff00'),
+			array('0.255.0.0', '::ffff:ff:0'  ),
+			array('255.0.0.0', '::ffff:ff00:0'),
+		);
+
+		foreach ($data as $i => $entry) {
+			$data[$i] = array(
+				IPv4_Address::factory($entry[0]),
+				IPv6_Address::factory($entry[1]));
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @dataProvider providerAsIPv6Address
+	 */
+	public function testAsIPv6Address($input, $expected_equal)
+	{
+		$converted = $input->as_ipv6_address();
+
+		$this->assertInstanceOf('IPv6_Address', $converted);
+		$this->assertEquals(0, $converted->compare_to($expected_equal));
+	}
 }
