@@ -59,3 +59,7 @@ To run the test cases, the following commands will do the trick:
 *	With colours and verbose output
 
 	phpunit --bootstrap tests/bootstrap.php --colors --verbose tests
+
+*	All togeather
+
+	phpunit --bootstrap tests/bootstrap.php --coverage-html phpunit/coverage/ --colors --verbose tests

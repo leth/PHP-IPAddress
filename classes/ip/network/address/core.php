@@ -50,7 +50,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public static function generate_subnet_mask($cidr)
 	{
-		throw new Exception(__METHOD__.' not implemented in subclass of '.__CLASS__);
+		throw new LogicException(__METHOD__.' not implemented in subclass of '.__CLASS__);
 	}
 
 	/**
@@ -61,7 +61,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public static function get_global_netmask()
 	{
-		throw new Exception(__METHOD__.' not implemented in subclass of '.__CLASS__);
+		throw new LogicException(__METHOD__.' not implemented in subclass of '.__CLASS__);
 	}
 
 	/**

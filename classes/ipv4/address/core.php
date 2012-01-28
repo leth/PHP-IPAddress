@@ -204,7 +204,7 @@ class IPv4_Address_Core extends IP_Address
 				}
 				return implode('.', $parts);
 			default:
-				throw new Exception('Unsupported format mode '.$mode);
+				throw new InvalidArgumentException('Unsupported format mode: '.$mode);
 		}
 	}
 

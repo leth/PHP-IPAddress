@@ -67,6 +67,27 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		);
 	}
 	
+	public function providerFormatException()
+	{
+		$bad_mode = -1;
+		$data = static::providerFactory();
+		foreach ($data as $i => $entry) {
+			$data[$i] = array($entry[0], $bad_mode);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @dataProvider providerFormatException
+	 */
+	public function testFormatException($input, $mode)
+	{
+		$instance = IPv4_Address::factory($input);
+		echo $instance->format($mode);
+	}
+
 	/**
 	 * @expectedException InvalidArgumentException
 	 * @dataProvider providerFactoryException
@@ -75,7 +96,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		IPv4_Address::factory($input);
 	}
-	
+
 	public function providerBitwise()
 	{
 		return array(

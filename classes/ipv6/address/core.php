@@ -195,7 +195,7 @@ class IPv6_Address_Core extends IP_Address
 	// 	$match_count = preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address, $matches);
 	// 
 	// 	if ($match_count == 0)
-	// 		throw new Exception('Not an IPv4 Address encoded in an IPv6 Address');
+	// 		throw InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
 	// 
 	// 	$address = implode('.', array_map('intval', explode(':', $matches[1])));
 	// 
@@ -362,7 +362,7 @@ class IPv6_Address_Core extends IP_Address
 				break;
 
 			default:
-				throw new Exception('Unsupported format mode '.$mode);
+				throw new InvalidArgumentException('Unsupported format mode: '.$mode);
 		}
 		
 		return implode(':', $parts);

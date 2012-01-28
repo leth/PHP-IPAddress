@@ -125,7 +125,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @expectedException Exception
+	 * @expectedException LogicException
 	 * @dataProvider providerUnimplementedException
 	 */
 	public function testUnimplementedException($class, $method)

@@ -52,7 +52,28 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($abbr, $instance->format(IPv6_Address::FORMAT_ABBREVIATED));
 		$this->assertEquals($full, $instance->format(IP_Address::FORMAT_FULL));
 	}
-	
+
+	public function providerFormatException()
+	{
+		$bad_mode = -1;
+		$data = static::providerFactory();
+		foreach ($data as $i => $entry) {
+			$data[$i] = array($entry[0], $bad_mode);
+		}
+
+		return $data;
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 * @dataProvider providerFormatException
+	 */
+	public function testFormatException($input, $mode)
+	{
+		$instance = IPv6_Address::factory($input);
+		echo $instance->format($mode);
+	}
+
 	public function providerFactoryException()
 	{
 		return array(
