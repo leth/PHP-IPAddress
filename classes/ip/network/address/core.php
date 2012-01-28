@@ -300,7 +300,7 @@ abstract class IP_Network_Address_Core
 		$this->check_types($other);
 
 		if ($this->cidr > $other->cidr)
-			return false;
+			return FALSE;
 
 		return $this->shares_subnet_space($other);
 	}

@@ -177,7 +177,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		
 		return $data;
 	}
-	
+
 	/**
 	 * @dataProvider providerAddSubtract
 	 */
