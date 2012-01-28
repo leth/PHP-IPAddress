@@ -1,0 +1,7 @@
+Alias <%= @web_path %> <%= @full_path %>
+<Directory <%= @full_path %>>
+	Options -Indexes FollowSymLinks MultiViews
+	AllowOverride None
+	Order allow,deny
+	Allow from all
+</Directory>

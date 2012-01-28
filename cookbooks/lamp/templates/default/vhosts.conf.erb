@@ -1,0 +1,12 @@
+<VirtualHost *:80>
+    DocumentRoot <%= @params[:docroot] %>
+    ServerName <%= @params[:server_name] %>
+    ErrorLog "/var/log/apache2/<%= @params[:server_name] %>-error_log"
+    CustomLog "/var/log/apache2/<%= @params[:server_name] %>-access_log" common
+    <Directory "<%= @params[:docroot] %>">
+    	Options -Indexes FollowSymLinks
+    	AllowOverride All
+    	Order Deny,Allow
+    	Allow from all
+    </Directory>
+</VirtualHost>

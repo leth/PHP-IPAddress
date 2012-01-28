@@ -1,0 +1,6 @@
+[submodule "cookbooks/phpunit"]
+	path = cookbooks/phpunit
+  url = https://github.com/msonnabaum/chef-phpunit.git
+[submodule "html/PHP-IPAddress"]
+  path = html/PHP-IPAddress
+  url = https://leth@github.com/leth/PHP-IPAddress.git
