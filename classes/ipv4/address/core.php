@@ -184,9 +184,8 @@ class IPv4_Address_Core extends IP_Address
 	 */
 	public function as_ipv6_address()
 	{
-		$address = str_split(str_pad(dechex($this->address), 8, '0', STR_PAD_LEFT), 4);
-		$address = array_merge(array('','','ffff'), $address);
-		$address = join(':', $address);
+		$address = join(':', str_split(str_pad(dechex($this->address), 8, '0', STR_PAD_LEFT), 4));
+		$address = '::ffff:'. $address;
 
 		return IPv6_Address::factory($address);
 	}
