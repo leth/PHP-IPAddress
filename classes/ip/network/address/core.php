@@ -374,4 +374,71 @@ abstract class IP_Network_Address_Core
 	{
 		return $this->address.'/'.$this->cidr;
 	}
+
+	/**
+	 * Find one of the smallest network address blocks, no smaller than a network address block with the given cidr.
+	 *
+	 * @param array $freeNetworkAddresses An array of free network addresses, each of type IP_Network_Address
+	 * @param integer $cidr The smallest size network block to return
+	 * @return IP_Network_Address
+	 */
+	public static function get_smallest_free_block_for($freeNetworkAddresses, $cidr)
+	{
+		if(count($freeNetworkAddresses) == 0)
+		{
+			return null;
+		}
+		$bycidr = array();
+		foreach($freeNetworkAddresses as $f)
+		{
+			$fcidr = $f->get_cidr();
+			if($fcidr == $cidr)
+			{
+				return $f;
+			}
+			else if($fcidr < $cidr && !isset($bycidr[$fcidr]))
+			{
+				$bycidr[$fcidr] = $f;
+			}
+		}
+		if(count($bycidr) == 0)
+		{
+			return null;
+		}
+		return static::factory($bycidr[max(array_keys($bycidr))]->get_address(), $cidr);
+	}
+
+	/**
+	 * Find the network address blocks that are free within this address block, given a set of used network address blocks.
+	 *
+	 * @param array $usedNetworkAddresses An array of used network addresses, each of type IP_Network_Address
+	 * @return array
+	 */
+	public function get_free_network_addresses($usedNetworkAddresses)
+	{
+		if(count($usedNetworkAddresses) == 0)
+		{
+			return array($this);
+		}
+		if(count($usedNetworkAddresses) == 1 && $usedNetworkAddresses[0] == $this)
+		{
+			return array();
+		}
+		$lower = static::factory($this->get_network_start(), $this->get_cidr()+1);
+		$upper = static::factory(static::factory($this->get_network_end(), $this->get_cidr()+1)->get_network_start(), $this->get_cidr()+1);
+		$lowerused = array();
+		$upperused = array();
+		foreach($usedNetworkAddresses as $u)
+		{
+			if($lower->encloses_subnet($u))
+			{
+				$lowerused[] = $u;
+			}
+			else if($upper->encloses_subnet($u))
+			{
+				$upperused[] = $u;
+			}
+		}
+		return array_merge($lower->get_free_network_addresses($lowerused), $upper->get_free_network_addresses($upperused));
+	}
 }
