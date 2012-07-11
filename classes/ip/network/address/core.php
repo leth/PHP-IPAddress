@@ -424,8 +424,7 @@ abstract class IP_Network_Address_Core
 		{
 			return array();
 		}
-		$lower = static::factory($this->get_network_start(), $this->get_cidr()+1);
-		$upper = static::factory(static::factory($this->get_network_end(), $this->get_cidr()+1)->get_network_start(), $this->get_cidr()+1);
+		list($lower, $upper) = $this->split();
 		$lowerused = array();
 		$upperused = array();
 		foreach($usedNetworkAddresses as $u)
@@ -440,5 +439,31 @@ abstract class IP_Network_Address_Core
 			}
 		}
 		return array_merge($lower->get_free_network_addresses($lowerused), $upper->get_free_network_addresses($upperused));
+	}
+
+	/**
+	 * Split the network address to create 2^n network addresses.
+	 *
+	 * @param int $splits The number of times to split the network address
+	 * @return array
+	 */	
+	public function split($splits = 1)
+	{
+		if($splits == 0)
+		{
+			return $this;
+		}
+		$res = array();
+		$lowerHalf = static::factory($this->get_network_start(), $this->get_cidr()+1);
+		$upperHalf = static::factory(static::factory($this->get_network_end(), $this->get_cidr()+1)->get_network_start(), $this->get_cidr()+1);
+		foreach($lowerHalf->split($splits - 1) as $network)
+		{
+			$res[] = $network;
+		}
+		foreach($upperHalf->split($splits - 1) as $network)
+		{
+			$res[] = $network;
+		}
+		return $res;
 	}
 }
