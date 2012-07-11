@@ -451,7 +451,7 @@ abstract class IP_Network_Address_Core
 	{
 		if($splits == 0)
 		{
-			return $this;
+			return array($this);
 		}
 		$res = array();
 		$lowerHalf = static::factory($this->get_network_start(), $this->get_cidr()+1);
