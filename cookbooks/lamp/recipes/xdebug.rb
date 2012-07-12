@@ -6,7 +6,7 @@
 #
 # Licensed under the MIT license
 #
-
+package 'build-essential'
 # Install xdebug
 php_pear "xdebug" do
   action :install
