@@ -376,36 +376,39 @@ abstract class IP_Network_Address_Core
 	}
 
 	/**
-	 * Find one of the smallest network address blocks, no smaller than a network address block with the given cidr.
-	 *
-	 * @param array $freeNetworkAddresses An array of free network addresses, each of type IP_Network_Address
-	 * @param integer $cidr The smallest size network block to return
+	 * Find a block of a given size within the smallest network address among the blocks given
+	 * 
+	 * @param array $blocks An array of network addresses to search in.
+	 * @param integer $block_size The desired network block size
 	 * @return IP_Network_Address
 	 */
-	public static function get_smallest_free_block_for($freeNetworkAddresses, $cidr)
+	public static function get_block_in_smallest($blocks, $block_size)
 	{
-		if(count($freeNetworkAddresses) == 0)
+		$smallest = NULL;
+		$smallest_cidr = 0;
+
+		foreach($blocks as $block)
 		{
-			return null;
-		}
-		$bycidr = array();
-		foreach($freeNetworkAddresses as $f)
-		{
-			$fcidr = $f->get_cidr();
-			if($fcidr == $cidr)
+			$cidr = $block->get_cidr();
+			if($cidr == $block_size)
 			{
-				return $f;
+				return $block;
 			}
-			else if($fcidr < $cidr && !isset($bycidr[$fcidr]))
+			else if($cidr > $block_size)
 			{
-				$bycidr[$fcidr] = $f;
+				continue;
+			}
+			else if ($cidr > $smallest_cidr)
+			{
+				$smallest = $block;
+				$smallest_cidr = $block->get_cidr();
 			}
 		}
-		if(count($bycidr) == 0)
-		{
-			return null;
-		}
-		return static::factory($bycidr[max(array_keys($bycidr))]->get_address(), $cidr);
+
+		if ($smallest)
+			return static::factory($smallest, $block_size);
+		else
+			return NULL;
 	}
 
 	/**
