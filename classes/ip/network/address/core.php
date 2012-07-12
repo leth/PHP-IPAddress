@@ -387,18 +387,18 @@ abstract class IP_Network_Address_Core
 		$smallest = NULL;
 		$smallest_cidr = 0;
 
-		foreach($blocks as $block)
+		foreach ($blocks as $block)
 		{
 			$cidr = $block->get_cidr();
-			if($cidr == $block_size)
+			if ($cidr == $block_size)
 			{
 				return $block;
 			}
-			else if($cidr > $block_size)
+			elseif ($cidr > $block_size)
 			{
 				continue;
 			}
-			else if ($cidr > $smallest_cidr)
+			elseif ($cidr > $smallest_cidr)
 			{
 				$smallest = $block;
 				$smallest_cidr = $block->get_cidr();
@@ -419,24 +419,25 @@ abstract class IP_Network_Address_Core
 	 */
 	public function excluding($used)
 	{
-		if(count($used) == 0)
+		if (count($used) == 0)
 		{
 			return array($this);
 		}
-		if(count($used) == 1 && $used[0] == $this)
+		if (count($used) == 1 && $used[0] == $this)
 		{
 			return array();
 		}
+		
 		list($lower, $upper) = $this->split();
 		$lowerused = array();
 		$upperused = array();
-		foreach($used as $u)
+		foreach ($used as $u)
 		{
-			if($lower->encloses_subnet($u))
+			if ($lower->encloses_subnet($u))
 			{
 				$lowerused[] = $u;
 			}
-			else if($upper->encloses_subnet($u))
+			elseif ($upper->encloses_subnet($u))
 			{
 				$upperused[] = $u;
 			}
