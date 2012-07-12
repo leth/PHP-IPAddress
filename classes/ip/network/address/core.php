@@ -376,36 +376,39 @@ abstract class IP_Network_Address_Core
 	}
 
 	/**
-	 * Find one of the smallest network address blocks, no smaller than a network address block with the given cidr.
-	 *
-	 * @param array $freeNetworkAddresses An array of free network addresses, each of type IP_Network_Address
-	 * @param integer $cidr The smallest size network block to return
+	 * Find a block of a given size within the smallest network address among the blocks given
+	 * 
+	 * @param array $blocks An array of network addresses to search in.
+	 * @param integer $block_size The desired network block size
 	 * @return IP_Network_Address
 	 */
-	public static function get_smallest_free_block_for($freeNetworkAddresses, $cidr)
+	public static function get_block_in_smallest($blocks, $block_size)
 	{
-		if(count($freeNetworkAddresses) == 0)
+		$smallest = NULL;
+		$smallest_cidr = 0;
+
+		foreach ($blocks as $block)
 		{
-			return null;
-		}
-		$bycidr = array();
-		foreach($freeNetworkAddresses as $f)
-		{
-			$fcidr = $f->get_cidr();
-			if($fcidr == $cidr)
+			$cidr = $block->get_cidr();
+			if ($cidr == $block_size)
 			{
-				return $f;
+				return $block;
 			}
-			else if($fcidr < $cidr && !isset($bycidr[$fcidr]))
+			elseif ($cidr > $block_size)
 			{
-				$bycidr[$fcidr] = $f;
+				continue;
+			}
+			elseif ($cidr > $smallest_cidr)
+			{
+				$smallest = $block;
+				$smallest_cidr = $block->get_cidr();
 			}
 		}
-		if(count($bycidr) == 0)
-		{
-			return null;
-		}
-		return static::factory($bycidr[max(array_keys($bycidr))]->get_address(), $cidr);
+
+		if ($smallest)
+			return static::factory($smallest, $block_size);
+		else
+			return NULL;
 	}
 
 	/**
@@ -416,24 +419,25 @@ abstract class IP_Network_Address_Core
 	 */
 	public function excluding($used)
 	{
-		if(count($used) == 0)
+		if (count($used) == 0)
 		{
 			return array($this);
 		}
-		if(count($used) == 1 && $used[0] == $this)
+		if (count($used) == 1 && $used[0] == $this)
 		{
 			return array();
 		}
+		
 		list($lower, $upper) = $this->split();
 		$lowerused = array();
 		$upperused = array();
-		foreach($used as $u)
+		foreach ($used as $u)
 		{
-			if($lower->encloses_subnet($u))
+			if ($lower->encloses_subnet($u))
 			{
 				$lowerused[] = $u;
 			}
-			else if($upper->encloses_subnet($u))
+			elseif ($upper->encloses_subnet($u))
 			{
 				$upperused[] = $u;
 			}
@@ -444,26 +448,26 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Split the network address to create 2^n network addresses.
 	 *
-	 * @param int $splits The number of times to split the network address
+	 * @param int $times The number of times to split the network address
 	 * @return array
 	 */	
-	public function split($splits = 1)
+	public function split($times = 1)
 	{
-		if($splits == 0)
-		{
+		if (0 == $times)
 			return array($this);
-		}
-		$res = array();
-		$lowerHalf = static::factory($this->get_network_start(), $this->get_cidr()+1);
-		$upperHalf = static::factory(static::factory($this->get_network_end(), $this->get_cidr()+1)->get_network_start(), $this->get_cidr()+1);
-		foreach($lowerHalf->split($splits - 1) as $network)
+
+		$new_cidr = $this->cidr + $times;
+		$one = new Math_BigInteger(1);
+		$offset = $one->bitwise_leftShift(static::MAX_SUBNET - $new_cidr);
+
+		$out = array();
+		$pos = $this->address;
+		for ($i=0; $i < pow(2, $times); $i++)
 		{
-			$res[] = $network;
+			$out[] = static::factory($pos, $new_cidr);
+			$pos = $pos->add($offset);
 		}
-		foreach($upperHalf->split($splits - 1) as $network)
-		{
-			$res[] = $network;
-		}
-		return $res;
+
+		return $out;
 	}
 }

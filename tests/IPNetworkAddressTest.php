@@ -18,7 +18,7 @@ class IP_Address_Tester extends IP_Address
 
 class IP_Network_Address_Tester extends IP_Network_Address
 {
-	
+	public function split($times = 1) {}
 }
 
 class IPv4_Network_Address_Tester extends IPv4_Network_Address
