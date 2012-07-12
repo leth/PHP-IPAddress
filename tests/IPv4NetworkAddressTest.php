@@ -90,4 +90,39 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($ex_network, (string) $ip->get_network_address());
 		$this->assertEquals($ex_broadcast, (string) $ip->get_broadcast_address());
 	}
+
+	public function providerSplit()
+	{
+		$data = array(
+			array('192.168.0.0/24', 0, array('192.168.0.0/24')),
+			array('192.168.0.0/24', 1, array('192.168.0.0/25', '192.168.0.128/25')),
+			array('192.168.0.0/24', 2, array('192.168.0.0/26', '192.168.0.64/26', '192.168.0.128/26', '192.168.0.192/26')),
+		);
+		foreach ($data as  &$d)
+		{
+			$d[0] = IPv4_Network_Address::factory($d[0]);
+			foreach ($d[2] as &$e)
+			{
+				$e = IPv4_Network_Address::factory($e);
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * @dataProvider providerSplit
+	 */
+	public function testSplit($block, $degree, $expected)
+	{
+		$this->assertEquals($expected, $block->split($degree));
+	}
+
+	/**
+	 * @expectedException InvalidArgumentException
+	 */
+	public function testSplitBeyondRange()
+	{
+		$block = IPv4_Network_Address::factory('192.168.0.0/32');
+		$block->split();
+	}
 }
