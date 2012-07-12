@@ -444,26 +444,26 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Split the network address to create 2^n network addresses.
 	 *
-	 * @param int $splits The number of times to split the network address
+	 * @param int $times The number of times to split the network address
 	 * @return array
 	 */	
-	public function split($splits = 1)
+	public function split($times = 1)
 	{
-		if($splits == 0)
-		{
+		if (0 == $times)
 			return array($this);
-		}
-		$res = array();
-		$lowerHalf = static::factory($this->get_network_start(), $this->get_cidr()+1);
-		$upperHalf = static::factory(static::factory($this->get_network_end(), $this->get_cidr()+1)->get_network_start(), $this->get_cidr()+1);
-		foreach($lowerHalf->split($splits - 1) as $network)
+
+		$new_cidr = $this->cidr + $times;
+		$one = new Math_BigInteger(1);
+		$offset = $one->bitwise_leftShift(static::MAX_SUBNET - $new_cidr);
+
+		$out = array();
+		$pos = $this->address;
+		for ($i=0; $i < pow(2, $times); $i++)
 		{
-			$res[] = $network;
+			$out[] = static::factory($pos, $new_cidr);
+			$pos = $pos->add($offset);
 		}
-		foreach($upperHalf->split($splits - 1) as $network)
-		{
-			$res[] = $network;
-		}
-		return $res;
+
+		return $out;
 	}
 }
