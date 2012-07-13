@@ -366,4 +366,45 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = '::1/24';
 		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
 	}
+
+	public function providerExcluding()
+	{
+		$data = array(
+			array('192.168.0.0/24',
+				array(),
+				array('192.168.0.0/24')),
+			array('192.168.0.0/24',
+				array('192.168.0.0/25'),
+				array('192.168.0.128/25')),
+			array('192.168.0.0/24',
+				array('192.168.0.64/26', '192.168.0.128/26'),
+				array('192.168.0.0/26', '192.168.0.192/26')),
+			array('192.168.0.0/24',
+				array('192.168.0.0/26'),
+				array('192.168.0.64/26', '192.168.0.128/25')),
+			array('192.168.0.0/24',
+				array('192.168.0.0/27'),
+				array('192.168.0.32/27', '192.168.0.64/26', '192.168.0.128/25')),
+		);
+		foreach ($data as  &$d)
+		{
+			$d[0] = IP_Network_Address::factory($d[0]);
+			for ($i=1; $i < count($d); $i++)
+			{
+				foreach ($d[$i] as &$e)
+				{
+					$e = IP_Network_Address::factory($e);
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * @dataProvider providerExcluding
+	 */
+	public function testExcluding($block, $excluded, $expected)
+	{
+		$this->assertEquals($expected, $block->excluding($excluded));
+	}
 }
