@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') or die('No direct script access.');
+<?php defined('SYSPATH') OR die('No direct script access.');
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -444,6 +444,9 @@ abstract class IP_Network_Address_Core
 					$candidates[] = $candidate;
 				}
 			}
+
+			if (empty($candidates))
+				break;
 		}
 		return $candidates;
 	}
