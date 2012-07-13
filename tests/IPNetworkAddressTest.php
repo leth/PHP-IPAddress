@@ -144,9 +144,10 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array('127.0.2.1/16' , '127.0.10.1/16', -1),
 			// TODO add more addresses and v6 addresses
 		);
-		for ($i=0; $i < count($data); $i++) { 
-			$data[$i][0] = IP_Network_Address::factory($data[$i][0]);
-			$data[$i][1] = IP_Network_Address::factory($data[$i][1]);
+		foreach ($data as &$d)
+		{
+			$d[0] = IP_Network_Address::factory($d[0]);
+			$d[1] = IP_Network_Address::factory($d[1]);
 		}
 		
 		return $data;
@@ -285,9 +286,10 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array('2000::/3','1000::/3', false, false),
 		);
 		
-		for ($i=0; $i < count($data); $i++) { 
-			$data[$i][0] = IP_Network_Address::factory($data[$i][0]);
-			$data[$i][1] = IP_Network_Address::factory($data[$i][1]);
+		foreach ($data as &$d)
+		{
+			$d[0] = IP_Network_Address::factory($d[0]);
+			$d[1] = IP_Network_Address::factory($d[1]);
 		}
 		
 		return $data;
@@ -316,9 +318,10 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array('2000::/3','1000::', false),
 		);
 		
-		for ($i=0; $i < count($data); $i++) { 
-			$data[$i][0] = IP_Network_Address::factory($data[$i][0]);
-			$data[$i][1] = IP_Address::factory($data[$i][1]);
+		foreach ($data as &$d)
+		{
+			$d[0] = IP_Network_Address::factory($d[0]);
+			$d[1] = IP_Address::factory($d[1]);
 		}
 		
 		return $data;
@@ -342,10 +345,10 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array('2000::1/3', false),
 		);
 		
-		for ($i=0; $i < count($data); $i++) { 
-			$data[$i][0] = IP_Network_Address::factory($data[$i][0]);
+		foreach ($data as &$d)
+		{
+			$d[0] = IP_Network_Address::factory($d[0]);
 		}
-		
 		return $data;
 	}
 	
