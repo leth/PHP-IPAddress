@@ -420,33 +420,32 @@ abstract class IP_Network_Address_Core
 	public function excluding($excluding)
 	{
 		$candidates = array($this);
-		$output = array();
-		while ( ! empty($candidates))
+		foreach ($excluding as $exclude)
 		{
-			$candidate = array_shift($candidates);
+			$stack = $candidates;
+			$candidates = array();
 
-			// Null == ok, TRUE == split, FALSE == reject
-			$split = NULL;
-			foreach ($excluding as $exclude)
+			while ( ! empty($stack))
 			{
+				$candidate = array_shift($stack);
+
+				// Null == ok, TRUE == split, FALSE == excluded
+				$split = NULL;
 				if ($candidate->shares_subnet_space($exclude))
 				{
 					$split = ($candidate->cidr < $exclude->cidr);
 				}
-				if ($split === FALSE)
-					break;
-			}
-
-			if ($split === TRUE)
-			{
-				$candidates = array_merge($candidate->split(), $candidates);
-			}
-			elseif ($split === NULL)
-			{
-				$output[] = $candidate;
+				if ($split === TRUE)
+				{
+					$stack = array_merge($candidate->split(), $stack);
+				}
+				elseif ($split === NULL)
+				{
+					$candidates[] = $candidate;
+				}
 			}
 		}
-		return $output;
+		return $candidates;
 	}
 
 	/**
