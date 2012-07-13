@@ -83,7 +83,7 @@ def exists?
   begin
     shell_out!("pear channel-info #{@current_resource.channel_name}")
     true
-  rescue Chef::Exceptions::ShellCommandFailed
+  rescue Mixlib::ShellOut::ShellCommandFailed
     false
   end
 end

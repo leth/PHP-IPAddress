@@ -9,7 +9,7 @@
 
 default[:lamp][:server_name] = "localhost"
 default[:lamp][:docroot] = "/vagrant/html"
-default[:lamp][:xdebug][:path] = "/usr/lib/php5/20090626/"
+default[:lamp][:xdebug][:path] = "/usr/lib/php5/20090626+lfs/"
 default[:lamp][:webgrind][:dir] = "/var/www/webgrind"
 default[:lamp][:webgrind][:url] = "/webgrind"
 

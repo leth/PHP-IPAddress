@@ -41,7 +41,7 @@ attribute "lamp/webgrind/url",
 attribute "lamp/xdebug/path",
   :display_name => "The full path to where the xdebug module will live",
   :description => "Since xdebug is installed as a zend_extension you need the full path to it",
-  :default => "/usr/lib/php5/20090626/"
+  :default => "/usr/lib/php5/20090626+lfs/"
 
 attribute "lamp/install/mcrypt",
   :display_name => "Install mcrypt?",
