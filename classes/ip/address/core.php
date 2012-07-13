@@ -64,7 +64,7 @@ abstract class IP_Address_Core
 	 * Compare 2 IP Address objects.
 	 *
 	 * This method is a wrapper for the compare_to method and is useful in callback situations, e.g.
-	 * usort($addresses, array('IPAddress', 'compare'));
+	 * usort($addresses, array('IP_Address', 'compare'));
 	 *
 	 * @param IP_Address $a The left hand side of the comparison.
 	 * @param IP_Address $b The right hand side of the comparison.

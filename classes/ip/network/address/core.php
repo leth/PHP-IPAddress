@@ -412,37 +412,41 @@ abstract class IP_Network_Address_Core
 	}
 
 	/**
-	 * Find the network address blocks that are free within this address block, given a set of used network address blocks.
+	 * Find the portion of this network address block that does not overlap with the given blocks.
 	 *
-	 * @param array $used An array of used network addresses, each of type IP_Network_Address
+	 * @param array $used An array of network addresses to exclude, each of type IP_Network_Address
 	 * @return array
 	 */
-	public function excluding($used)
+	public function excluding($excluding)
 	{
-		if (count($used) == 0)
+		$candidates = array($this);
+		$output = array();
+		while ( ! empty($candidates))
 		{
-			return array($this);
-		}
-		if (count($used) == 1 && $used[0] == $this)
-		{
-			return array();
-		}
-		
-		list($lower, $upper) = $this->split();
-		$lowerused = array();
-		$upperused = array();
-		foreach ($used as $u)
-		{
-			if ($lower->encloses_subnet($u))
+			$candidate = array_shift($candidates);
+
+			// Null == ok, TRUE == split, FALSE == reject
+			$split = NULL;
+			foreach ($excluding as $exclude)
 			{
-				$lowerused[] = $u;
+				if ($candidate->shares_subnet_space($exclude))
+				{
+					$split = ($candidate->cidr < $exclude->cidr);
+				}
+				if ($split === FALSE)
+					break;
 			}
-			elseif ($upper->encloses_subnet($u))
+
+			if ($split === TRUE)
 			{
-				$upperused[] = $u;
+				$candidates = array_merge($candidate->split(), $candidates);
+			}
+			elseif ($split === NULL)
+			{
+				$output[] = $candidate;
 			}
 		}
-		return array_merge($lower->excluding($lowerused), $upper->excluding($upperused));
+		return $output;
 	}
 
 	/**
