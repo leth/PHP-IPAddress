@@ -388,6 +388,17 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array('192.168.0.0/24',
 				array('192.168.0.0/27'),
 				array('192.168.0.32/27', '192.168.0.64/26', '192.168.0.128/25')),
+			// Test out of range exclusions
+			array('192.168.0.0/24',
+				array('10.0.0.0/24'),
+				array('192.168.0.0/24')),
+			array('192.168.0.0/24',
+				array('10.0.0.0/24', '192.168.0.0/25'),
+				array('192.168.0.128/25')),
+			// Test an encompassing subnet
+			array('192.168.0.0/24',
+				array('192.168.0.0/23'),
+				array()),
 		);
 		foreach ($data as  &$d)
 		{

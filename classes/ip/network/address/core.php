@@ -380,7 +380,7 @@ abstract class IP_Network_Address_Core
 	 * 
 	 * @param array $blocks An array of network addresses to search in.
 	 * @param integer $block_size The desired network block size
-	 * @return IP_Network_Address
+	 * @return array(IP_Network_Address found, IP_Network_Address within), or array(NULL, NULL) if none found.
 	 */
 	public static function get_block_in_smallest($blocks, $block_size)
 	{
@@ -392,7 +392,7 @@ abstract class IP_Network_Address_Core
 			$cidr = $block->get_cidr();
 			if ($cidr == $block_size)
 			{
-				return $block;
+				return array($block, $block);
 			}
 			elseif ($cidr > $block_size)
 			{
@@ -406,9 +406,9 @@ abstract class IP_Network_Address_Core
 		}
 
 		if ($smallest)
-			return static::factory($smallest, $block_size);
+			return array(static::factory($smallest, $block_size), $smallest);
 		else
-			return NULL;
+			return array(NULL, NULL);
 	}
 
 	/**
@@ -420,33 +420,32 @@ abstract class IP_Network_Address_Core
 	public function excluding($excluding)
 	{
 		$candidates = array($this);
-		$output = array();
-		while ( ! empty($candidates))
+		foreach ($excluding as $exclude)
 		{
-			$candidate = array_shift($candidates);
+			$stack = $candidates;
+			$candidates = array();
 
-			// Null == ok, TRUE == split, FALSE == reject
-			$split = NULL;
-			foreach ($excluding as $exclude)
+			while ( ! empty($stack))
 			{
+				$candidate = array_shift($stack);
+
+				// Null == ok, TRUE == split, FALSE == excluded
+				$split = NULL;
 				if ($candidate->shares_subnet_space($exclude))
 				{
 					$split = ($candidate->cidr < $exclude->cidr);
 				}
-				if ($split === FALSE)
-					break;
-			}
-
-			if ($split === TRUE)
-			{
-				$candidates = array_merge($candidate->split(), $candidates);
-			}
-			elseif ($split === NULL)
-			{
-				$output[] = $candidate;
+				if ($split === TRUE)
+				{
+					$stack = array_merge($candidate->split(), $stack);
+				}
+				elseif ($split === NULL)
+				{
+					$candidates[] = $candidate;
+				}
 			}
 		}
-		return $output;
+		return $candidates;
 	}
 
 	/**
