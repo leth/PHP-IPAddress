@@ -444,6 +444,9 @@ abstract class IP_Network_Address_Core
 					$candidates[] = $candidate;
 				}
 			}
+
+			if (empty($candidates))
+				break;
 		}
 		return $candidates;
 	}
