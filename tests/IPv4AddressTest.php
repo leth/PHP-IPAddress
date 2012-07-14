@@ -6,11 +6,6 @@ class Testing_IPv4_Address extends IPv4_Address
 	{
 		return new Testing_IPv4_Address($address);
 	}
-	
-	public function call_bitwise_operation($flag, IP_Address $other = NULL)
-	{
-		$this->bitwise_operation($flag, $other);
-	}
 }
 
 /**
@@ -46,7 +41,6 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	public function testFactory($input, $expected)
 	{
 		$instance = IPv4_Address::factory($input);
-		
 		$this->assertNotNull($instance);
 		$this->assertEquals($expected, (string) $instance);
 	}
@@ -140,24 +134,6 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	// 	$this->assertEquals($v6, (string) $ip->asIPv6Address());
 	// }
 
-	public function testBitwiseException()
-	{
-		
-		$ip = Testing_IPv4_Address::factory('0.0.0.1');
-		
-		try
-		{
-			$ip->call_bitwise_operation('!', $ip);
-			$this->fail('An expected exception has not been raised.');
-		}
-		catch (InvalidArgumentException $e){}
-		
-		$ip->call_bitwise_operation('&', $ip);
-		$ip->call_bitwise_operation('|', $ip);
-		$ip->call_bitwise_operation('^', $ip);
-		$ip->call_bitwise_operation('~');
-	}
-	
 	public function providerAddSubtract()
 	{
 		$data = array(

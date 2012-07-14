@@ -34,18 +34,18 @@ class IPv4_Address_Core extends IP_Address
 			if ($tmp === FALSE)
 				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
 
-			$address = $tmp;
+			$address = static::_pack(ip2long($address));
 		}
 		elseif ($address instanceOf Math_BigInteger)
 		{
 			if ($address->compare(new Math_BigInteger(pack('N', ip2long(static::MAX_IP)), 256)) > 0)
 				throw new InvalidArgumentException("IP value out of range.");
 
-			$address = intval($address->toString());
+			$address = str_pad($address->toBytes(), 4, chr(0), STR_PAD_LEFT);
 		}
 		elseif (is_int($address))
 		{
-			// Assume the input has come from ip2long
+			$address = static::_pack($address);
 		}
 		else
 		{
@@ -57,11 +57,18 @@ class IPv4_Address_Core extends IP_Address
 
 	protected function __construct($address)
 	{
-		if ( ! is_int($address))
-		{
-			$address = ip2long($address);
-		}
 		parent::__construct($address);
+	}
+
+	protected static function _pack($address)
+	{
+		return pack('N', $address);
+	}
+
+	protected static function _unpack($address)
+	{
+		$out = unpack('N', $address);
+		return $out[1];
 	}
 
 	public function add($value)
@@ -70,7 +77,7 @@ class IPv4_Address_Core extends IP_Address
 		{
 			$value = intval( (string) $value);
 		}
-		return IPv4_Address::factory($this->address + $value);
+		return new IPv4_Address(static::_pack(static::_unpack($this->address) + $value));
 	}
 
 	public function subtract($value)
@@ -79,7 +86,7 @@ class IPv4_Address_Core extends IP_Address
 		{
 			$value = intval( (string) $value);
 		}
-		return IPv4_Address::factory($this->address - $value);
+		return new IPv4_Address(static::_pack(static::_unpack($this->address) - $value));
 	}
 
 	/**
@@ -89,7 +96,8 @@ class IPv4_Address_Core extends IP_Address
 	  */
 	public function bitwise_and(IP_Address $other)
 	{
-		return $this->bitwise_operation('&', $other);
+		$this->check_types($other);
+		return new IPv4_Address($this->address & $other->address);
 	}
 
 	/**
@@ -99,7 +107,8 @@ class IPv4_Address_Core extends IP_Address
 	  */
 	public function bitwise_or(IP_Address $other)
 	{
-		return $this->bitwise_operation('|', $other);
+		$this->check_types($other);
+		return new IPv4_Address($this->address | $other->address);
 	}
 
 	/**
@@ -109,7 +118,8 @@ class IPv4_Address_Core extends IP_Address
 	  */
 	public function bitwise_xor(IP_Address $other)
 	{
-		return $this->bitwise_operation('^', $other);
+		$this->check_types($other);
+		return new IPv4_Address($this->address ^ $other->address);
 	}
 
 	/**
@@ -119,44 +129,9 @@ class IPv4_Address_Core extends IP_Address
 	  */
 	public function bitwise_not()
 	{
-		return $this->bitwise_operation('~');
+		return new IPv4_Address(~ $this->address);
 	}
 
-	protected function bitwise_operation($operation)
-	{
-		$args = func_get_args();
-		$operation = array_shift($args);
-		array_unshift($args, $this);
-
-		$addr[0] = $args[0]->address;
-		if ($operation != '~')
-		{
-			$this->check_types($args[1]);
-			$addr[1] = $args[1]->address;
-		}
-
-		switch ($operation) {
-			case '&':
-				$res = $addr[1] & $addr[0];
-				break;
-			case '|':
-				$res = $addr[1] | $addr[0];
-				break;
-			case '^':
-				$res = $addr[1] ^ $addr[0];
-				break;
-			case '~':
-				$res = ~ $addr[0];
-				break;
-
-			default:
-				throw new InvalidArgumentException("Unknown operation flag '$operation'.");
-				break;
-		}
-
-		return IPv4_Address::factory($res);
-	}
-	
 	/**
 	 * Creates a IPv6 address object representing the 'IPv4-Mapped' IPv6 address of this object
 	 *
@@ -164,7 +139,8 @@ class IPv4_Address_Core extends IP_Address
 	 */
 	public function as_ipv6_address()
 	{
-		$address = join(':', str_split(str_pad(dechex($this->address), 8, '0', STR_PAD_LEFT), 4));
+		list( , $address) = unpack('H*', $this->address);
+		$address = join(':', str_split($address, 4));
 		$address = '::ffff:'.$address;
 
 		return IPv6_Address::factory($address);
@@ -174,16 +150,22 @@ class IPv4_Address_Core extends IP_Address
 	{
 		$this->check_types($other);
 
-		return $this->address - $other->address;
+		if ($this->address < $other->address)
+			return -1;
+		elseif ($this->address > $other->address)
+			return 1;
+		else
+			return 0;
 	}
 
 	public function format($mode)
 	{
+		$address = static::_unpack($this->address);
 		switch ($mode) {
 			case IP_Address::FORMAT_COMPACT:
-				return long2ip($this->address);
+				return long2ip($address);
 			case IP_Address::FORMAT_FULL:
-				$parts = explode('.', long2ip($this->address));
+				$parts = explode('.', long2ip($address));
 				foreach ($parts as $i => $octet) {
 					$parts[$i] = str_pad($octet, 3, '0', STR_PAD_LEFT);
 				}

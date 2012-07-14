@@ -68,7 +68,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array('::1', 16, '::1', 16, '::0'),
 		);
 	}
-	
+
 	/**
 	 * @dataProvider providerFactory
 	 */
