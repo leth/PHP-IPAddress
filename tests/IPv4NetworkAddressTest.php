@@ -72,8 +72,15 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals('255.255.255.255', (string) IPv4_Network_Address::get_global_netmask());
 	}
-	
-	
+
+	public function testDodgyBitwiseStuff()
+	{
+		$block = IPv4_Network_Address::factory('10.13.112.20/30');
+		$address = IPv4_Address::factory('10.13.112.21');
+
+		$this->assertTrue($block->encloses_address($address));
+	}
+
 	public function providerNetworkBroadcastAddress()
 	{
 		return array(
@@ -81,7 +88,7 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 			array(IPv4_Network_Address::factory('192.168.0.10/24'), '192.168.0.0', '192.168.0.255'),
 		);
 	}
-	
+
 	/**
 	 * @dataProvider providerNetworkBroadcastAddress
 	 */
