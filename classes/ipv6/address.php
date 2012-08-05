@@ -1,2 +1,2 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 class IPv6_Address extends IPv6_Address_Core { }

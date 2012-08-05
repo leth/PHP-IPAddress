@@ -1,4 +1,4 @@
-<?php defined('SYSPATH') OR die('No direct script access.');
+<?php
 /*
  * This file is part of the PHP-IPAddress library.
  *
