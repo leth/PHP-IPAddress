@@ -1,0 +1,19 @@
+{
+	"name": "leth/ip-address",
+	"version": "0.1.0-dev",
+	"license": "LGPL-3.0",
+	"support": {
+		"source": "https://github.com/leth/PHP-IPAddress",
+		"issues": "https://github.com/leth/PHP-IPAddress/issues"
+	},
+	"autoload": {
+		"psr-0": {
+			"Leth\\IPAddress": "classes/"
+		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "3.3/master",
+		}
+	}
+}
