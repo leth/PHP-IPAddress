@@ -1,68 +1,69 @@
 <?php
+use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
 
-class IP_Address_Tester extends IP_Address
+class IP_Address_Tester extends IP\Address
 {
 	public function __construct() {}
 	
 	public function add($value) {}
 	public function subtract($value) {}
 		
-	public function bitwise_and(IP_Address $other) {}
-	public function bitwise_or(IP_Address $other) {}
-	public function bitwise_xor(IP_Address $other) {}
+	public function bitwise_and(IP\Address $other) {}
+	public function bitwise_or(IP\Address $other) {}
+	public function bitwise_xor(IP\Address $other) {}
 	public function bitwise_not() {}
 	
 	public function format($mode) { return __CLASS__; }
-	public function compare_to(IP_Address $other) {}
+	public function compare_to(IP\Address $other) {}
 }
 
-class IP_Network_Address_Tester extends IP_Network_Address
+class IP_NetworkAddress_Tester extends IP\NetworkAddress
 {
 	public function split($times = 1) {}
 }
 
-class IPv4_Network_Address_Tester extends IPv4_Network_Address
+class IPv4_NetworkAddress_Tester extends IPv4\NetworkAddress
 {
 	public static function factory($address, $cidr = NULL)
 	{
-		$ip = IPv4_Address::factory($address);
-		return new IPv4_Network_Address_Tester($ip, $cidr);
+		$ip = IPv4\Address::factory($address);
+		return new IPv4_NetworkAddress_Tester($ip, $cidr);
 	}
 	
-	public function test_check_ip_version($other)
+	public function test_check_IP_version($other)
 	{
-		return $this->check_ip_version($other->address);
+		return $this->check_IP_version($other->address);
 	}
 }
 
-class IPv6_Network_Address_Tester extends IPv6_Network_Address
+class IPv6_NetworkAddress_Tester extends IPv6\NetworkAddress
 {
 	public static function factory($address, $cidr = NULL)
 	{
-		$ip = IPv6_Address::factory($address);
-		return new IPv6_Network_Address_Tester($ip, $cidr);
+		$ip = IPv6\Address::factory($address);
+		return new IPv6_NetworkAddress_Tester($ip, $cidr);
 	}
-	public function test_check_ip_version($other)
+	public function test_check_IP_version($other)
 	{
-		return $this->check_ip_version($other->address);
+		return $this->check_IP_version($other->address);
 	}
 }
 
 /**
- * Tests for the IP_Network_Address Class
+ * Tests for the IP\NetworkAddress Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
+class IP_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 {
 	public function providerFactory()
 	{
 		return array(
 			array('127.0.0.1/16', NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array('127.0.0.1', 16, '127.0.0.1', 16, '127.0.0.0'),
-			array(IP_Network_Address::factory('127.0.0.1/16'), NULL, '127.0.0.1', 16, '127.0.0.0'),
-			array(IP_Network_Address::factory('127.0.0.1/16'), 10, '127.0.0.1', 10, '127.0.0.0'),
+			array(IP\NetworkAddress::factory('127.0.0.1/16'), NULL, '127.0.0.1', 16, '127.0.0.0'),
+			array(IP\NetworkAddress::factory('127.0.0.1/16'), 10, '127.0.0.1', 10, '127.0.0.0'),
 
 			array('::1/16', NULL, '::1', 16, '::0'),
 			array('::1', 16, '::1', 16, '::0'),
@@ -74,7 +75,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactory($address, $cidr, $expected_address, $expected_cidr, $expected_subnet)
 	{
-		$ip = IP_Network_Address::factory($address, $cidr);
+		$ip = IP\NetworkAddress::factory($address, $cidr);
 		
 		$this->assertEquals($expected_cidr, $ip->get_cidr());
 		$this->assertEquals($expected_address, (string) $ip->get_address());
@@ -92,11 +93,11 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	
 	/**
 	 * @dataProvider providerFactoryThrowsException
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 */
 	public function testFactoryThrowsException($address, $cidr)
 	{
-		IP_Network_Address::factory($address, $cidr);
+		IP\NetworkAddress::factory($address, $cidr);
 	}
 	
 	public function providerFactoryException()
@@ -108,24 +109,24 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException \InvalidArgumentException
 	 * @dataProvider providerFactoryException
 	 */
 	public function testFactoryException($address, $cidr)
 	{
-		$ip = IP_Network_Address::factory($address, $cidr);
+		$ip = IP\NetworkAddress::factory($address, $cidr);
 	}
 	
 	public function providerUnimplementedException()
 	{
 		return array(
-			array('IP_Network_Address_Tester', 'generate_subnet_mask'),
-			array('IP_Network_Address_Tester', 'get_global_netmask'),
+			array('IP_NetworkAddress_Tester', 'generate_subnet_mask'),
+			array('IP_NetworkAddress_Tester', 'get_global_netmask'),
 		);
 	}
 	
 	/**
-	 * @expectedException LogicException
+	 * @expectedException \LogicException
 	 * @dataProvider providerUnimplementedException
 	 */
 	public function testUnimplementedException($class, $method)
@@ -146,8 +147,8 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		);
 		foreach ($data as &$d)
 		{
-			$d[0] = IP_Network_Address::factory($d[0]);
-			$d[1] = IP_Network_Address::factory($d[1]);
+			$d[0] = IP\NetworkAddress::factory($d[0]);
+			$d[1] = IP\NetworkAddress::factory($d[1]);
 		}
 		
 		return $data;
@@ -158,7 +159,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testCompare($left, $right, $expected)
 	{
-		$cmp = IP_Network_Address::compare($left, $right);
+		$cmp = IP\NetworkAddress::compare($left, $right);
 		
 		if ($cmp != 0)
 			$cmp /= abs($cmp);
@@ -169,29 +170,29 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerAddressInNetwork()
 	{
 		return array(
-			array(IP_Network_Address::factory('192.168.1.1/24'),  0, NULL, '192.168.1.0'),
-			array(IP_Network_Address::factory('192.168.1.1/24'),  1, NULL, '192.168.1.1'),
-			array(IP_Network_Address::factory('192.168.1.1/24'),  2, NULL, '192.168.1.2'),
-			array(IP_Network_Address::factory('192.168.1.1/24'),  0, FALSE, '192.168.1.255'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), -1, NULL, '192.168.1.254'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), -3, NULL, '192.168.1.252'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  0, NULL, '192.168.1.0'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  1, NULL, '192.168.1.1'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  2, NULL, '192.168.1.2'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  0, FALSE, '192.168.1.255'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'), -1, NULL, '192.168.1.254'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'), -3, NULL, '192.168.1.252'),
 
-			array(IP_Network_Address::factory('192.168.1.1/24'),  0, NULL, '192.168.1.0'),
-			array(IP_Network_Address::factory('192.168.1.1/24'),  1, NULL, '192.168.1.1'),
-			array(IP_Network_Address::factory('192.168.1.1/24'),  0, FALSE, '192.168.1.255'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), -1, NULL, '192.168.1.254'),
-			array(IP_Network_Address::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  0, NULL, '192.168.1.0'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  1, NULL, '192.168.1.1'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'),  0, FALSE, '192.168.1.255'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'), -1, NULL, '192.168.1.254'),
+			array(IP\NetworkAddress::factory('192.168.1.1/24'), -2, NULL, '192.168.1.253'),
 
-			array(IP_Network_Address::factory('10.13.1.254/24'), 0, NULL, '10.13.1.0'),
-			array(IP_Network_Address::factory('10.13.1.254/24'), 1, NULL, '10.13.1.1'),
-			array(IP_Network_Address::factory('10.13.1.254/24'), 0, FALSE, '10.13.1.255'),
-			array(IP_Network_Address::factory('10.13.1.254/24'), -1, NULL, '10.13.1.254'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), 0, NULL, '10.13.1.0'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), 1, NULL, '10.13.1.1'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), 0, FALSE, '10.13.1.255'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), -1, NULL, '10.13.1.254'),
 
-			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger( 0), NULL, '10.13.1.0'),
-			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger( 1), NULL, '10.13.1.1'),
-			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger( 0), FALSE, '10.13.1.255'),
-			array(IP_Network_Address::factory('10.13.1.254/24'), new Math_BigInteger(-1), NULL, '10.13.1.254'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), new \Math_BigInteger( 0), NULL, '10.13.1.0'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), new \Math_BigInteger( 1), NULL, '10.13.1.1'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), new \Math_BigInteger( 0), FALSE, '10.13.1.255'),
+			array(IP\NetworkAddress::factory('10.13.1.254/24'), new \Math_BigInteger(-1), NULL, '10.13.1.254'),
 		);
 	}
 	
@@ -204,21 +205,21 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($expected, (string) $address);
 	}
 
-	public function providerCheck_ip_version()
+	public function providerCheck_IP_version()
 	{
 		return array(
 			array(
-				IPv4_Network_Address_Tester::factory('10.1.0.0', 24),
-				IPv4_Network_Address_Tester::factory('10.2.0.0', 24),
-				IPv6_Network_Address_Tester::factory('::1', 24),
-				IPv6_Network_Address_Tester::factory('1::1', 24)
+				IPv4_NetworkAddress_Tester::factory('10.1.0.0', 24),
+				IPv4_NetworkAddress_Tester::factory('10.2.0.0', 24),
+				IPv6_NetworkAddress_Tester::factory('::1', 24),
+				IPv6_NetworkAddress_Tester::factory('1::1', 24)
 			)
 		);
 	}
 	
-	public function providerCheck_ip_version_fail()
+	public function providerCheck_IP_version_fail()
 	{
-		list(list($a4, $b4, $a6, $b6)) = $this->providerCheck_ip_version();
+		list(list($a4, $b4, $a6, $b6)) = $this->providerCheck_IP_version();
 		return array(
 			array($a4, $a6),
 			array($a4, $b6),
@@ -233,16 +234,16 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @dataProvider providerCheck_ip_version_fail
+	 * @dataProvider providerCheck_IP_version_fail
 	 */
-	public function test_check_ip_version_fail($left, $right)
+	public function test_check_IP_version_fail($left, $right)
 	{
 		try
 		{
-			$left->test_check_ip_version($right);
+			$left->test_check_IP_version($right);
 			$this->fail('An expected exception was not raised.');
 		}
-		catch (InvalidArgumentException $e) {
+		catch (\InvalidArgumentException $e) {
 			// We expect this
 		}
 		catch (PHPUnit_Framework_AssertionFailedError $e)
@@ -255,17 +256,17 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	/**
-	 * @dataProvider providerCheck_ip_version
+	 * @dataProvider providerCheck_IP_version
 	 */
-	public function test_check_ip_version($a4, $b4, $a6, $b6)
+	public function test_check_IP_version($a4, $b4, $a6, $b6)
 	{
 		try
 		{
-			$a4->test_check_ip_version($b4);
-			$b4->test_check_ip_version($a4);
+			$a4->test_check_IP_version($b4);
+			$b4->test_check_IP_version($a4);
 
-			$a6->test_check_ip_version($b6);
-			$b6->test_check_ip_version($a6);
+			$a6->test_check_IP_version($b6);
+			$b6->test_check_IP_version($a6);
 		}
 		catch (Exception $e) {
 			$this->fail('An unexpected exception was raised.' . $e->getMessage());
@@ -288,8 +289,8 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		
 		foreach ($data as &$d)
 		{
-			$d[0] = IP_Network_Address::factory($d[0]);
-			$d[1] = IP_Network_Address::factory($d[1]);
+			$d[0] = IP\NetworkAddress::factory($d[0]);
+			$d[1] = IP\NetworkAddress::factory($d[1]);
 		}
 		
 		return $data;
@@ -320,8 +321,8 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		
 		foreach ($data as &$d)
 		{
-			$d[0] = IP_Network_Address::factory($d[0]);
-			$d[1] = IP_Address::factory($d[1]);
+			$d[0] = IP\NetworkAddress::factory($d[0]);
+			$d[1] = IP\Address::factory($d[1]);
 		}
 		
 		return $data;
@@ -347,7 +348,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		
 		foreach ($data as &$d)
 		{
-			$d[0] = IP_Network_Address::factory($d[0]);
+			$d[0] = IP\NetworkAddress::factory($d[0]);
 		}
 		return $data;
 	}
@@ -364,10 +365,10 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	public function test__toString()
 	{
 		$ip = '192.128.1.1/24';
-		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
+		$this->assertEquals($ip, (string) IP\NetworkAddress::factory($ip));
 
 		$ip = '::1/24';
-		$this->assertEquals($ip, (string) IP_Network_Address::factory($ip));
+		$this->assertEquals($ip, (string) IP\NetworkAddress::factory($ip));
 	}
 
 	public function providerExcluding()
@@ -402,12 +403,12 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 		);
 		foreach ($data as  &$d)
 		{
-			$d[0] = IP_Network_Address::factory($d[0]);
+			$d[0] = IP\NetworkAddress::factory($d[0]);
 			for ($i=1; $i < count($d); $i++)
 			{
 				foreach ($d[$i] as &$e)
 				{
-					$e = IP_Network_Address::factory($e);
+					$e = IP\NetworkAddress::factory($e);
 				}
 			}
 		}

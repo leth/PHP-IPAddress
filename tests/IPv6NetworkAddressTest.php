@@ -1,16 +1,17 @@
 <?php
+use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
 
 /**
- * Tests for the IP_Network_Address Class
+ * Tests for the IP\NetworkAddress Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IPv6_Network_Address_Test extends PHPUnit_Framework_TestCase
+class IPv6_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 {
 	public function test_global_netmask()
 	{
-		$this->assertEquals('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', (string) IPv6_Network_Address::get_global_netmask());
+		$this->assertEquals('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', (string) IPv6\NetworkAddress::get_global_netmask());
 	}
 
 	public function providerSplit()
@@ -22,10 +23,10 @@ class IPv6_Network_Address_Test extends PHPUnit_Framework_TestCase
 		);
 		foreach ($data as  &$d)
 		{
-			$d[0] = IPv6_Network_Address::factory($d[0]);
+			$d[0] = IPv6\NetworkAddress::factory($d[0]);
 			foreach ($d[2] as &$e)
 			{
-				$e = IPv6_Network_Address::factory($e);
+				$e = IPv6\NetworkAddress::factory($e);
 			}
 		}
 		return $data;
@@ -44,7 +45,7 @@ class IPv6_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testSplitBeyondRange()
 	{
-		$block = IPv6_Network_Address::factory('::0/128');
+		$block = IPv6\NetworkAddress::factory('::0/128');
 		$block->split();
 	}
 }

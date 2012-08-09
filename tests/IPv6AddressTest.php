@@ -1,20 +1,21 @@
 <?php
+use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
 
-class TestingIPv6_Address extends IPv6_Address
+class TestingIPv6_Address extends IPv6\Address
 {
 	public static function factory($address)
 	{
 		return new TestingIPv6_Address($address);
 	}
 	
-	public function call_bitwise_operation($flag, IP_Address $other = NULL)
+	public function call_bitwise_operation($flag, IP\Address $other = NULL)
 	{
 		$this->bitwise_operation($flag, $other);
 	}
 }
 
 /**
- * Tests for the IPv6_Address Class
+ * Tests for the IPv6\Address Class
  *
  * @package default
  * @author Marcus Cobden
@@ -53,12 +54,12 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactory($input, $compact, $abbr, $full)
 	{
-		$instance = IPv6_Address::factory($input);
+		$instance = IPv6\Address::factory($input);
 		
 		$this->assertNotNull($instance);
-		$this->assertEquals($compact, $instance->format(IP_Address::FORMAT_COMPACT));
-		$this->assertEquals($abbr, $instance->format(IPv6_Address::FORMAT_ABBREVIATED));
-		$this->assertEquals($full, $instance->format(IP_Address::FORMAT_FULL));
+		$this->assertEquals($compact, $instance->format(IP\Address::FORMAT_COMPACT));
+		$this->assertEquals($abbr, $instance->format(IPv6\Address::FORMAT_ABBREVIATED));
+		$this->assertEquals($full, $instance->format(IP\Address::FORMAT_FULL));
 	}
 
 	public function providerFormatException()
@@ -78,7 +79,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFormatException($input, $mode)
 	{
-		$instance = IPv6_Address::factory($input);
+		$instance = IPv6\Address::factory($input);
 		echo $instance->format($mode);
 	}
 
@@ -103,7 +104,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactoryException($input)
 	{
-		IPv6_Address::factory($input);
+		IPv6\Address::factory($input);
 	}
 	
 	public function providerAddSubtract()
@@ -115,14 +116,14 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array('::1' , 2, '::3' ),
 			array('::5' , 6, '::b' ),
 			array('::10', 1, '::11' ),
-			array('::10', new Math_BigInteger(1), '::11' ),
-			array('::10', new Math_BigInteger(2), '::12' ),
+			array('::10', new \Math_BigInteger(1), '::11' ),
+			array('::10', new \Math_BigInteger(2), '::12' ),
 		);
 		
 		for ($i=0; $i < count($data); $i++)
 		{
-			$data[$i][0] = IPv6_Address::factory($data[$i][0]);
-			$data[$i][2] = IPv6_Address::factory($data[$i][2]);
+			$data[$i][0] = IPv6\Address::factory($data[$i][0]);
+			$data[$i][2] = IPv6\Address::factory($data[$i][2]);
 		}
 		return $data;
 	}
@@ -150,8 +151,8 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		);
 		
 		for ($i=0; $i < count($data); $i++){
-			$data[$i][0] = IPv6_Address::factory($data[$i][0]);
-			$data[$i][1] = IPv6_Address::factory($data[$i][1]);
+			$data[$i][0] = IPv6\Address::factory($data[$i][0]);
+			$data[$i][1] = IPv6\Address::factory($data[$i][1]);
 		}
 		return $data;
 	}
@@ -176,7 +177,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		
 		for ($i=0; $i < count($data); $i++) { 
 			for ($j=0; $j < 6; $j++) { 
-				$data[$i][$j] = IPv6_Address::factory($data[$i][$j]);
+				$data[$i][$j] = IPv6\Address::factory($data[$i][$j]);
 			}
 		}
 		
@@ -213,7 +214,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	}
 	
 	// 
-	// public function provider_as_IPv4_Address()
+	// public function provider_as_IPv4\Address()
 	// {
 	// 	return array(
 	// 		array('0000:0000:0000:ffff:0127:0000:0000:0001', '127.0.0.1'),
@@ -221,11 +222,11 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	// }
 	// 
 	// /**
-	//  * @dataProvider provider_as_IPv4_Address
+	//  * @dataProvider provider_as_IPv4\Address
 	//  */
-	// public function test_as_IPv4_Address($v6, $v4 = NULL)
+	// public function test_as_IPv4\Address($v6, $v4 = NULL)
 	// {
-	// 	$ip = new IPv6_Address($v6);
+	// 	$ip = new IPv6\Address($v6);
 	// 	
 	// 	if ($v4 === NULL)
 	// 		$this->assertFalse($ip->isEncodedIPv4Address());

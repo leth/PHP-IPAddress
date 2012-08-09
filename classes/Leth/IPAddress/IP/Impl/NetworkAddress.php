@@ -16,6 +16,8 @@
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Leth\IPAddress\IP\Impl;
+use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
 
 /**
  * An abstract representation of an IP Address in a given network
@@ -23,7 +25,7 @@
  * @package default
  * @author Marcus Cobden
  */
-abstract class IP_Network_Address_Core
+abstract class NetworkAddress
 {
 	const IP_VERSION = -1;
 	const MAX_SUBNET = -1;
@@ -46,34 +48,34 @@ abstract class IP_Network_Address_Core
 	 * Generates the subnet mask for a given CIDR
 	 *
 	 * @param int $cidr The CIDR number
-	 * @return IP_Address An IP address representing the mask.
+	 * @return IP\Address An IP address representing the mask.
 	 */
 	public static function generate_subnet_mask($cidr)
 	{
-		throw new LogicException(__METHOD__.' not implemented in subclass of '.__CLASS__);
+		throw new \LogicException(__METHOD__.' not implemented in subclass of '.__CLASS__);
 	}
 
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IP_Address An IP Address representing the mask.
+	 * @return IP\Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
 	public static function get_global_netmask()
 	{
-		throw new LogicException(__METHOD__.' not implemented in subclass of '.__CLASS__);
+		throw new \LogicException(__METHOD__.' not implemented in subclass of '.__CLASS__);
 	}
 
 	/**
-	 * Creates an IP_Network_Address for the supplied string
+	 * Creates an IP\NetworkAddress for the supplied string
 	 *
 	 * @param string $address IP Network Address string.
 	 * @param string $cidr Optional CIDR number. If not supplied It is assumed to be part of the address string
-	 * @return IP_Network_Address
+	 * @return IP\NetworkAddress
 	 */
 	public static function factory($address, $cidr = NULL)
 	{
-		if ($address instanceof IP_Network_Address)
+		if ($address instanceof IP\NetworkAddress)
 		{
 			if ($cidr !== NULL AND $cidr !== $address->cidr)
 			{
@@ -88,7 +90,7 @@ abstract class IP_Network_Address_Core
 			$parts = explode('/', $address, 2);
 
 			if (count($parts) != 2)
-				throw new InvalidArgumentException("Missing CIDR notation on '$address'.");
+				throw new \InvalidArgumentException("Missing CIDR notation on '$address'.");
 
 			list($address, $cidr) = $parts;
 		}
@@ -96,49 +98,49 @@ abstract class IP_Network_Address_Core
 		if (is_string($cidr))
 		{
 			if ( ! ctype_digit($cidr))
-				throw new InvalidArgumentException("Malformed CIDR suffix '$cidr'.");
+				throw new \InvalidArgumentException("Malformed CIDR suffix '$cidr'.");
 
 			$cidr = intval($cidr);
 		}
 
-		if ( ! $address instanceof IP_Address)
+		if ( ! $address instanceof IP\Address)
 		{
-			$address = IP_Address::factory($address);
+			$address = IP\Address::factory($address);
 		}
 
-		if ($address instanceof IPv4_Address)
-			return new IPv4_Network_Address($address, $cidr);
-		elseif ($address instanceof IPv6_Address)
-			return new IPv6_Network_Address($address, $cidr);
+		if ($address instanceof IPv4\Address)
+			return new IPv4\NetworkAddress($address, $cidr);
+		elseif ($address instanceof IPv6\Address)
+			return new IPv6\NetworkAddress($address, $cidr);
 		else
-			throw new InvalidArgumentException('Unsupported IP_Address type \''.get_class($address).'\'.');
+			throw new \InvalidArgumentException('Unsupported IP Address type \''.get_class($address).'\'.');
 	}
 
 	/**
 	 * Compare 2 IP Network Address objects.
 	 *
 	 * This method is a wrapper for the compare_to method and is useful in callback situations, e.g.
-	 * usort($addresses, array('IP_Network_Address', 'compare'));
+	 * usort($addresses, array('IP\NetworkAddress', 'compare'));
 	 *
-	 * @param IP_Address $a The left hand side of the comparison.
-	 * @param IP_Address $b The right hand side of the comparison.
+	 * @param IP\Address $a The left hand side of the comparison.
+	 * @param IP\Address $b The right hand side of the comparison.
 	 * @return int The result of the comparison.
 	 */
-	public static function compare(IP_Network_Address $a, IP_Network_Address $b)
+	public static function compare(IP\NetworkAddress $a, IP\NetworkAddress $b)
 	{
 		return $a->compare_to($b);
 	}
 
 	/**
-	 * Construct an IP_Network_Address.
+	 * Construct an IP\NetworkAddress.
 	 *
 	 * @param IPAddress $address The IP Address of the host
 	 * @param string $cidr The CIDR size of the network
 	 */
-	protected function __construct(IP_Address $address, $cidr)
+	protected function __construct(IP\Address $address, $cidr)
 	{
 		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::MAX_SUBNET)
-			throw new InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
+			throw new \InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
 
 		$this->address = $address;
 		$this->cidr = $cidr;
@@ -157,7 +159,7 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Calculates the first address in this subnet.
 	 *
-	 * @return IP_Address
+	 * @return IP\Address
 	 */
 	public function get_network_start()
 	{
@@ -167,7 +169,7 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Calculates the last address in this subnet.
 	 *
-	 * @return IP_Address
+	 * @return IP\Address
 	 */
 	public function get_network_end()
 	{
@@ -179,7 +181,7 @@ abstract class IP_Network_Address_Core
 	 *
 	 * @return integer
 	 */
-	public function get_network_address_count()
+	public function get_NetworkAddress_count()
 	{
 		return pow(2, static::MAX_SUBNET - $this->cidr);
 	}
@@ -190,9 +192,9 @@ abstract class IP_Network_Address_Core
 		{
 			$positive = ($offset >= 0);
 		}
-		elseif ($offset instanceOf Math_BigInteger)
+		elseif ($offset instanceOf \Math_BigInteger)
 		{
-			$positive = ($offset->compare(new Math_BigInteger(0)) >= 0);
+			$positive = ($offset->compare(new \Math_BigInteger(0)) >= 0);
 		}
 		if ($from_start === NULL)
 		{
@@ -218,7 +220,7 @@ abstract class IP_Network_Address_Core
 			{
 				$offset = abs($offset);
 			}
-			elseif ($offset instanceOf Math_BigInteger)
+			elseif ($offset instanceOf \Math_BigInteger)
 			{
 				$offset = $offset->abs();
 			}
@@ -243,7 +245,7 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Get the Network Identifier for the network this address is in.
 	 *
-	 * @return IP_Network_Address
+	 * @return IP\NetworkAddress
 	 */
 	public function get_network_identifier()
 	{
@@ -254,7 +256,7 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Get the subnet mask for this network
 	 *
-	 * @return IP_Address
+	 * @return IP\Address
 	 */
 	public function get_subnet_mask()
 	{
@@ -264,10 +266,10 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Calculates whether two subnets share any portion of their address space.
 	 *
-	 * @param IP_Address $other The other subnet to compare to.
+	 * @param IP\Address $other The other subnet to compare to.
 	 * @return void
 	 */
-	public function shares_subnet_space(IP_Network_Address $other)
+	public function shares_subnet_space(IP\NetworkAddress $other)
 	{
 		$this->check_types($other);
 
@@ -292,10 +294,10 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Checks whether this subnet encloses the supplied subnet.
 	 *
-	 * @param IP_Address $other Subnet to test against.
+	 * @param IP\Address $other Subnet to test against.
 	 * @return boolean
 	 */
-	public function encloses_subnet(IP_Network_Address $other)
+	public function encloses_subnet(IP\NetworkAddress $other)
 	{
 		$this->check_types($other);
 
@@ -308,12 +310,12 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Checks whether the supplied IP fits within this subnet.
 	 *
-	 * @param IP_Address $ip IP to test against.
+	 * @param IP\Address $ip IP to test against.
 	 * @return boolean
 	 */
-	public function encloses_address(IP_Address $ip)
+	public function encloses_address(IP\Address $ip)
 	{
-		$this->check_ip_version($ip);
+		$this->check_IP_version($ip);
 
 		return
 			($this->get_network_start()->compare_to($ip) <= 0)
@@ -324,36 +326,36 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Check that this and the argument are of the same type.
 	 *
-	 * @param IP_Network_Address $other The object to check.
+	 * @param IP\NetworkAddress $other The object to check.
 	 * @return void
-	 * @throws InvalidArgumentException If they are not of the same type.
+	 * @throws \InvalidArgumentException If they are not of the same type.
 	 */
 	protected function check_types($other)
 	{
 		if (get_class($this) != get_class($other))
-			throw new InvalidArgumentException('Incompatible types.');
+			throw new \InvalidArgumentException('Incompatible types.');
 	}
 
 	/**
 	 * Check that this and the argument are of the same IP protocol version
 	 *
-	 * @param IP_Address $other
+	 * @param IP\Address $other
 	 * @return void
-	 * @throws InvalidArgumentException If they are not of the same type.
+	 * @throws \InvalidArgumentException If they are not of the same type.
 	 */
-	protected function check_ip_version(IP_Address $other)
+	protected function check_IP_version(IP\Address $other)
 	{
 		if ($other::IP_VERSION !== static::IP_VERSION)
-			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
+			throw new \InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 
 	/**
-	 * Compare this instance to another IP_Network_Address
+	 * Compare this instance to another IP\NetworkAddress
 	 *
-	 * @param IP_Network_Address $other The instance to compare to
+	 * @param IP\NetworkAddress $other The instance to compare to
 	 * @return integer
 	 */
-	public function compare_to(IP_Network_Address $other)
+	public function compare_to(IP\NetworkAddress $other)
 	{
 		$cmp = $this->address->compare_to($other->address);
 
@@ -380,7 +382,7 @@ abstract class IP_Network_Address_Core
 	 * 
 	 * @param array $blocks An array of network addresses to search in.
 	 * @param integer $block_size The desired network block size
-	 * @return array(IP_Network_Address found, IP_Network_Address within), or array(NULL, NULL) if none found.
+	 * @return array(IP\NetworkAddress found, IP\NetworkAddress within), or array(NULL, NULL) if none found.
 	 */
 	public static function get_block_in_smallest($blocks, $block_size)
 	{
@@ -414,7 +416,7 @@ abstract class IP_Network_Address_Core
 	/**
 	 * Find the portion of this network address block that does not overlap with the given blocks.
 	 *
-	 * @param array $used An array of network addresses to exclude, each of type IP_Network_Address
+	 * @param array $used An array of network addresses to exclude, each of type IP\NetworkAddress
 	 * @return array
 	 */
 	public function excluding($excluding)
@@ -463,7 +465,7 @@ abstract class IP_Network_Address_Core
 			return array($this);
 
 		$new_cidr = $this->cidr + $times;
-		$one = new Math_BigInteger(1);
+		$one = new \Math_BigInteger(1);
 		$offset = $one->bitwise_leftShift(static::MAX_SUBNET - $new_cidr);
 
 		$out = array();

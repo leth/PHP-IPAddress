@@ -16,8 +16,10 @@
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Leth\IPAddress\IPv4\Impl;
+use \Leth\IPAddress\IPv4;
 
-class IPv4_Network_Address_Core extends IP_Network_Address
+class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 {
 	const IP_VERSION = 4;
 	const MAX_SUBNET = 32;
@@ -32,13 +34,13 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 			$mask  = (~$mask) << (static::MAX_SUBNET - $subnet);
 		}
 		
-		return IPv4_Address::factory(implode('.', unpack('C4', pack('N', $mask))));
+		return IPv4\Address::factory(implode('.', unpack('C4', pack('N', $mask))));
 	}
 
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IP_Address An IP Address representing the mask.
+	 * @return IP\Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
 	public static function get_global_netmask()
@@ -49,9 +51,9 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	/**
 	 * Calculates the Network Address for this address (IPv4) or the first ip of the subnet (IPv6)
 	 *
-	 * @return IPv4_Network_Address TODO
+	 * @return IPv4\NetworkAddress TODO
 	 */
-	public function get_network_address()
+	public function get_NetworkAddress()
 	{
 		return $this->get_network_start();
 	}
@@ -80,7 +82,7 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	/**
 	 * Calculates the Broadcast Address for this address.
 	 *
-	 * @return IPv4_Network_Address
+	 * @return IPv4\NetworkAddress
 	 */
 	public function get_broadcast_address()
 	{
@@ -88,10 +90,10 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	}
 
 	// TODO Check this
-	// public function as_ipv6_network_address()
+	// public function as_IPv6\NetworkAddress()
 	// {
-	// 	$address = $this->address->as_ipv6_address();
-	// 	$cidr = (IPv6_Network_Address::MAX_SUBNET - IPv4_Network_Address::MAX_SUBNET) + $this->cidr;
-	// 	return new IPv6_Network_Address($address, $cidr);
+	// 	$address = $this->address->as_IPv6\address();
+	// 	$cidr = (IPv6\NetworkAddress::MAX_SUBNET - IPv4\NetworkAddress::MAX_SUBNET) + $this->cidr;
+	// 	return new IPv6\NetworkAddress($address, $cidr);
 	// }
 }

@@ -1,12 +1,13 @@
 <?php
+use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
 
 /**
- * Tests for the IPv4_Network_Address Class
+ * Tests for the IPv4\NetworkAddress Class
  *
  * @package default
  * @author Marcus Cobden
  */
-class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
+class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 {
 
 	public function providerSubnet()
@@ -61,22 +62,22 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testSubnets($cidr, $subnet, $address_count, $network_class)
 	{
-		$net = IPv4_Network_Address::factory('0.0.0.0', $cidr);
+		$net = IPv4\NetworkAddress::factory('0.0.0.0', $cidr);
 		
 		$this->assertEquals($subnet, (string) $net->get_subnet_mask());
-		$this->assertEquals($address_count, $net->get_network_address_count());
+		$this->assertEquals($address_count, $net->get_NetworkAddress_count());
 		$this->assertEquals($network_class, $net->get_network_class());
 	}
 	
 	public function testGlobalNetmask()
 	{
-		$this->assertEquals('255.255.255.255', (string) IPv4_Network_Address::get_global_netmask());
+		$this->assertEquals('255.255.255.255', (string) IPv4\NetworkAddress::get_global_netmask());
 	}
 
 	public function testDodgyBitwiseStuff()
 	{
-		$block = IPv4_Network_Address::factory('10.13.112.20/30');
-		$address = IPv4_Address::factory('10.13.112.21');
+		$block = IPv4\NetworkAddress::factory('10.13.112.20/30');
+		$address = IPv4\Address::factory('10.13.112.21');
 
 		$this->assertTrue($block->encloses_address($address));
 	}
@@ -84,8 +85,8 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerNetworkBroadcastAddress()
 	{
 		return array(
-			array(IPv4_Network_Address::factory('192.168.1.1/24'), '192.168.1.0', '192.168.1.255'),
-			array(IPv4_Network_Address::factory('192.168.0.10/24'), '192.168.0.0', '192.168.0.255'),
+			array(IPv4\NetworkAddress::factory('192.168.1.1/24'), '192.168.1.0', '192.168.1.255'),
+			array(IPv4\NetworkAddress::factory('192.168.0.10/24'), '192.168.0.0', '192.168.0.255'),
 		);
 	}
 
@@ -94,7 +95,7 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testNetworkBroadcastAddress($ip, $ex_network, $ex_broadcast)
 	{
-		$this->assertEquals($ex_network, (string) $ip->get_network_address());
+		$this->assertEquals($ex_network, (string) $ip->get_NetworkAddress());
 		$this->assertEquals($ex_broadcast, (string) $ip->get_broadcast_address());
 	}
 
@@ -107,10 +108,10 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 		);
 		foreach ($data as  &$d)
 		{
-			$d[0] = IPv4_Network_Address::factory($d[0]);
+			$d[0] = IPv4\NetworkAddress::factory($d[0]);
 			foreach ($d[2] as &$e)
 			{
-				$e = IPv4_Network_Address::factory($e);
+				$e = IPv4\NetworkAddress::factory($e);
 			}
 		}
 		return $data;
@@ -129,7 +130,7 @@ class IPv4_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testSplitBeyondRange()
 	{
-		$block = IPv4_Network_Address::factory('192.168.0.0/32');
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/32');
 		$block->split();
 	}
 }

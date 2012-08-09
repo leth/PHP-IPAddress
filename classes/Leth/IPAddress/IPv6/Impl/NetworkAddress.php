@@ -16,8 +16,10 @@
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Leth\IPAddress\IPv6\Impl;
+use \Leth\IPAddress\IPv6;
 
-class IPv6_Network_Address_Core extends IP_Network_Address
+class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 {
 	const IP_VERSION = 6;
 	const MAX_SUBNET = 128;
@@ -40,13 +42,13 @@ class IPv6_Network_Address_Core extends IP_Network_Address
 			}
 		}
 		$result = unpack('H*', pack('N4', $masks[0], $masks[1], $masks[2], $masks[3]));
-		return IPv6_Address::factory(implode(':', str_split($result[1], 4)));
+		return IPv6\Address::factory(implode(':', str_split($result[1], 4)));
 	}
 
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IP_Address An IP Address representing the mask.
+	 * @return IP\Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
 	public static function get_global_netmask()

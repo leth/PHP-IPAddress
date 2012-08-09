@@ -16,15 +16,17 @@
  * License along with the PHP-IPAddress library.
  * If not, see <http://www.gnu.org/licenses/>.
  */
+namespace Leth\IPAddress\IPv6\Impl;
+use \Leth\IPAddress\IP, \Leth\IPAddress\IPv6;
 
-class IPv6_Address_Core extends IP_Address
+class Address extends IP\Address
 {
 	const IP_VERSION = 6;
 	const FORMAT_ABBREVIATED = 2;
 
 	public static function factory($address)
 	{
-		if ($address instanceof IPv6_Address)
+		if ($address instanceof IPv6\Address)
 		{
 			return $address;
 		}
@@ -32,25 +34,25 @@ class IPv6_Address_Core extends IP_Address
 		{
 			if ( ! filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6))
 			{
-				throw new InvalidArgumentException("'$address' is not a valid IPv6 Address.");
+				throw new \InvalidArgumentException("'$address' is not a valid IPv6 Address.");
 			}
-			$address = IPv6_Address::pad($address);
+			$address = IPv6\Address::pad($address);
 			$address = pack('H*', str_replace(':', '', $address));
 		}
-		elseif ($address instanceOf Math_BigInteger)
+		elseif ($address instanceOf \Math_BigInteger)
 		{
 			// Do nothing
 		}
 		elseif (is_int($address))
 		{
-			$address = new Math_BigInteger($address);
+			$address = new \Math_BigInteger($address);
 		}
 		else
 		{
-			throw new InvalidArgumentException('Unsupported argument type.');
+			throw new \InvalidArgumentException('Unsupported argument type.');
 		}
 
-		return new IPv6_Address($address);
+		return new IPv6\Address($address);
 	}
 
 	/**
@@ -96,7 +98,7 @@ class IPv6_Address_Core extends IP_Address
 
 	protected function __construct($address)
 	{
-		if ($address instanceOf Math_BigInteger)
+		if ($address instanceOf \Math_BigInteger)
 		{
 			parent::__construct(str_pad($address->abs()->toBytes(), 16, chr(0), STR_PAD_LEFT));
 		}
@@ -108,72 +110,72 @@ class IPv6_Address_Core extends IP_Address
 
 	// TODO Add support for NAT64 addresses
 	// TODO fix this.
-	// public function is_encoded_ipv4_address()
+	// public function is_encoded_IPv4\address()
 	// {
 	// 	$address = (string) $this;
 	// 	return preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address) != 0;
 	// }
 	// 
-	// public function as_ipv4_address()
+	// public function as_IPv4\address()
 	// {
 	// 	$address = (string) $this;
 	// 	$match_count = preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address, $matches);
 	// 
 	// 	if ($match_count == 0)
-	// 		throw InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
+	// 		throw \InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
 	// 
 	// 	$address = implode('.', array_map('intval', explode(':', $matches[1])));
 	// 
-	// 	return IPv4_Address::factory($address);
+	// 	return IPv4\Address::factory($address);
 	// }
 
 	public function add($value)
 	{
-		$left = new Math_BigInteger($this->address, 256);
-		$right = ($value instanceof Math_BigInteger) ? $value : new Math_BigInteger($value);
-		return new IPv6_Address($left->add($right));
+		$left = new \Math_BigInteger($this->address, 256);
+		$right = ($value instanceof \Math_BigInteger) ? $value : new \Math_BigInteger($value);
+		return new IPv6\Address($left->add($right));
 	}
 
 	public function subtract($value)
 	{
-		$left = new Math_BigInteger($this->address, 256);
-		$right = ($value instanceof Math_BigInteger) ? $value : new Math_BigInteger($value);
-		return new IPv6_Address($left->subtract($right));
+		$left = new \Math_BigInteger($this->address, 256);
+		$right = ($value instanceof \Math_BigInteger) ? $value : new \Math_BigInteger($value);
+		return new IPv6\Address($left->subtract($right));
 	}
 
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
-	  * @param IP_Address $other is the ip to be compared against
-	  * @returns IP_Address
+	  * @param IP\Address $other is the ip to be compared against
+	  * @returns IP\Address
 	  */
-	public function bitwise_and(IP_Address $other)
+	public function bitwise_and(IP\Address $other)
 	{
 		return $this->bitwise_operation('&', $other);
 	}
 
 	/**
 	  * Calculates the Bitwise | (OR) of a given IP address.
-	  * @param IP_Address $other is the ip to be compared against
-	  * @returns IP_Address
+	  * @param IP\Address $other is the ip to be compared against
+	  * @returns IP\Address
 	  */
-	public function bitwise_or(IP_Address $other)
+	public function bitwise_or(IP\Address $other)
 	{
 		return $this->bitwise_operation('|', $other);
 	}
 
 	/**
 	  * Calculates the Bitwise ^ (XOR) of a given IP address.
-	  * @param IP_Address $other is the ip to be compared against
-	  * @returns IP_Address
+	  * @param IP\Address $other is the ip to be compared against
+	  * @returns IP\Address
 	  */
-	public function bitwise_xor(IP_Address $other)
+	public function bitwise_xor(IP\Address $other)
 	{
 		return $this->bitwise_operation('^', $other);
 	}
 
 	/**
 	  * Calculates the Bitwise ~ (NOT) of a given IP address.
-	  * @returns IP_Address
+	  * @returns IP\Address
 	  */
 	public function bitwise_not()
 	{
@@ -202,14 +204,14 @@ class IPv6_Address_Core extends IP_Address
 				break;
 
 			default:
-				throw new InvalidArgumentException('Unknown Operation type \''.$operation.'\'.');
+				throw new \InvalidArgumentException('Unknown Operation type \''.$operation.'\'.');
 				break;
 		}
 
-		return new IPv6_Address($result);
+		return new IPv6\Address($result);
 	}
 
-	public function compare_to(IP_Address $other)
+	public function compare_to(IP\Address $other)
 	{
 		$this->check_types($other);
 
@@ -227,18 +229,18 @@ class IPv6_Address_Core extends IP_Address
 		$parts = str_split($hex, 4);
 		
 		switch ($mode) {
-			case IP_Address::FORMAT_FULL:
+			case IP\Address::FORMAT_FULL:
 				// Do nothing
 				break;
 
-			case IPv6_Address::FORMAT_ABBREVIATED:
+			case IPv6\Address::FORMAT_ABBREVIATED:
 				foreach ($parts as $i => $quad)
 				{
 					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
 				}
 				break;
 
-			case IP_Address::FORMAT_COMPACT:
+			case IP\Address::FORMAT_COMPACT:
 				$best_pos   = $zeros_pos = FALSE;
 				$best_count = $zeros_count = 0;
 				foreach ($parts as $i => $quad)
@@ -287,7 +289,7 @@ class IPv6_Address_Core extends IP_Address
 				break;
 
 			default:
-				throw new InvalidArgumentException('Unsupported format mode: '.$mode);
+				throw new \InvalidArgumentException('Unsupported format mode: '.$mode);
 		}
 		
 		return implode(':', $parts);

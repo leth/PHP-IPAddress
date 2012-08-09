@@ -1,15 +1,16 @@
 <?php
+use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
 
-class Testing_IPv4_Address extends IPv4_Address
+class Testing_IPv4_Address extends IPv4\Address
 {
 	public static function factory($address)
 	{
-		return new Testing_IPv4_Address($address);
+		return new Testing_IPv4\Address($address);
 	}
 }
 
 /**
- * Tests for the IPv4_Address Class
+ * Tests for the IPv4\Address Class
  *
  * @package default
  * @author Marcus Cobden
@@ -28,10 +29,10 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 			array('192.168.1.2','192.168.1.2'),
 			array('10.0.0.2',   '10.0.0.2'   ),
 			array('10.0.0.1',   '10.0.0.1'   ),
-			array(new Math_BigInteger(1),'0.0.0.1'),
-			array(new Math_BigInteger(2),'0.0.0.2'),
-			array(new Math_BigInteger(3),'0.0.0.3'),
-			array(new Math_BigInteger(256), '0.0.1.0'),
+			array(new \Math_BigInteger(1),'0.0.0.1'),
+			array(new \Math_BigInteger(2),'0.0.0.2'),
+			array(new \Math_BigInteger(3),'0.0.0.3'),
+			array(new \Math_BigInteger(256), '0.0.1.0'),
 		);
 	}
 
@@ -40,7 +41,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactory($input, $expected)
 	{
-		$instance = IPv4_Address::factory($input);
+		$instance = IPv4\Address::factory($input);
 		$this->assertNotNull($instance);
 		$this->assertEquals($expected, (string) $instance);
 	}
@@ -51,7 +52,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 			array('256.0.0.1'),
 			array('127.-1.0.1'),
 			array('127.128.256.1'),
-			array(new Math_BigInteger('99999999999999999')),
+			array(new \Math_BigInteger('99999999999999999')),
 			array(123.45),
 			array(-123.45),
 			array('cake'),
@@ -78,7 +79,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFormatException($input, $mode)
 	{
-		$instance = IPv4_Address::factory($input);
+		$instance = IPv4\Address::factory($input);
 		echo $instance->format($mode);
 	}
 
@@ -88,7 +89,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactoryException($input)
 	{
-		IPv4_Address::factory($input);
+		IPv4\Address::factory($input);
 	}
 
 	public function providerBitwise()
@@ -107,8 +108,8 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
 	{
-		$ip1 = IPv4_Address::factory($ip1);
-		$ip2 = IPv4_Address::factory($ip2);
+		$ip1 = IPv4\Address::factory($ip1);
+		$ip2 = IPv4\Address::factory($ip2);
 		
 		$this->assertEquals($ex_and, (string) $ip1->bitwise_and($ip2));
 		$this->assertEquals($ex_or , (string) $ip1->bitwise_or($ip2));
@@ -129,7 +130,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	//  */
 	// public function testAsIPv6Address($v4, $v6)
 	// {
-	// 	$ip = IPv4_Address::factory($v4);
+	// 	$ip = IPv4\Address::factory($v4);
 	// 	
 	// 	$this->assertEquals($v6, (string) $ip->asIPv6Address());
 	// }
@@ -155,8 +156,8 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		);
 		
 		for ($i=0; $i < count($data); $i++) { 
-			$data[$i][0] = IPv4_Address::factory($data[$i][0]);
-			$data[$i][2] = IPv4_Address::factory($data[$i][2]);
+			$data[$i][0] = IPv4\Address::factory($data[$i][0]);
+			$data[$i][2] = IPv4\Address::factory($data[$i][2]);
 		}
 		
 		return $data;
@@ -186,8 +187,8 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 
 		foreach ($data as $i => $entry) {
 			$data[$i] = array(
-				IPv4_Address::factory($entry[0]),
-				IPv6_Address::factory($entry[1]));
+				IPv4\Address::factory($entry[0]),
+				IPv6\Address::factory($entry[1]));
 		}
 
 		return $data;
@@ -198,9 +199,9 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testAsIPv6Address($input, $expected_equal)
 	{
-		$converted = $input->as_ipv6_address();
+		$converted = $input->as_IPv6_address();
 
-		$this->assertInstanceOf('IPv6_Address', $converted);
+		$this->assertInstanceOf('\Leth\IPAddress\IPv6\Address', $converted);
 		$this->assertEquals(0, $converted->compare_to($expected_equal));
 	}
 }
