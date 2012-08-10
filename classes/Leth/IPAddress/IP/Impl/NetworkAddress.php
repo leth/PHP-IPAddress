@@ -84,7 +84,7 @@ abstract class NetworkAddress
 			}
 			return $address;
 		}
-		
+
 		if ($cidr === NULL)
 		{
 			$parts = explode('/', $address, 2);
@@ -280,11 +280,6 @@ abstract class NetworkAddress
 			list($first, $other) = array($other, $first);
 		}
 
-		$first_start = $first->get_network_start();
-		$other_start = $other->get_network_start();
-		$first_end   = $first->get_network_end();
-		$other_end   = $other->get_network_end();
-
 		return
 			($first->get_network_start()->compare_to($other->get_network_start()) <= 0)
 			AND
@@ -379,7 +374,7 @@ abstract class NetworkAddress
 
 	/**
 	 * Find a block of a given size within the smallest network address among the blocks given
-	 * 
+	 *
 	 * @param array $blocks An array of network addresses to search in.
 	 * @param integer $block_size The desired network block size
 	 * @return array(IP\NetworkAddress found, IP\NetworkAddress within), or array(NULL, NULL) if none found.
@@ -458,7 +453,7 @@ abstract class NetworkAddress
 	 *
 	 * @param int $times The number of times to split the network address
 	 * @return array
-	 */	
+	 */
 	public function split($times = 1)
 	{
 		if (0 == $times)

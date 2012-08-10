@@ -1,4 +1,4 @@
-_<?php
+<?php
 use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
 
 /**
@@ -23,7 +23,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 			array('IPv4\\Address', '10.0.0.2',    '010.000.000.002',    '10.0.0.2'),
 			array('IPv4\\Address', '10.0.0.1',    '010.000.000.001',    '10.0.0.1'),
 			array('IPv4\\Address', 257,           '000.000.001.001',     '0.0.1.1'),
-			
+
 			array('IPv6\\Address', new \Math_BigInteger(257),                  '0000:0000:0000:0000:0000:0000:0000:0101', '::101'),
 			array('IPv6\\Address',                                     '::1', '0000:0000:0000:0000:0000:0000:0000:0001', '::1'),
 			array('IPv6\\Address',              IPv6\Address::factory('::1'), '0000:0000:0000:0000:0000:0000:0000:0001', '::1'),
@@ -39,7 +39,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		$expected_class = 'Leth\\IPAddress\\'.$expected_class;
 		$instances = array(IP\Address::factory($input), $expected_class::factory($input));
-		
+
 		foreach ($instances as $instance) {
 			$this->assertNotNull($instance);
 			$this->assertEquals($full,    $instance->format(IP\Address::FORMAT_FULL));
@@ -47,7 +47,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 			$this->assertEquals($expected_class, get_class($instance));
 		}
 	}
-	
+
 	public function providerFactoryException()
 	{
 		return array(
@@ -56,7 +56,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 			array('-12345'),
 		);
 	}
-	
+
 	/**
 	 * @expectedException \InvalidArgumentException
 	 * @dataProvider providerFactoryException
@@ -65,7 +65,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		IP\Address::factory($input);
 	}
-	
+
 	public function providerCompare()
 	{
 		return array(
@@ -77,14 +77,14 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 			array('10.0.0.1',  '127.0.0.2', -1)
 		);
 	}
-	
+
 	/**
 	 * @dataProvider providerCompare
 	 */
 	public function testCompare($a, $b, $expected)
 	{
 		$result = IP\Address::compare(IP\Address::factory($a), IP\Address::factory($b));
-		
+
 		// Division is to ensure things are either -1, 0 or 1. abs() is to preseve sign.
 		$this->assertEquals($expected, $result == 0 ? 0: $result / abs($result));
 	}
