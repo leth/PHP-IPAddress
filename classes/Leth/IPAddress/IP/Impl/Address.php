@@ -34,7 +34,7 @@ abstract class Address
 	 * Internal representation of the address. Format may vary.
 	 * @var mixed
 	 */
-	public $address;
+	protected $address;
 
 	/**
 	 * Create an IP address object from the supplied address.
