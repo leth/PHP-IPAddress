@@ -12,7 +12,7 @@
          bootstrap="./Tests/bootstrap.php"
         >
     <testsuites>
-        <testsuite name="RollerworksRecordFilterBundle Test Suite">
+        <testsuite name="PHP-IPAddress Test Suite">
             <directory>./Tests/</directory>
         </testsuite>
     </testsuites>
