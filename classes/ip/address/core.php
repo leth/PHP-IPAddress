@@ -32,7 +32,7 @@ abstract class IP_Address_Core
 	 * Internal representation of the address. Format may vary.
 	 * @var mixed
 	 */
-	protected $address;
+	public $address;
 
 	/**
 	 * Create an IP address object from the supplied address.
@@ -161,11 +161,12 @@ abstract class IP_Address_Core
 	 * Check that this instance and the supplied instance are of the same class.
 	 *
 	 * @param IP_Address $other The object to check.
-	 * @throws Kohana_Exception if objects are of the same class.
+	 * @param IP\Address $other The object to check.
+	 * @throws InvalidArgumentException if objects are of the same class.
 	 */
 	protected function check_types(IP_Address $other)
 	{
 		if (get_class($this) != get_class($other))
-			throw new Kohana_Exception('Incompatible types.');
+			throw new InvalidArgumentException('Incompatible types.');
 	}
 }
