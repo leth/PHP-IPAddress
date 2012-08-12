@@ -23,16 +23,16 @@ echo $ip . "\n";
 /**
  * IP\Address::factory(...) will attempt to guess the address version from the arguments
  */
-// Returns an instance of IPv4Address
+// Returns an instance of IPv4\Address
 $ip = IP\Address::factory('127.0.0.1');
 $ip = IPv4\Address::factory('127.0.0.1');
 
-// Returns an instance of IPv6Address
+// Returns an instance of IPv6\Address
 $ip = IP\Address::factory('::1');
 $ip = IPv6\Address::factory('::1');
 
 /**
- * IP_Network_Address::factory(...) will also attempt to guess protocol versions
+ * IP\NetworkAddress::factory(...) will also attempt to guess protocol versions
  */
 // Can either be called with the subnet size encoded in the address string,
 $net_addr = IP\NetworkAddress::factory('192.168.0.1/24');
