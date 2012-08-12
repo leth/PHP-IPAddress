@@ -10,5 +10,10 @@
 		"psr-0": {
 			"Leth\\IPAddress": "classes/"
 		}
+	},
+	"extra": {
+		"branch-alias": {
+			"dev-master": "master"
+		}
 	}
 }
