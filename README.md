@@ -51,18 +51,18 @@ echo $net_addr->get_subnet_mask() . "\n";
 
 To run the test cases, the following commands will do the trick:
 
-*	No-frills tests
+*	No-frills tests:
 
-	phpunit --bootstrap tests/bootstrap.php tests
+	phpunit -c phpunit.xml.dist
 
-*	Generate code coverage reports to 'phpunit/coverage/'
+*	Generate code coverage reports into './coverage/':
 
-	phpunit --bootstrap tests/bootstrap.php --coverage-html phpunit/coverage/ tests
+	phpunit -c phpunit.xml.dist --coverage-html coverage
 
-*	With colours and verbose output
+*	With colours and verbose output:
 
-	phpunit --bootstrap tests/bootstrap.php --colors --verbose tests
+	phpunit -c phpunit.xml.dist --colors --verbose
 
-*	All togeather
+*	All together:
 
-	phpunit --bootstrap tests/bootstrap.php --coverage-html phpunit/coverage/ --colors --verbose tests
+	phpunit -c phpunit.xml.dist --coverage-html coverage --colors --verbose
