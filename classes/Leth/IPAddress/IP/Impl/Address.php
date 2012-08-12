@@ -163,11 +163,11 @@ abstract class Address
 	 * Check that this instance and the supplied instance are of the same class.
 	 *
 	 * @param IP\Address $other The object to check.
-	 * @throws Kohana_Exception if objects are of the same class.
+	 * @throws \InvalidArgumentException if objects are of the same class.
 	 */
 	protected function check_types(IP\Address $other)
 	{
 		if (get_class($this) != get_class($other))
-			throw new Kohana_Exception('Incompatible types.');
+			throw new \InvalidArgumentException('Incompatible types.');
 	}
 }
