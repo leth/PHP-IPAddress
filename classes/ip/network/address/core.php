@@ -181,7 +181,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_address_count()
 	{
-		return pow(2, constant(get_class($this).'$::MAX_SUBNET') - $this->cidr);
+		return pow(2, constant(get_class($this).'::MAX_SUBNET') - $this->cidr);
 	}
 
 	public function get_address_in_network($offset, $from_start = NULL)
