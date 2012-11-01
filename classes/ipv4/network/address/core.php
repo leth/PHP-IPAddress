@@ -29,7 +29,7 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 		// so we have to special case 32 bit shifts
 		if ($subnet > 0)
 		{
-			$mask  = (~$mask) << (static::MAX_SUBNET - $subnet);
+			$mask  = (~$mask) << (self::MAX_SUBNET - $subnet);
 		}
 		
 		return IPv4_Address::factory(implode('.', unpack('C4', pack('N', $mask))));
@@ -43,7 +43,7 @@ class IPv4_Network_Address_Core extends IP_Network_Address
 	 */
 	public static function get_global_netmask()
 	{
-		return static::generate_subnet_mask(static::MAX_SUBNET);
+		return self::generate_subnet_mask(self::MAX_SUBNET);
 	}
 
 	/**

@@ -64,7 +64,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	public function providerFormatException()
 	{
 		$bad_mode = -1;
-		$data = static::providerFactory();
+		$data = self::providerFactory();
 		foreach ($data as $i => $entry) {
 			$data[$i] = array($entry[0], $bad_mode);
 		}

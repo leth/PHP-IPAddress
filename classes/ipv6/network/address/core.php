@@ -51,6 +51,6 @@ class IPv6_Network_Address_Core extends IP_Network_Address
 	 */
 	public static function get_global_netmask()
 	{
-		return static::generate_subnet_mask(static::MAX_SUBNET);
+		return self::generate_subnet_mask(self::MAX_SUBNET);
 	}
 }

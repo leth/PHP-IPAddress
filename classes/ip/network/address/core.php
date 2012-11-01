@@ -137,7 +137,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function __construct(IP_Address $address, $cidr)
 	{
-		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::MAX_SUBNET)
+		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > $this::MAX_SUBNET)
 			throw new InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
 
 		$this->address = $address;
@@ -181,7 +181,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_address_count()
 	{
-		return pow(2, static::MAX_SUBNET - $this->cidr);
+		return pow(2, $this::MAX_SUBNET - $this->cidr);
 	}
 
 	public function get_address_in_network($offset, $from_start = NULL)
@@ -258,7 +258,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_subnet_mask()
 	{
-		return static::generate_subnet_mask($this->cidr);
+		return call_user_func(array(get_class($this), 'generate_subnet_mask'), $this->cidr);
 	}
 
 	/**
@@ -343,7 +343,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function check_ip_version(IP_Address $other)
 	{
-		if ($other::IP_VERSION !== static::IP_VERSION)
+		if ($other::IP_VERSION !== $this::IP_VERSION)
 			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 
@@ -406,7 +406,7 @@ abstract class IP_Network_Address_Core
 		}
 
 		if ($smallest)
-			return array(static::factory($smallest, $block_size), $smallest);
+			return array(call_user_func(array(get_class($this), 'factory'), $smallest, $block_size), $smallest);
 		else
 			return array(NULL, NULL);
 	}
@@ -464,13 +464,13 @@ abstract class IP_Network_Address_Core
 
 		$new_cidr = $this->cidr + $times;
 		$one = new Math_BigInteger(1);
-		$offset = $one->bitwise_leftShift(static::MAX_SUBNET - $new_cidr);
+		$offset = $one->bitwise_leftShift($this::MAX_SUBNET - $new_cidr);
 
 		$out = array();
 		$pos = $this->address;
 		for ($i=0; $i < pow(2, $times); $i++)
 		{
-			$out[] = static::factory($pos, $new_cidr);
+			$out[] = call_user_func(array(get_class($this), 'factory'), $pos, $new_cidr);
 			$pos = $pos->add($offset);
 		}
 

@@ -34,18 +34,18 @@ class IPv4_Address_Core extends IP_Address
 			if ($tmp === FALSE)
 				throw new InvalidArgumentException("'$address' is not a valid IPv4 Address");
 
-			$address = static::_pack(ip2long($address));
+			$address = self::_pack(ip2long($address));
 		}
 		elseif ($address instanceOf Math_BigInteger)
 		{
-			if ($address->compare(new Math_BigInteger(pack('N', ip2long(static::MAX_IP)), 256)) > 0)
+			if ($address->compare(new Math_BigInteger(pack('N', ip2long(self::MAX_IP)), 256)) > 0)
 				throw new InvalidArgumentException("IP value out of range.");
 
 			$address = str_pad($address->toBytes(), 4, chr(0), STR_PAD_LEFT);
 		}
 		elseif (is_int($address))
 		{
-			$address = static::_pack($address);
+			$address = self::_pack($address);
 		}
 		else
 		{
@@ -77,7 +77,7 @@ class IPv4_Address_Core extends IP_Address
 		{
 			$value = intval( (string) $value);
 		}
-		return new IPv4_Address(static::_pack(static::_unpack($this->address) + $value));
+		return new IPv4_Address(self::_pack(self::_unpack($this->address) + $value));
 	}
 
 	public function subtract($value)
@@ -86,7 +86,7 @@ class IPv4_Address_Core extends IP_Address
 		{
 			$value = intval( (string) $value);
 		}
-		return new IPv4_Address(static::_pack(static::_unpack($this->address) - $value));
+		return new IPv4_Address(self::_pack(self::_unpack($this->address) - $value));
 	}
 
 	/**
@@ -160,7 +160,7 @@ class IPv4_Address_Core extends IP_Address
 
 	public function format($mode)
 	{
-		$address = static::_unpack($this->address);
+		$address = self::_unpack($this->address);
 		switch ($mode) {
 			case IP_Address::FORMAT_COMPACT:
 				return long2ip($address);
