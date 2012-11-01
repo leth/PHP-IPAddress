@@ -130,7 +130,7 @@ class IP_Network_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testUnimplementedException($class, $method)
 	{
-		$class::$method(NULL);
+		call_user_func(array($class, $method), NULL);
 	}
 	
 	public function providerCompare()

@@ -36,8 +36,8 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 	 */
 	public function testFactory($expected_class, $input, $full, $compact)
 	{
-		$instances = array(IP_Address::factory($input), $expected_class::factory($input));
-		
+		$instances = array(IP_Address::factory($input), call_user_func(array($expected_class, 'factory'), $input));
+
 		foreach ($instances as $instance) {
 			$this->assertNotNull($instance);
 			$this->assertEquals($full,    $instance->format(IP_Address::FORMAT_FULL));
