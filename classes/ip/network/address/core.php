@@ -137,7 +137,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function __construct(IP_Address $address, $cidr)
 	{
-		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > $this::MAX_SUBNET)
+		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > constant(get_class($this).'::MAX_SUBNET'))
 			throw new InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
 
 		$this->address = $address;
@@ -181,7 +181,7 @@ abstract class IP_Network_Address_Core
 	 */
 	public function get_network_address_count()
 	{
-		return pow(2, $this::MAX_SUBNET - $this->cidr);
+		return pow(2, constant(get_class($this).'$::MAX_SUBNET') - $this->cidr);
 	}
 
 	public function get_address_in_network($offset, $from_start = NULL)
@@ -343,7 +343,7 @@ abstract class IP_Network_Address_Core
 	 */
 	protected function check_ip_version(IP_Address $other)
 	{
-		if ($other::IP_VERSION !== $this::IP_VERSION)
+		if (constant(get_class($other).'::IP_VERSION') !== constant(get_class($this).'::IP_VERSION'))
 			throw new InvalidArgumentException("Incompatible types ('".get_class($this)."' and '".get_class($other)."').");
 	}
 
@@ -464,7 +464,7 @@ abstract class IP_Network_Address_Core
 
 		$new_cidr = $this->cidr + $times;
 		$one = new Math_BigInteger(1);
-		$offset = $one->bitwise_leftShift($this::MAX_SUBNET - $new_cidr);
+		$offset = $one->bitwise_leftShift(constant(get_class($this).'::MAX_SUBNET') - $new_cidr);
 
 		$out = array();
 		$pos = $this->address;
