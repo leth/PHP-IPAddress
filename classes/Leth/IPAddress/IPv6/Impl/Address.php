@@ -236,7 +236,7 @@ class Address extends IP\Address
 			case IPv6\Address::FORMAT_ABBREVIATED:
 				foreach ($parts as $i => $quad)
 				{
-					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
+					$parts[$i] = ($quad === '0000') ? '0' : ltrim($quad, '0');
 				}
 				break;
 
@@ -245,9 +245,9 @@ class Address extends IP\Address
 				$best_count = $zeros_count = 0;
 				foreach ($parts as $i => $quad)
 				{
-					$parts[$i] = ($quad == '0000') ? '0' : ltrim($quad, '0');
+					$parts[$i] = ($quad === '0000') ? '0' : ltrim($quad, '0');
 
-					if ($quad == '0000')
+					if ($quad === '0000')
 					{
 						if ($zeros_pos === FALSE)
 						{
