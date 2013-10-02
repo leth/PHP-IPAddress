@@ -29,6 +29,7 @@ class IP_Address_Test extends PHPUnit_Framework_TestCase
 			array('IPv6\\Address',              IPv6\Address::factory('::1'), '0000:0000:0000:0000:0000:0000:0000:0001', '::1'),
 			array('IPv6\\Address', '0000:0000:0000:0000:0000:0000:0000:0001', '0000:0000:0000:0000:0000:0000:0000:0001', '::1'),
 			array('IPv6\\Address',               'fe80::62fb:42ff:feeb:727c', 'fe80:0000:0000:0000:62fb:42ff:feeb:727c', 'fe80::62fb:42ff:feeb:727c'),
+			array('IPv6\\Address',               'fc00:1234::e0',             'fc00:1234:0000:0000:0000:0000:0000:00e0', 'fc00:1234::e0'),
 		);
 	}
 
