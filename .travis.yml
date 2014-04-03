@@ -4,7 +4,7 @@ php:
   - 5.3
 
 before_script:
-  - pear install Math_BigInteger
+  - composer install --dev
 
 script:
   - phpunit -c phpunit.xml.dist --coverage-text
