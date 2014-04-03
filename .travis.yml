@@ -2,9 +2,13 @@ language: php
 php:
   - 5.4
   - 5.3
+env:
+  - MATH_BIGINTEGER_MODE=INTERNAL
+  - MATH_BIGINTEGER_MODE=GMP
+  - MATH_BIGINTEGER_MODE=BCMATH
 
 before_script:
   - composer install --dev
 
 script:
-  - phpunit -c phpunit.xml.dist --coverage-text
+  - phpunit --configuration phpunit.xml.dist --coverage-text
