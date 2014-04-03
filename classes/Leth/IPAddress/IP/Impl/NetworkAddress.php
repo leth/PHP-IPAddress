@@ -460,8 +460,12 @@ abstract class NetworkAddress
 			return array($this);
 
 		$new_cidr = $this->cidr + $times;
+		$shift = static::MAX_SUBNET - $new_cidr;
+		if ($shift < 0)
+			throw new \InvalidArgumentException('Cannot split beyond smallest subnet size');
+
 		$one = new \Math_BigInteger(1);
-		$offset = $one->bitwise_leftShift(static::MAX_SUBNET - $new_cidr);
+		$offset = $one->bitwise_leftShift($shift);
 
 		$out = array();
 		$pos = $this->address;
