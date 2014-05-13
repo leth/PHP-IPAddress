@@ -2,6 +2,7 @@ language: php
 php:
   - 5.4
   - 5.3
+  - hhvm
 env:
   - MATH_BIGINTEGER_MODE=INTERNAL
   - MATH_BIGINTEGER_MODE=GMP
