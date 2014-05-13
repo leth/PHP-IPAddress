@@ -7,6 +7,11 @@ env:
   - MATH_BIGINTEGER_MODE=INTERNAL
   - MATH_BIGINTEGER_MODE=GMP
   - MATH_BIGINTEGER_MODE=BCMATH
+matrix:
+  exclude:
+    # HHVM doesn't seem to have gmp functions.
+    - php: hhvm
+      env: MATH_BIGINTEGER_MODE=GMP
 
 before_script:
   - composer install --dev
