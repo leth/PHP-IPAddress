@@ -23,6 +23,7 @@ class Address extends IP\Address
 {
 	const IP_VERSION = 4;
 	const MAX_IP = '255.255.255.255';
+	const FORMAT_INTEGER = 3;
 
 	public static function factory($address)
 	{
@@ -164,6 +165,8 @@ class Address extends IP\Address
 	{
 		$address = static::_unpack($this->address);
 		switch ($mode) {
+			case static::FORMAT_INTEGER:
+				return sprintf('%u', $address);
 			case IP\Address::FORMAT_COMPACT:
 				return long2ip($address);
 			case IP\Address::FORMAT_FULL:
