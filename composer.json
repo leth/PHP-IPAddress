@@ -8,7 +8,7 @@
 		"issues": "https://github.com/leth/PHP-IPAddress/issues"
 	},
 	"require": {
-		"pear/math_biginteger": "dev-tags/RELEASE_1_0_2"
+		"pear/math_biginteger": "1.0.2"
 	},
 	"autoload": {
 		"psr-0": {
