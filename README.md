@@ -6,7 +6,7 @@ Supports both IPv4 and IPv6 schemes.
 ### Requirements
 
 *	PHP version 5.3.0 or greater.
-*	(optional) The [PEAR](http://pear.php.net/) [Math_BigInteger](http://pear.php.net/package/Math_BigInteger/) class.
+*	The [PEAR](http://pear.php.net/) [Math_BigInteger](http://pear.php.net/package/Math_BigInteger/) class.
     *		Required for add & subtract operations on IPv6 addresses, and finding IPs in IPv6 address blocks.
 
 ## Examples
