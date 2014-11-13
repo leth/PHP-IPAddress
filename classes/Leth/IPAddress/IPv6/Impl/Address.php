@@ -146,7 +146,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
 	  * @param IP\Address $other is the ip to be compared against
-	  * @returns IP\Address
+	  * @return IP\Address
 	  */
 	public function bitwise_and(IP\Address $other)
 	{
@@ -156,7 +156,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise | (OR) of a given IP address.
 	  * @param IP\Address $other is the ip to be compared against
-	  * @returns IP\Address
+	  * @return IP\Address
 	  */
 	public function bitwise_or(IP\Address $other)
 	{
@@ -166,7 +166,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise ^ (XOR) of a given IP address.
 	  * @param IP\Address $other is the ip to be compared against
-	  * @returns IP\Address
+	  * @return IP\Address
 	  */
 	public function bitwise_xor(IP\Address $other)
 	{
@@ -175,7 +175,7 @@ class Address extends IP\Address
 
 	/**
 	  * Calculates the Bitwise ~ (NOT) of a given IP address.
-	  * @returns IP\Address
+	  * @return IP\Address
 	  */
 	public function bitwise_not()
 	{

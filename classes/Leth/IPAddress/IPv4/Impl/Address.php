@@ -95,7 +95,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IPAddress
+	  * @return IPAddress
 	  */
 	public function bitwise_and(IP\Address $other)
 	{
@@ -106,7 +106,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise | (OR) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IPAddress
+	  * @return IPAddress
 	  */
 	public function bitwise_or(IP\Address $other)
 	{
@@ -117,7 +117,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise ^ (XOR) of a given IP address.
 	  * @param IPv4\Address $other is the ip to be compared against
-	  * @returns IP\Address
+	  * @return IP\Address
 	  */
 	public function bitwise_xor(IP\Address $other)
 	{
@@ -128,7 +128,7 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise ~ (NOT) of a given IP address.
 	  * @param IPv4Address $other is the ip to be compared against
-	  * @returns IP\Address
+	  * @return IP\Address
 	  */
 	public function bitwise_not()
 	{
@@ -138,7 +138,7 @@ class Address extends IP\Address
 	/**
 	 * Creates a IPv6 address object representing the 'IPv4-Mapped' IPv6 address of this object
 	 *
-	 * @returns IPv6\Address
+	 * @return IPv6\Address
 	 */
 	public function as_IPv6_address()
 	{
