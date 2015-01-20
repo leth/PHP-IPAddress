@@ -134,7 +134,7 @@ class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 		$block->split();
 	}
 
-	public function testIterationInterface()
+	public function testIteratorInterface()
 	{
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/30');
 		$expected = array('192.168.0.0', '192.168.0.1', '192.168.0.2', '192.168.0.3');
@@ -142,6 +142,22 @@ class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 		foreach ($block as $key => $ip)
 		{
 			$actual[] = (string)$ip;
+		}
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testTwoIterators()
+	{
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/31');
+		$expected = array('192.168.0.0', '192.168.0.0', '192.168.0.1', '192.168.0.1', '192.168.0.0', '192.168.0.1');
+		$actual = array();
+		foreach ($block as $key => $ip)
+		{
+			$actual[] = (string)$ip;
+			foreach ($block as $key2 => $ip2)
+			{
+				$actual[] = (string)$ip2;
+			}
 		}
 		$this->assertEquals($expected, $actual);
 	}
