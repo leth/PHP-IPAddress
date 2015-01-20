@@ -204,4 +204,28 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertInstanceOf('\Leth\IPAddress\IPv6\Address', $converted);
 		$this->assertEquals(0, $converted->compare_to($expected_equal));
 	}
+
+	public function testGetOctet()
+	{
+		$ip = IPv4\Address::factory('10.250.30.40');
+		$this->assertEquals(10, $ip->get_octet(-4));
+		$this->assertEquals(250, $ip->get_octet(-3));
+		$this->assertEquals(30, $ip->get_octet(-2));
+		$this->assertEquals(40, $ip->get_octet(-1));
+		$this->assertEquals(10, $ip->get_octet(0));
+		$this->assertEquals(250, $ip->get_octet(1));
+		$this->assertEquals(30, $ip->get_octet(2));
+		$this->assertEquals(40, $ip->get_octet(3));
+
+		$this->assertEquals(NULL, $ip->get_octet(4));
+	}
+
+	public function testArrayAccess()
+	{
+		$ip = IPv4\Address::factory('10.250.30.40');
+		$this->assertEquals(10, $ip[-4]);
+		$this->assertEquals(250, $ip[1]);
+
+		$this->assertEquals(NULL, $ip[4]);
+	}
 }

@@ -48,4 +48,24 @@ class IPv6_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 		$block = IPv6\NetworkAddress::factory('::0/128');
 		$block->split();
 	}
+
+	public function testIterationInterface()
+	{
+		$block = IPv6\NetworkAddress::factory('::0/126');
+		$expected = array('::0', '::1', '::2', '::3');
+		$actual = array();
+		foreach ($block as $key => $ip)
+		{
+			$actual[] = (string)$ip;
+		}
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testCountableInterface()
+	{
+		$block = IPv6\NetworkAddress::factory('::0/126');
+		$this->assertEquals(4, count($block));
+		$block = IPv6\NetworkAddress::factory('::0/120');
+		$this->assertEquals(pow(2, 8), count($block));
+	}
 }

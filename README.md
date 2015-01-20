@@ -45,6 +45,36 @@ echo $net_addr->get_network_address() . "\n";
 echo $net_addr->get_broadcast_address() . "\n";
 // Prints '255.255.255.0'
 echo $net_addr->get_subnet_mask() . "\n";
+
+/**
+ * For each address of the specified network.
+ */
+$network = IPv4\NetworkAddress::factory('192.168.0.0/24');
+foreach ($network as $ip) {
+	// $ip is instance of IPv4\Address with value:
+	// 192.168.0.0
+	// 192.168.0.1
+	// ...
+}
+
+$network = IPv4\NetworkAddress::factory('192.168.0.0/24');
+// Prints '256'
+echo count($network);
+
+/**
+ * Get specified octet from IP
+ */
+$ipv4 = IP\Address::factory('192.168.1.102');
+// Prints '102'
+echo $ipv4->get_octet(-1);
+// Prints '168'
+echo $ipv4[1];
+
+$ipv6 = IP\Address::factory('2490::fa');
+// Prints '250'
+echo $ipv6->get_octet(-1);
+// Prints '0'
+echo $ipv6[5];
 ```
 
 ## Test Cases

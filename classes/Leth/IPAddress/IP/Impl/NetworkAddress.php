@@ -25,7 +25,7 @@ use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
  * @package default
  * @author Marcus Cobden
  */
-abstract class NetworkAddress
+abstract class NetworkAddress implements \Iterator, \Countable
 {
 	const IP_VERSION = -1;
 	const MAX_SUBNET = -1;
@@ -43,6 +43,13 @@ abstract class NetworkAddress
 	 * @var int
 	 */
 	protected $cidr;
+
+	/**
+	 * The position of iterator
+	 *
+	 * @var IPAddress
+	 */
+	protected $position;
 
 	/**
 	 * Generates the subnet mask for a given CIDR
@@ -476,5 +483,71 @@ abstract class NetworkAddress
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Set the pointer of iterator to a first network address
+	 * Implement \Iterator
+	 *
+	 * @return void
+	 */
+	public function rewind()
+	{
+		$this->position = $this->get_network_start();
+	}
+
+	/**
+	 * Get the value from iterator
+	 * Implement \Iterator
+	 *
+	 * @return IPAddress
+	 */
+	public function current()
+	{
+		return $this->position;
+	}
+
+	/**
+	 * Get the key from iterator
+	 * Implement \Iterator
+	 *
+	 * @return string
+	 */
+	public function key()
+	{
+		return $this->position->__toString();
+	}
+
+	/**
+	 * Move the pointer of iterator to a next network address
+	 * Implement \Iterator
+	 *
+	 * @return void
+	 */
+	public function next()
+	{
+		$this->position = $this->position->add(1);
+	}
+
+	/**
+	 * Next network address is valid
+	 * Implement \Iterator
+	 *
+	 * @return boolean
+	 */
+	public function valid()
+	{
+		return ($this->position->compare_to($this->get_network_end()) <= 0);
+	}
+
+	/**
+	 * Next network address is valid
+	 * Implement \Countable
+	 *
+	 * @return integer
+	 */
+	public function count()
+	{
+		return $this->get_NetworkAddress_count();
 	}
 }

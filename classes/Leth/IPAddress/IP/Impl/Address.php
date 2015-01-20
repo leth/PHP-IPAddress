@@ -24,7 +24,7 @@ use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
  *
  * @author Marcus Cobden
  */
-abstract class Address
+abstract class Address implements \ArrayAccess
 {
 	const IP_VERSION = -1;
 	const FORMAT_FULL = 0;
@@ -169,5 +169,67 @@ abstract class Address
 	{
 		if (get_class($this) != get_class($other))
 			throw new \InvalidArgumentException('Incompatible types.');
+	}
+
+	/**
+	 * Get the specified octet from this address.
+	 *
+	 * @param integer $number
+	 * @return integer An octet value the result of the operation.
+	 */
+	public function get_octet($number)
+	{
+		$address = unpack("C*", $this->address);
+		$index = (($number >= 0) ? $number : count($address) + $number);
+		$index++;
+		if (!isset($address[$index]))
+			//throw new \InvalidArgumentException("The specified octet out of range");
+			return NULL;
+		return $address[$index];
+	}
+
+	/**
+	 * Whether octet index in allowed range
+	 *
+	 * @param integer $offset
+	 * @return boolean 
+	 */
+	public function offsetExists($offset)
+	{
+		return ($this->get_octet($offset) != NULL);
+	}
+
+	/**
+	 * Get the octet value from index
+	 *
+	 * @param integer $offset
+	 * @return integer 
+	 */
+	public function offsetGet($offset)
+	{
+		return $this->get_octet($offset);
+	}
+
+	/**
+	 * Operation unsupported
+	 *
+	 * @param integer $offset
+	 * @param mixed $value
+	 * @throws \LogicalException
+	 */
+	public function offsetSet($offset, $value)
+	{
+		throw new \LogicalException('Operation unsupported');
+	}
+
+	/**
+	 * Operation unsupported
+	 *
+	 * @param integer $offset
+	 * @throws \LogicalException
+	 */
+	public function offsetUnset($offset)
+	{
+		throw new \LogicalException('Operation unsupported');
 	}
 }

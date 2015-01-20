@@ -234,4 +234,32 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	// 		$this->assertEquals($v4, (string) $ip->asIPv4Address());
 	// 	
 	// }
+
+	public function testGetOctet()
+	{
+		$ip = IPv6\Address::factory('0001:0002:aaaa:1234:abcd:1000:2020:fffe');
+		$this->assertEquals(0, $ip->get_octet(-16));
+		$this->assertEquals(1, $ip->get_octet(-15));
+		$this->assertEquals(0xAA, $ip->get_octet(-11));
+		$this->assertEquals(0x12, $ip->get_octet(-10));
+		$this->assertEquals(0x20, $ip->get_octet(-4));
+		$this->assertEquals(0x20, $ip->get_octet(-3));
+		$this->assertEquals(0xFF, $ip->get_octet(-2));
+		$this->assertEquals(0xFE, $ip->get_octet(-1));
+		$this->assertEquals(0, $ip->get_octet(0));
+		$this->assertEquals(1, $ip->get_octet(1));
+		$this->assertEquals(0x10, $ip->get_octet(10));
+		$this->assertEquals(0xFE, $ip->get_octet(15));
+
+		$this->assertEquals(NULL, $ip->get_octet(16));
+	}
+
+	public function testArrayAccess()
+	{
+		$ip = IPv6\Address::factory('0001:0002:aaaa:1234:abcd:1000:2020:fffe');
+		$this->assertEquals(0x12, $ip[-10]);
+		$this->assertEquals(0x10, $ip[10]);
+
+		$this->assertEquals(NULL, $ip[16]);
+	}
 }
