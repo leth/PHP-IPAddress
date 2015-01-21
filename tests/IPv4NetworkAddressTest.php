@@ -133,4 +133,42 @@ class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/32');
 		$block->split();
 	}
+
+	public function testIteratorInterface()
+	{
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/30');
+		$expected = array('192.168.0.0', '192.168.0.1', '192.168.0.2', '192.168.0.3');
+		$actual = array();
+		foreach ($block as $key => $ip)
+		{
+			$actual[] = (string)$ip;
+		}
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testTwoIterators()
+	{
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/31');
+		$expected = array('192.168.0.0', '192.168.0.0', '192.168.0.1', '192.168.0.1', '192.168.0.0', '192.168.0.1');
+		$actual = array();
+		foreach ($block as $key => $ip)
+		{
+			$actual[] = (string)$ip;
+			foreach ($block as $key2 => $ip2)
+			{
+				$actual[] = (string)$ip2;
+			}
+		}
+		$this->assertEquals($expected, $actual);
+	}
+
+	public function testCountableInterface()
+	{
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/30');
+		$this->assertEquals(4, count($block));
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/24');
+		$this->assertEquals(pow(2, 8), count($block));
+		$block = IPv4\NetworkAddress::factory('192.168.0.0/16');
+		$this->assertEquals(pow(2, 16), count($block));
+	}
 }

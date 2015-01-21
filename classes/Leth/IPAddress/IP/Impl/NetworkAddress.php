@@ -25,7 +25,7 @@ use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
  * @package default
  * @author Marcus Cobden
  */
-abstract class NetworkAddress
+abstract class NetworkAddress implements \IteratorAggregate, \Countable
 {
 	const IP_VERSION = -1;
 	const MAX_SUBNET = -1;
@@ -476,5 +476,27 @@ abstract class NetworkAddress
 		}
 
 		return $out;
+	}
+
+	/**
+	 * Get iterator for this network
+	 * Implement \IteratorAggregate
+	 *
+	 * @return NetworkAddressIterator
+	 */
+	public function getIterator()
+	{
+		return new NetworkAddressIterator($this);
+	}
+
+	/**
+	 * Get count addresses in this network
+	 * Implement \Countable
+	 *
+	 * @return integer
+	 */
+	public function count()
+	{
+		return $this->get_NetworkAddress_count();
 	}
 }
