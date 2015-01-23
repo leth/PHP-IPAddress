@@ -100,21 +100,25 @@ class IP_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 		IP\NetworkAddress::factory($address, $cidr);
 	}
 
-	public function providerFactoryException()
+	public function provideFactoryParseCIDR()
 	{
 		return array(
-			array('127.0.0.1/16', 16),
-			array('127.0.0.1', NULL),
+			array('127.0.0.1/16', 24, 24),
+			array('127.0.0.1', NULL, 32),
+			array('127.0.0.1/24', NULL, 24),
+			array('::1', NULL, 128),
+			array('::1/58', 64, 64),
+			array('::1/58', NULL, 58),
 		);
 	}
 
 	/**
-	 * @expectedException \InvalidArgumentException
-	 * @dataProvider providerFactoryException
+	 * @dataProvider provideFactoryParseCIDR
 	 */
-	public function testFactoryException($address, $cidr)
+	public function testParseCIDR($address, $cidr, $expected)
 	{
-		IP\NetworkAddress::factory($address, $cidr);
+		$network = IP\NetworkAddress::factory($address, $cidr);
+		$this->assertEquals($expected, $network->get_cidr());
 	}
 
 	public function providerUnimplementedException()
