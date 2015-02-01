@@ -85,14 +85,14 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 			return $address;
 		}
 
-		if ($cidr === NULL)
-		{
-			$parts = explode('/', $address, 2);
-
-			if (count($parts) != 2)
-				throw new \InvalidArgumentException("Missing CIDR notation on '$address'.");
-
-			list($address, $cidr) = $parts;
+		$parts = explode('/', $address, 2);
+		if (count($parts) == 2) {
+			if ($cidr == NULL)
+				// Parse CIDR from $address variable because $cidr is null
+				list($address, $cidr) = $parts;
+			else
+				// Ignore CIDR into $address variable
+				list($address) = $parts;
 		}
 
 		if (is_string($cidr))
@@ -139,6 +139,10 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	 */
 	protected function __construct(IP\Address $address, $cidr)
 	{
+		// Default CIDR equal single host
+		if ($cidr === NULL) {
+			$cidr = static::MAX_SUBNET;
+		}
 		if ( ! is_int($cidr) OR $cidr < 0 OR $cidr > static::MAX_SUBNET)
 			throw new \InvalidArgumentException("Invalid CIDR '.$cidr'.Invalid type or out of range for class ".get_class($this).".");
 
