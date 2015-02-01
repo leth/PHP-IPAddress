@@ -132,6 +132,71 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	}
 
 	/**
+	 * Merge adjacent network blocks
+	 *
+	 * Ajacent blocks can only be merged if they belong to the same parent block
+	 *
+	 * @param array NetworkAddresses to merge
+	 * @return array NetworkAddresses remaining after merging
+	 */
+	public static function merge(array $network_addresses)
+	{
+		$net_addr_index = array();
+		foreach ($network_addresses as $net_addr) {
+			// Ensure sure we're only dealing with network identifiers
+			$net_addr = $net_addr->get_network_identifier();
+			$net_addr_index[$net_addr::IP_VERSION][$net_addr->cidr][] = $net_addr;
+		}
+		// We're done with this structure now
+		unset($network_addresses);
+
+		$out = array();
+		foreach ($net_addr_index as $version => $cidr_addrs)
+		{
+			$max = $version == 4 ? IPv4\NetworkAddress::MAX_SUBNET : IPv6\NetworkAddress::MAX_SUBNET;
+			// smallest networks first (largest cidr)
+			// We have to loop by index because we modify the array while we iterate
+			for ($cidr = $max; $cidr > 0; $cidr--)
+			{
+				if (! array_key_exists($cidr, $cidr_addrs))
+					continue;
+				$net_addrs = $cidr_addrs[$cidr];
+				if (count($net_addrs) == 1)
+				{
+					$out[] = $net_addrs[0];
+					continue;
+				}
+
+				usort($net_addrs, array('Leth\IPAddress\IP\NetworkAddress', 'compare'));
+
+				$last_added = NULL;
+				for ($i = 0; $i < count($net_addrs) - 1; $i++) {
+					$a = $net_addrs[$i];
+					$b = $net_addrs[$i + 1];
+					if ($a->compare_to($b) === 0)
+						continue;
+					$parent = $a->get_parent();
+					if ($parent->compare_to($b->get_parent()) === 0)
+					{
+						$cidr_addrs[$parent->cidr][] = $parent;
+						$last_added = $b;
+					}
+					elseif($a !== $last_added)
+					{
+						$out[] = $a;
+						$last_added = $a;
+					}
+				}
+				if ($last_added !== $b && $last_added->compare_to($b) !== 0)
+					$out[] = $b;
+				// We're done with these, remove them to allow GC
+				unset($cidr_addrs[$cidr]);
+			}
+		}
+		return $out;
+	}
+
+	/**
 	 * Construct an IP\NetworkAddress.
 	 *
 	 * @param IPAddress $address The IP Address of the host
@@ -158,6 +223,20 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	public function get_cidr()
 	{
 		return $this->cidr;
+	}
+
+	/**
+	 * Get the NetworkAddress immediately enclosing this one
+	 *
+	 * @return IP\NetworkAddress
+	 */
+	public function get_parent()
+	{
+		if ($this->cidr == 0)
+			return NULL;
+		$parent_cidr = $this->cidr - 1;
+		$parent_addr = $this->address->bitwise_and(static::generate_subnet_mask($parent_cidr));
+		return static::factory($parent_addr, $parent_cidr);
 	}
 
 	/**

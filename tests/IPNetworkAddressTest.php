@@ -426,4 +426,86 @@ class IP_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals($expected, $block->excluding($excluded));
 	}
+
+	public function provideMerge()
+	{
+		$data = array(
+			// Simple merge
+			array(
+				array('0.0.0.0/32', '0.0.0.1/32'),
+				array('0.0.0.0/31'),
+			),
+			// No merge
+			array(
+				array('0.0.0.1/32'),
+				array('0.0.0.1/32'),
+			),
+			array(
+				array('0.0.0.0/32', '0.0.0.2/32'),
+				array('0.0.0.0/32', '0.0.0.2/32'),
+			),
+			// Duplicate entries
+			array(
+				array('0.0.0.0/32', '0.0.0.1/32', '0.0.0.1/32'),
+				array('0.0.0.0/31'),
+			),
+			array(
+				array('0.0.0.0/32', '0.0.0.0/32', '0.0.0.1/32'),
+				array('0.0.0.0/31'),
+			),
+			array(
+				array('0.0.0.0/32', '0.0.0.0/32', '0.0.0.1/32', '0.0.0.1/32'),
+				array('0.0.0.0/31'),
+			),
+			// Single merge with remainder
+			array(
+				array('0.0.0.0/32', '0.0.0.1/32', '0.0.0.2/32'),
+				array('0.0.0.2/32', '0.0.0.0/31'),
+			),
+			// Double merge
+			array(
+				array('0.0.0.0/32', '0.0.0.1/32', '0.0.0.2/31'),
+				array('0.0.0.0/30'),
+			),
+			// Non-network identifier
+			array(
+				array('0.0.0.0/31', '0.0.0.3/31'),
+				array('0.0.0.0/30'),
+			),
+			// IPv6 merges
+			array(
+				array('::0/128', '::1/128'),
+				array('::0/127'),
+			),
+			array(
+				array('::0/128', '::1/128', '::2/127'),
+				array('::0/126'),
+			),
+			// Mixed subnets
+			array(
+				array('0.0.0.0/32', '0.0.0.1/32', '::0/128', '::1/128'),
+				array('0.0.0.0/31', '::0/127'),
+			),
+		);
+
+		foreach ($data as &$x)
+		{
+			foreach ($x as &$y)
+			{
+				foreach ($y as &$addr)
+				{
+					$addr = IP\NetworkAddress::factory($addr);
+				}
+			}
+		}
+		return $data;
+	}
+
+	/**
+	 * @dataProvider provideMerge
+	 */
+	public function testMerge($net_addrs, $expected)
+	{
+		$this->assertEquals($expected, IP\NetworkAddress::merge($net_addrs));
+	}
 }
