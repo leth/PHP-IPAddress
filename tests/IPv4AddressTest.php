@@ -61,6 +61,12 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 			array('0000:0000:0000:ffff:0127:0000:0000:0001'),
 		);
 	}
+
+	public function testFormatInteger()
+	{
+		$ip = IPv4\Address::factory('127.0.0.1');
+		$this->assertEquals(2130706433, $ip->format(IPv4\Address::FORMAT_INTEGER));
+	}
 	
 	public function providerFormatException()
 	{
