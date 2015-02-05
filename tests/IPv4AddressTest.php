@@ -225,7 +225,27 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = IPv4\Address::factory('10.250.30.40');
 		$this->assertEquals(10, $ip[-4]);
 		$this->assertEquals(250, $ip[1]);
+		$this->assertTrue(isset($ip[1]));
 
 		$this->assertEquals(NULL, $ip[4]);
+		$this->assertFalse(isset($ip[4]));
+	}
+
+	/**
+	 * @expectedException \LogicException
+	 */
+	public function testArrayAccessSet()
+	{
+		$ip = IPv4\Address::factory('10.250.30.40');
+		$ip[0] = 0;
+	}
+
+	/**
+	 * @expectedException \LogicException
+	 */
+	public function testArrayAccessUnset()
+	{
+		$ip = IPv4\Address::factory('10.250.30.40');
+		unset($ip[0]);
 	}
 }

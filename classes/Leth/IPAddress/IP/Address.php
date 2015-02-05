@@ -215,21 +215,21 @@ abstract class Address implements \ArrayAccess
 	 *
 	 * @param integer $offset
 	 * @param mixed $value
-	 * @throws \LogicalException
+	 * @throws \LogicException
 	 */
 	public function offsetSet($offset, $value)
 	{
-		throw new \LogicalException('Operation unsupported');
+		throw new \LogicException('Operation unsupported');
 	}
 
 	/**
 	 * Operation unsupported
 	 *
 	 * @param integer $offset
-	 * @throws \LogicalException
+	 * @throws \LogicException
 	 */
 	public function offsetUnset($offset)
 	{
-		throw new \LogicalException('Operation unsupported');
+		throw new \LogicException('Operation unsupported');
 	}
 }
