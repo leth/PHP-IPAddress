@@ -62,11 +62,16 @@ class IP_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 		return array(
 			array('127.0.0.1/16', NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array('127.0.0.1', 16, '127.0.0.1', 16, '127.0.0.0'),
+			array('127.0.0.1/32', NULL, '127.0.0.1', 32, '127.0.0.1'),
+			array('127.0.0.1', 32, '127.0.0.1', 32, '127.0.0.1'),
 			array(IP\NetworkAddress::factory('127.0.0.1/16'), NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array(IP\NetworkAddress::factory('127.0.0.1/16'), 10, '127.0.0.1', 10, '127.0.0.0'),
 
 			array('::1/16', NULL, '::1', 16, '::0'),
 			array('::1', 16, '::1', 16, '::0'),
+			array('::1/128', NULL, '::1', 128, '::1'),
+			array('::1', 128, '::1', 128, '::1'),
+
 		);
 	}
 
