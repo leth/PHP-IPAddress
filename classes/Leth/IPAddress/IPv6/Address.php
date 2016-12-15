@@ -73,7 +73,7 @@ class Address extends IP\Address
 		    $address = str_replace('::', str_repeat(':', 7 - $count + 2), $address);
 		}
 
-		$octets = [];
+		$octets = array();
 		foreach (explode(':', $address) as $octet)
 		{
 		    $octets[] = str_pad($octet, 4, '0', STR_PAD_LEFT);
