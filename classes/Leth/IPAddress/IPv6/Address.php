@@ -66,15 +66,15 @@ class Address extends IP\Address
 	 */
 	public static function pad($address)
 	{
-		$count = substr_count($ip, ':');
+		$count = substr_count($address, ':');
 
 		if ($count < 7)
 		{
-		    $ip = str_replace('::', str_repeat(':', 7 - $count + 2), $ip);
+		    $address = str_replace('::', str_repeat(':', 7 - $count + 2), $address);
 		}
 
 		$octets = [];
-		foreach (explode(':', $ip) as $octet)
+		foreach (explode(':', $address) as $octet)
 		{
 		    $octets[] = str_pad($octet, 4, '0', STR_PAD_LEFT);
 		}
