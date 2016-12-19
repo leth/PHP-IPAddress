@@ -73,13 +73,13 @@ class Address extends IP\Address
 		    $address = str_replace('::', str_repeat(':', 7 - $count + 2), $address);
 		}
 
-		$octets = array();
+		$hextets = array();
 		foreach (explode(':', $address) as $octet)
 		{
-		    $octets[] = str_pad($octet, 4, '0', STR_PAD_LEFT);
+		    $hextets[] = str_pad($octet, 4, '0', STR_PAD_LEFT);
 		}
 
-		return implode(':', $octets);
+		return implode(':', $hextets);
 	}
 
 	protected function __construct($address)
