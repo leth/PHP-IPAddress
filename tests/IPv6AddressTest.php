@@ -262,4 +262,35 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 
 		$this->assertEquals(NULL, $ip[16]);
 	}
+
+	/**
+	 * @return array
+	 */
+	public function providerPadIps()
+	{
+		return array(
+			array('::', '0000:0000:0000:0000:0000:0000:0000:0000'),
+			array('::fff', '0000:0000:0000:0000:0000:0000:0000:0fff'),
+			array('::ff:fff', '0000:0000:0000:0000:0000:0000:00ff:0fff'),
+			array('::f:ff:fff', '0000:0000:0000:0000:0000:000f:00ff:0fff'),
+			array('fff::', '0fff:0000:0000:0000:0000:0000:0000:0000'),
+			array('fff:ff::', '0fff:00ff:0000:0000:0000:0000:0000:0000'),
+			array('fff:ff:f::', '0fff:00ff:000f:0000:0000:0000:0000:0000'),
+			array('2001:630:d0::', '2001:0630:00d0:0000:0000:0000:0000:0000'),
+			array('f:f:f:f:f:f:f:f', '000f:000f:000f:000f:000f:000f:000f:000f'),
+			// not need pad
+			array('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'),
+		);
+	}
+
+	/**
+	 * @dataProvider providerPadIps
+	 *
+	 * @param string $actual
+	 * @param string $expected
+	 */
+	public function testPad($actual, $expected)
+	{
+		$this->assertEquals($expected, IPv6\Address::pad($actual));
+	}
 }

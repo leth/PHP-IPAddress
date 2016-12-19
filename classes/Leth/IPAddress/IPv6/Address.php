@@ -70,13 +70,13 @@ class Address extends IP\Address
 
 		if ($count < 7)
 		{
-		    $address = str_replace('::', str_repeat(':', 7 - $count + 2), $address);
+			$address = str_replace('::', str_repeat(':', 7 - $count + 2), $address);
 		}
 
 		$hextets = array();
-		foreach (explode(':', $address) as $octet)
+		foreach (explode(':', $address) as $hextet)
 		{
-		    $hextets[] = str_pad($octet, 4, '0', STR_PAD_LEFT);
+			$hextets[] = str_pad($hextet, 4, '0', STR_PAD_LEFT);
 		}
 
 		return implode(':', $hextets);
