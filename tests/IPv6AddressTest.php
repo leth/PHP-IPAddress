@@ -55,7 +55,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	public function testFactory($input, $compact, $abbr, $full)
 	{
 		$instance = IPv6\Address::factory($input);
-		
+
 		$this->assertNotNull($instance);
 		$this->assertEquals($compact, $instance->format(IP\Address::FORMAT_COMPACT));
 		$this->assertEquals($abbr, $instance->format(IPv6\Address::FORMAT_ABBREVIATED));
@@ -97,7 +97,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array(array()),
 		);
 	}
-	
+
 	/**
 	 * @expectedException InvalidArgumentException
 	 * @dataProvider providerFactoryException
@@ -106,7 +106,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		IPv6\Address::factory($input);
 	}
-	
+
 	public function providerAddSubtract()
 	{
 		$data = array(
@@ -119,7 +119,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array('::10', new \Math_BigInteger(1), '::11' ),
 			array('::10', new \Math_BigInteger(2), '::12' ),
 		);
-		
+
 		for ($i=0; $i < count($data); $i++)
 		{
 			$data[$i][0] = IPv6\Address::factory($data[$i][0]);
@@ -127,7 +127,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		}
 		return $data;
 	}
-	
+
 	/**
 	 * @dataProvider providerAddSubtract
 	 */
@@ -138,7 +138,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$again = $result->subtract($right);
 		$this->assertEquals(0, $again->compare_to($left));
 	}
-	
+
 	public function providerCompareTo()
 	{
 		$data = array(
@@ -149,14 +149,14 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array('::f', '::1', 1),
 			array('::a', '::b', -1),
 		);
-		
+
 		for ($i=0; $i < count($data); $i++){
 			$data[$i][0] = IPv6\Address::factory($data[$i][0]);
 			$data[$i][1] = IPv6\Address::factory($data[$i][1]);
 		}
 		return $data;
 	}
-	
+
 	/**
 	 * @dataProvider providerCompareTo
 	 */
@@ -164,7 +164,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		$this->assertEquals($expected, $left->compare_to($right));
 	}
-	
+
 	public function providerBitwise()
 	{
 		$data = array(
@@ -174,65 +174,65 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 			array('::1', '::' , '::0', '::1', '::1', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe'),
 			array('::' , '::' , '::0', '::0', '::0', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'),
 		);
-		
-		for ($i=0; $i < count($data); $i++) { 
-			for ($j=0; $j < 6; $j++) { 
+
+		for ($i=0; $i < count($data); $i++) {
+			for ($j=0; $j < 6; $j++) {
 				$data[$i][$j] = IPv6\Address::factory($data[$i][$j]);
 			}
 		}
-		
+
 		return $data;
 	}
-	
+
 	/**
 	 * @dataProvider providerBitwise
 	 */
 	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
-	{		
+	{
 		$this->assertEquals((string) $ex_and, (string) $ip1->bitwise_and($ip2));
 		$this->assertEquals((string) $ex_or , (string) $ip1->bitwise_or($ip2));
 		$this->assertEquals((string) $ex_xor, (string) $ip1->bitwise_xor($ip2));
 		$this->assertEquals((string) $ex_not, (string) $ip1->bitwise_not());
 	}
-	
+
 	public function testBitwiseException()
 	{
-		
+
 		$ip = TestingIPv6_Address::factory('::1');
-		
+
 		try
 		{
 			$ip->call_bitwise_operation('!', $ip);
 			$this->fail('An expected exception has not been raised.');
 		}
 		catch (InvalidArgumentException $e){}
-		
+
 		$ip->call_bitwise_operation('&', $ip);
 		$ip->call_bitwise_operation('|', $ip);
 		$ip->call_bitwise_operation('^', $ip);
 		$ip->call_bitwise_operation('~');
 	}
-	
-	// 
+
+	//
 	// public function provider_as_IPv4\Address()
 	// {
 	// 	return array(
 	// 		array('0000:0000:0000:ffff:0127:0000:0000:0001', '127.0.0.1'),
 	// 	);
 	// }
-	// 
+	//
 	// /**
 	//  * @dataProvider provider_as_IPv4\Address
 	//  */
 	// public function test_as_IPv4\Address($v6, $v4 = NULL)
 	// {
 	// 	$ip = new IPv6\Address($v6);
-	// 	
+	//
 	// 	if ($v4 === NULL)
 	// 		$this->assertFalse($ip->isEncodedIPv4Address());
 	// 	else
 	// 		$this->assertEquals($v4, (string) $ip->asIPv4Address());
-	// 	
+	//
 	// }
 
 	public function testGetOctet()
@@ -261,5 +261,39 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(0x10, $ip[10]);
 
 		$this->assertEquals(NULL, $ip[16]);
+	}
+
+	/**
+	 * @return array
+	 */
+	public function providerPadIps()
+	{
+		return array(
+			array('::', '0000:0000:0000:0000:0000:0000:0000:0000'),
+			array('::fff', '0000:0000:0000:0000:0000:0000:0000:0fff'),
+			array('::ff:fff', '0000:0000:0000:0000:0000:0000:00ff:0fff'),
+			array('::f:ff:fff', '0000:0000:0000:0000:0000:000f:00ff:0fff'),
+			array('fff::', '0fff:0000:0000:0000:0000:0000:0000:0000'),
+			array('fff:ff::', '0fff:00ff:0000:0000:0000:0000:0000:0000'),
+			array('fff:ff:f::', '0fff:00ff:000f:0000:0000:0000:0000:0000'),
+			array('2001:630:d0::', '2001:0630:00d0:0000:0000:0000:0000:0000'),
+			array('f:f:f:f:f:f:f:f', '000f:000f:000f:000f:000f:000f:000f:000f'),
+			array('fff::fff', '0fff:0000:0000:0000:0000:0000:0000:0fff'),
+			array('fff:0000:bb::aa:0000:fff', '0fff:0000:00bb:0000:0000:00aa:0000:0fff'),
+			// not need pad
+			array('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'),
+			array('0000:0000:0000:0000:0000:0000:0000:0000', '0000:0000:0000:0000:0000:0000:0000:0000'),
+		);
+	}
+
+	/**
+	 * @dataProvider providerPadIps
+	 *
+	 * @param string $actual
+	 * @param string $expected
+	 */
+	public function testPad($actual, $expected)
+	{
+		$this->assertEquals($expected, IPv6\Address::pad($actual));
 	}
 }

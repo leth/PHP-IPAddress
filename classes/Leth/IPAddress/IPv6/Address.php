@@ -66,34 +66,31 @@ class Address extends IP\Address
 	 */
 	public static function pad($address)
 	{
-		$ipparts = explode('::', $address, 2);
+		$parts = explode(':', $address);
+		$count = count($parts);
 
-		$head = $ipparts[0];
-		$tail = isset($ipparts[1]) ? $ipparts[1] : array();
-
-		$headparts = explode(':', $head);
-		$ippad = array();
-		foreach ($headparts as $val)
+		$hextets = array();
+		foreach ($parts as $i => $part)
 		{
-			$ippad[] = str_pad($val, 4, '0', STR_PAD_LEFT);
-		}
-		if (count($ipparts) > 1)
-		{
-			$tailparts = explode(':', $tail);
-			$midparts = 8 - count($headparts) - count($tailparts);
-
-			for ($i=0; $i < $midparts; $i++)
+			if (isset($part[3])) // not need pad
 			{
-				$ippad[] = '0000';
+				$hextets[] = $part;
 			}
-
-			foreach ($tailparts as $val)
+			elseif ($part == '' && 0 < $i && $i < $count - 1) // missing hextets in ::
 			{
-				$ippad[] = str_pad($val, 4, '0', STR_PAD_LEFT);
+				$missing = 8 - $count + 1;
+				while ($missing--)
+				{
+					$hextets[] = '0000';
+				}
+			}
+			else
+			{
+				$hextets[] = str_pad($part, 4, '0', STR_PAD_LEFT);
 			}
 		}
 
-		return implode(':', $ippad);
+		return implode(':', $hextets);
 	}
 
 	protected function __construct($address)
