@@ -76,9 +76,10 @@ class Address extends IP\Address
 			{
 				$hextets[] = $part;
 			}
-			elseif ($part == '' && 0 < $i && $i < $count - 1) // zero hextets in ::
+			elseif ($part == '' && 0 < $i && $i < $count - 1) // missing hextets in ::
 			{
-				for ($i = 0; $i < 8 - $count + 1; $i++)
+				$missing = 8 - $count + 1;
+				while ($missing--)
 				{
 					$hextets[] = '0000';
 				}
