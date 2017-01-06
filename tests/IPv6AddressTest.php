@@ -254,6 +254,14 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(NULL, $ip->get_octet(16));
 	}
 
+	public function testMappedIPv4()
+	{
+		$ip = IP\Address::factory('::ffff:141.44.23.50');
+		$this->assertEquals(1, $ip->is_encoded_IPv4_address());
+		$ipv4 = $ip->as_IPv4_address();
+		$this->assertEquals($ipv4->format(IP\Address::FORMAT_COMPACT), '141.44.23.50');
+	}
+
 	public function testArrayAccess()
 	{
 		$ip = IPv6\Address::factory('0001:0002:aaaa:1234:abcd:1000:2020:fffe');

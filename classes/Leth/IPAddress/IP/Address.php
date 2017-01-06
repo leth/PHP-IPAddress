@@ -48,11 +48,11 @@ abstract class Address implements \ArrayAccess
 		{
 			return $address;
 		}
-		elseif (is_int($address) OR (is_string($address) AND strpos($address, '.')) !== FALSE)
+		elseif (is_int($address) OR (is_string($address) AND filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)))
 		{
 			return IPv4\Address::factory($address);
 		}
-		elseif ($address instanceof \Math_BigInteger OR (is_string($address) AND strpos($address, ':') !== FALSE))
+		elseif ($address instanceof \Math_BigInteger OR (is_string($address) AND filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)))
 		{
 			return IPv6\Address::factory($address);
 		}
