@@ -262,6 +262,15 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals($ipv4->format(IP\Address::FORMAT_COMPACT), '141.44.23.50');
 	}
 
+	public function testMayMappedIPv4Format() {
+		$mappedIPv4String = '::ffff:141.44.23.50';
+		$ordinaryIPv6String = '1:2:aaaa:1234:abcd:1000:2020:fffe';
+		$mappedIPv4Address = IP\Address::factory($mappedIPv4String);
+		$ordinaryIPv6Address = IP\Address::factory($ordinaryIPv6String);
+		$this->assertEquals($mappedIPv4Address->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT), $mappedIPv4String);
+		$this->assertEquals($ordinaryIPv6Address->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT), $ordinaryIPv6String);		
+	}
+
 	public function testArrayAccess()
 	{
 		$ip = IPv6\Address::factory('0001:0002:aaaa:1234:abcd:1000:2020:fffe');

@@ -24,6 +24,8 @@ class Address extends IP\Address
 	const IP_VERSION = 6;
 	const FORMAT_ABBREVIATED = 2;
 	const FORMAT_MAPPED_IPV4 = 3;
+	// format mapped v4 if possible, else compact
+	const FORMAT_MAY_MAPPED_COMPACT = 4;
 
 	public static function factory($address)
 	{
@@ -107,8 +109,7 @@ class Address extends IP\Address
 
 	public function is_encoded_IPv4_address()
 	{
-		$address = $this->format(IP\Address::FORMAT_FULL);
-		return preg_match('/^0000:0000:0000:0000:0000:ffff/', $address) === 1;
+		return strncmp($this->address, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff", 12) === 0;
 	}
 
 	public function as_IPv4_address()
@@ -219,7 +220,15 @@ class Address extends IP\Address
 	{
 		list(,$hex) = unpack('H*', $this->address);
 		$parts = str_split($hex, 4);
-		
+
+		if ($mode === IPv6\Address::FORMAT_MAY_MAPPED_COMPACT) {
+			if ($this->is_encoded_IPv4_address()) {
+				$mode = IPv6\Address::FORMAT_MAPPED_IPV4;
+			} else {
+				$mode = IPv6\Address::FORMAT_COMPACT;
+			}
+		}
+
 		switch ($mode) {
 			case IP\Address::FORMAT_FULL:
 				// Do nothing
@@ -293,4 +302,8 @@ class Address extends IP\Address
 		return implode(':', $parts);
 	}
 
+	public function __toString()
+	{
+		return $this->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT);
+	}
 }
