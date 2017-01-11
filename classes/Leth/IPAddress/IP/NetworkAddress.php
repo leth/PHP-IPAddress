@@ -573,6 +573,18 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	}
 
 	/**
+	 * Get array of addresses in this network
+	 *
+	 * Warning: May use a lot of memory if used with large networks.
+	 *          Consider using an iterator and the count() method instead.
+	 * @return array
+	 */
+	public function toArray()
+	{
+		return iterator_to_array($this, false);
+	}
+
+	/**
 	 * Get count addresses in this network
 	 * Implement \Countable
 	 *
