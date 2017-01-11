@@ -17,12 +17,15 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Leth\IPAddress\IPv6;
-use \Leth\IPAddress\IP, \Leth\IPAddress\IPv6;
+use \Leth\IPAddress\IP, \Leth\IPAddress\IPv6, \Leth\IPAddress\IPv4;
 
 class Address extends IP\Address
 {
 	const IP_VERSION = 6;
 	const FORMAT_ABBREVIATED = 2;
+	const FORMAT_MAPPED_IPV4 = 3;
+	// format mapped v4 if possible, else compact
+	const FORMAT_MAY_MAPPED_COMPACT = 4;
 
 	public static function factory($address)
 	{
@@ -36,8 +39,7 @@ class Address extends IP\Address
 			{
 				throw new \InvalidArgumentException("'$address' is not a valid IPv6 Address.");
 			}
-			$address = IPv6\Address::pad($address);
-			$address = pack('H*', str_replace(':', '', $address));
+			$address = inet_pton($address);
 		}
 		elseif ($address instanceOf \Math_BigInteger)
 		{
@@ -105,26 +107,20 @@ class Address extends IP\Address
 		}
 	}
 
-	// TODO Add support for NAT64 addresses
-	// TODO fix this.
-	// public function is_encoded_IPv4\address()
-	// {
-	// 	$address = (string) $this;
-	// 	return preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address) != 0;
-	// }
-	// 
-	// public function as_IPv4\address()
-	// {
-	// 	$address = (string) $this;
-	// 	$match_count = preg_match('#^0000:0000:0000:ffff:(0\d{1,3}\.0\d{1,3}\.0\d{1,3}\.0\d{1,3})$#','\1', $address, $matches);
-	// 
-	// 	if ($match_count == 0)
-	// 		throw \InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
-	// 
-	// 	$address = implode('.', array_map('intval', explode(':', $matches[1])));
-	// 
-	// 	return IPv4\Address::factory($address);
-	// }
+	public function is_encoded_IPv4_address()
+	{
+		return strncmp($this->address, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff", 12) === 0;
+	}
+
+	public function as_IPv4_address()
+	{
+		if(!$this->is_encoded_IPv4_address())
+			throw \InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
+		list(,$hex) = unpack('H*', $this->address);
+		$parts = array_map('hexdec', array_slice(str_split($hex, 2), 12));
+		$address = implode('.', $parts);
+		return IPv4\Address::factory($address);
+	}
 
 	public function add($value)
 	{
@@ -224,7 +220,15 @@ class Address extends IP\Address
 	{
 		list(,$hex) = unpack('H*', $this->address);
 		$parts = str_split($hex, 4);
-		
+
+		if ($mode === IPv6\Address::FORMAT_MAY_MAPPED_COMPACT) {
+			if ($this->is_encoded_IPv4_address()) {
+				$mode = IPv6\Address::FORMAT_MAPPED_IPV4;
+			} else {
+				$mode = IPv6\Address::FORMAT_COMPACT;
+			}
+		}
+
 		switch ($mode) {
 			case IP\Address::FORMAT_FULL:
 				// Do nothing
@@ -235,6 +239,12 @@ class Address extends IP\Address
 				{
 					$parts[$i] = ($quad === '0000') ? '0' : ltrim($quad, '0');
 				}
+				break;
+
+			case IPv6\Address::FORMAT_MAPPED_IPV4:
+				list($a, $b) = str_split($parts[6], 2);
+				list($c, $d) = str_split($parts[7], 2);
+				return '::ffff:' . implode('.', array(hexdec($a), hexdec($b), hexdec($c), hexdec($d)));
 				break;
 
 			case IP\Address::FORMAT_COMPACT:
@@ -292,4 +302,8 @@ class Address extends IP\Address
 		return implode(':', $parts);
 	}
 
+	public function __toString()
+	{
+		return $this->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT);
+	}
 }
