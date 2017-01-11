@@ -144,6 +144,7 @@ class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 			$actual[] = (string)$ip;
 		}
 		$this->assertEquals($expected, $actual);
+		$this->assertEquals($expected, array_map('strval', $block->toArray()));
 	}
 
 	public function testTwoIterators()
