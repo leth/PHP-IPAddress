@@ -62,6 +62,19 @@ $network = IPv4\NetworkAddress::factory('192.168.0.0/24');
 echo count($network);
 
 /**
+ * Merge adjacent NetworkAddress blocks into larger blocks
+ */
+$small = array(
+	IPv4\NetworkAddress::factory('192.168.0.0/24'),
+	IPv4\NetworkAddress::factory('192.168.1.0/24')
+);
+$merged = IP\NetworkAddress::merge($small);
+// Prints '1'
+echo count($merged);
+// Prints '1'
+echo $merged[0] == IP\NetworkAddress::factory('192.168.0.0/23');
+
+/**
  * Get specified octet from IP
  */
 $ipv4 = IP\Address::factory('192.168.1.102');
