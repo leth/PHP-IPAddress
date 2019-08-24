@@ -187,7 +187,7 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 						$last_added = $a;
 					}
 				}
-				if ($last_added !== $b && $last_added->compare_to($b) !== 0)
+				if ($last_added === NULL || ($last_added !== $b && $last_added->compare_to($b) !== 0))
 					$out[] = $b;
 				// We're done with these, remove them to allow GC
 				unset($cidr_addrs[$cidr]);
