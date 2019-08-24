@@ -491,6 +491,11 @@ class IP_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 				array('0.0.0.0/32', '0.0.0.1/32', '::0/128', '::1/128'),
 				array('0.0.0.0/31', '::0/127'),
 			),
+			// Merge with duplicate resultant entry
+			array(
+				array('0.0.0.0/22', '0.0.0.0/24', '0.0.1.0/24', '0.0.2.0/24', '0.0.3.0/24'),
+				array('0.0.0.0/22'),
+			),
 		);
 
 		foreach ($data as &$x)
