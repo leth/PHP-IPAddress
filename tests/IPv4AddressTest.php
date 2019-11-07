@@ -1,5 +1,6 @@
 <?php
-use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use PHPUnit\Framework\TestCase;
 
 class Testing_IPv4_Address extends IPv4\Address
 {
@@ -15,7 +16,7 @@ class Testing_IPv4_Address extends IPv4\Address
  * @package default
  * @author Marcus Cobden
  */
-class IPv4_Address_Test extends PHPUnit_Framework_TestCase
+class IPv4_Address_Test extends TestCase
 {
 
 	public function providerFactory()
@@ -45,7 +46,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertNotNull($instance);
 		$this->assertEquals($expected, (string) $instance);
 	}
-	
+
 	public function providerFactoryException()
 	{
 		return array(
@@ -67,7 +68,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = IPv4\Address::factory('127.0.0.1');
 		$this->assertEquals(2130706433, $ip->format(IPv4\Address::FORMAT_INTEGER));
 	}
-	
+
 	public function providerFormatException()
 	{
 		$bad_mode = -1;
@@ -108,7 +109,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 			array('0.0.0.0', '0.0.0.0', '0.0.0.0', '0.0.0.0', '0.0.0.0', '255.255.255.255'),
 		);
 	}
-	
+
 	/**
 	 * @dataProvider providerBitwise
 	 */
@@ -116,13 +117,13 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	{
 		$ip1 = IPv4\Address::factory($ip1);
 		$ip2 = IPv4\Address::factory($ip2);
-		
+
 		$this->assertEquals($ex_and, (string) $ip1->bitwise_and($ip2));
 		$this->assertEquals($ex_or , (string) $ip1->bitwise_or($ip2));
 		$this->assertEquals($ex_xor, (string) $ip1->bitwise_xor($ip2));
 		$this->assertEquals($ex_not, (string) $ip1->bitwise_not());
 	}
-	
+
 	// TODO Check this
 	// public function providerAsIPv6Address()
 	// {
@@ -130,14 +131,14 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 	// 		array('127.0.0.1', '0000:0000:0000:ffff:0127:0000:0000:0001'),
 	// 	);
 	// }
-	// 
+	//
 	// /**
 	//  * @dataProvider providerAsIPv6Address
 	//  */
 	// public function testAsIPv6Address($v4, $v6)
 	// {
 	// 	$ip = IPv4\Address::factory($v4);
-	// 	
+	//
 	// 	$this->assertEquals($v6, (string) $ip->asIPv6Address());
 	// }
 
@@ -160,12 +161,12 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 			array('255.0.255.0', 257, '255.1.0.1'),
 			array('192.168.0.0', 4, '192.168.0.4'),
 		);
-		
-		for ($i=0; $i < count($data); $i++) { 
+
+		for ($i=0; $i < count($data); $i++) {
 			$data[$i][0] = IPv4\Address::factory($data[$i][0]);
 			$data[$i][2] = IPv4\Address::factory($data[$i][2]);
 		}
-		
+
 		return $data;
 	}
 
@@ -223,7 +224,7 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(30, $ip->get_octet(2));
 		$this->assertEquals(40, $ip->get_octet(3));
 
-		$this->assertEquals(NULL, $ip->get_octet(4));
+		$this->assertNull($ip->get_octet(4));
 	}
 
 	public function testArrayAccess()
@@ -231,9 +232,9 @@ class IPv4_Address_Test extends PHPUnit_Framework_TestCase
 		$ip = IPv4\Address::factory('10.250.30.40');
 		$this->assertEquals(10, $ip[-4]);
 		$this->assertEquals(250, $ip[1]);
-		$this->assertTrue(isset($ip[1]));
+		$this->assertNotEmpty($ip[1]);
 
-		$this->assertEquals(NULL, $ip[4]);
+		$this->assertNull($ip[4]);
 		$this->assertFalse(isset($ip[4]));
 	}
 

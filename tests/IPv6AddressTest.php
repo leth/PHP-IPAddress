@@ -1,5 +1,6 @@
 <?php
-use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use Leth\IPAddress\IP, Leth\IPAddress\IPv6;
+use PHPUnit\Framework\TestCase;
 
 class TestingIPv6_Address extends IPv6\Address
 {
@@ -7,7 +8,7 @@ class TestingIPv6_Address extends IPv6\Address
 	{
 		return new TestingIPv6_Address($address);
 	}
-	
+
 	public function call_bitwise_operation($flag, IP\Address $other = NULL)
 	{
 		$this->bitwise_operation($flag, $other);
@@ -20,7 +21,7 @@ class TestingIPv6_Address extends IPv6\Address
  * @package default
  * @author Marcus Cobden
  */
-class IPv6_Address_Test extends PHPUnit_Framework_TestCase
+class IPv6_Address_Test extends TestCase
 {
 
 	public function providerFactory()
@@ -251,7 +252,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(0x10, $ip->get_octet(10));
 		$this->assertEquals(0xFE, $ip->get_octet(15));
 
-		$this->assertEquals(NULL, $ip->get_octet(16));
+		$this->assertNull($ip->get_octet(16));
 	}
 
 	public function testMappedIPv4()
@@ -268,7 +269,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$mappedIPv4Address = IP\Address::factory($mappedIPv4String);
 		$ordinaryIPv6Address = IP\Address::factory($ordinaryIPv6String);
 		$this->assertEquals($mappedIPv4Address->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT), $mappedIPv4String);
-		$this->assertEquals($ordinaryIPv6Address->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT), $ordinaryIPv6String);		
+		$this->assertEquals($ordinaryIPv6Address->format(IPv6\Address::FORMAT_MAY_MAPPED_COMPACT), $ordinaryIPv6String);
 	}
 
 	public function testArrayAccess()
@@ -277,7 +278,7 @@ class IPv6_Address_Test extends PHPUnit_Framework_TestCase
 		$this->assertEquals(0x12, $ip[-10]);
 		$this->assertEquals(0x10, $ip[10]);
 
-		$this->assertEquals(NULL, $ip[16]);
+		$this->assertNull($ip[16]);
 	}
 
 	/**

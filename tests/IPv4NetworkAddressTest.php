@@ -1,5 +1,6 @@
 <?php
-use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use Leth\IPAddress\IPv4;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for the IPv4\NetworkAddress Class
@@ -7,7 +8,7 @@ use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
  * @package default
  * @author Marcus Cobden
  */
-class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
+class IPv4_NetworkAddress_Test extends TestCase
 {
 
 	public function providerSubnet()
@@ -47,28 +48,28 @@ class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 			array( 1, '128.000.000.000', 2147483648, '128 A'),
 			array( 0, '000.000.000.000', 4294967296, '256 A'),
 		);
-		
+
 		// Collapse redundant 0s
-		for ($i=0; $i < count($data); $i++) { 
+		for ($i=0; $i < count($data); $i++) {
 			$data[$i][1] = str_replace('00','0', $data[$i][1]);
 			$data[$i][1] = str_replace('00','0', $data[$i][1]);
 		}
-		
+
 		return $data;
 	}
-	
+
 	/**
 	 * @dataProvider providerSubnet
 	 */
 	public function testSubnets($cidr, $subnet, $address_count, $network_class)
 	{
 		$net = IPv4\NetworkAddress::factory('0.0.0.0', $cidr);
-		
+
 		$this->assertEquals($subnet, (string) $net->get_subnet_mask());
 		$this->assertEquals($address_count, $net->get_NetworkAddress_count());
 		$this->assertEquals($network_class, $net->get_network_class());
 	}
-	
+
 	public function testGlobalNetmask()
 	{
 		$this->assertEquals('255.255.255.255', (string) IPv4\NetworkAddress::get_global_netmask());
@@ -166,7 +167,7 @@ class IPv4_NetworkAddress_Test extends PHPUnit_Framework_TestCase
 	public function testCountableInterface()
 	{
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/30');
-		$this->assertEquals(4, count($block));
+		$this->assertCount(4, $block);
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/24');
 		$this->assertEquals(pow(2, 8), count($block));
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/16');
