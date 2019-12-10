@@ -1,5 +1,6 @@
 <?php
-use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use Leth\IPAddress\IPv6;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for the IP\NetworkAddress Class
@@ -7,7 +8,7 @@ use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
  * @package default
  * @author Marcus Cobden
  */
-class IPv6_NetworkAddress_Test extends PHPUnit_Framework_TestCase
+class IPv6_NetworkAddress_Test extends TestCase
 {
 	public function test_global_netmask()
 	{

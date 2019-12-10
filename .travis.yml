@@ -1,23 +1,27 @@
 language: php
 php:
+  - 7.3
+  - 7.2
+  - 7.1
   - 7.0
   - 5.6
-  - 5.5
-  - 5.4
-  - 5.3
-  - hhvm
+
+matrix:
+  include:
+    - php: 5.3
+      dist: precise
+    - php: 5.4
+      dist: trusty
+    - php: 5.5
+      dist: trusty
+
 env:
   - MATH_BIGINTEGER_MODE=INTERNAL
   - MATH_BIGINTEGER_MODE=GMP
   - MATH_BIGINTEGER_MODE=BCMATH
-matrix:
-  exclude:
-    # HHVM doesn't seem to have gmp functions.
-    - php: hhvm
-      env: MATH_BIGINTEGER_MODE=GMP
 
 before_script:
-  - composer install --dev
+  - composer install
 
 script:
-  - phpunit --configuration phpunit.xml.dist --coverage-text
+  - vendor/bin/phpunit --configuration phpunit.xml.dist --coverage-text

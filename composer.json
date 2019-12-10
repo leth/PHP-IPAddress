@@ -10,9 +10,12 @@
 	"require": {
 		"pear/math_biginteger": "1.0.3"
 	},
+	"require-dev": {
+		"phpunit/phpunit": "^4.8.36 || ^5.7 || ^6.5 || ^7.0"
+	},
 	"autoload": {
-		"psr-0": {
-			"Leth\\IPAddress": "classes/"
+		"psr-4": {
+			"Leth\\IPAddress\\": "classes/Leth/IPAddress"
 		}
 	}
 }

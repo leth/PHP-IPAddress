@@ -1,5 +1,6 @@
 <?php
 use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use PHPUnit\Framework\TestCase;
 
 /**
  * Tests for the IP\Address Class
@@ -7,7 +8,7 @@ use Leth\IPAddress\IP, Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
  * @package default
  * @author Marcus Cobden
  */
-class IP_Address_Test extends PHPUnit_Framework_TestCase
+class IP_Address_Test extends TestCase
 {
 
 	public function providerFactory()
