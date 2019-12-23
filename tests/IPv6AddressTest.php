@@ -206,7 +206,12 @@ class IPv6_Address_Test extends TestCase
 			$ip->call_bitwise_operation('!', $ip);
 			$this->fail('An expected exception has not been raised.');
 		}
-		catch (InvalidArgumentException $e){}
+		catch (InvalidArgumentException $e)
+		{
+			$exception_message = $e->getMessage();
+			$expected_exception_message = "Unknown Operation type '!'.";
+			$this->assertEquals($expected_exception_message, $exception_message);
+		}
 
 		$ip->call_bitwise_operation('&', $ip);
 		$ip->call_bitwise_operation('|', $ip);

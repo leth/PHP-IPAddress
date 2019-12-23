@@ -1,5 +1,6 @@
 <?php
 use Leth\IPAddress\IPv4, Leth\IPAddress\IPv6;
+use Leth\IPAddress\IPv6\Address;
 use PHPUnit\Framework\TestCase;
 
 class Testing_IPv4_Address extends IPv4\Address
@@ -208,7 +209,7 @@ class IPv4_Address_Test extends TestCase
 	{
 		$converted = $input->as_IPv6_address();
 
-		$this->assertInstanceOf('\Leth\IPAddress\IPv6\Address', $converted);
+		$this->assertInstanceOf(Address::class, $converted);
 		$this->assertEquals(0, $converted->compare_to($expected_equal));
 	}
 
