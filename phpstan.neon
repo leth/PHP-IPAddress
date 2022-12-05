@@ -1,5 +1,5 @@
 parameters:
-	level: 3
+	level: 6
 	paths:
 		- classes
 	fileExtensions:
@@ -12,4 +12,6 @@ parameters:
 		jobSize: 20
 		maximumNumberOfProcesses: 32
 		minimumNumberOfJobsPerProcess: 4
+	ignoreErrors:
+	    - '#Parameter \#1 \$x of class Math_BigInteger constructor expects optional, .* given#'
 includes:

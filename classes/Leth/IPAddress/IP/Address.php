@@ -83,9 +83,9 @@ abstract class Address implements \ArrayAccess
 	/**
 	 * Create a new IP Address object.
 	 *
-	 * @param numeric $address The address to represent.
+	 * @param int|string $address The address to represent.
 	 */
-	protected function __construct($address)
+	protected function __construct(int|string $address)
 	{
 		$this->address = $address;
 	}
@@ -112,7 +112,7 @@ abstract class Address implements \ArrayAccess
 	 * @param IP\Address $other The other operand.
 	 * @return IP\Address An address representing the result of the operation.
 	 */
-	public abstract function bitwise_and(IP\Address $other);
+	abstract public function bitwise_and(IP\Address $other);
 
 	/**
 	 * Compute the bitwise OR of this address and another.
@@ -120,7 +120,7 @@ abstract class Address implements \ArrayAccess
 	 * @param IP\Address $other The other operand.
 	 * @return IP\Address An address representing the result of the operation.
 	 */
-	public abstract function bitwise_or(IP\Address $other);
+	abstract public function bitwise_or(IP\Address $other): Address;
 
 	/**
 	 * Compute the bitwise XOR (Exclusive OR) of this address and another.
@@ -128,14 +128,14 @@ abstract class Address implements \ArrayAccess
 	 * @param IP\Address $other The other operand.
 	 * @return IP\Address An address representing the result of the operation.
 	 */
-	public abstract function bitwise_xor(IP\Address $other);
+	abstract public function bitwise_xor(IP\Address $other): Address;
 
 	/**
 	 * Compute the bitwise NOT of this address.
 	 *
 	 * @return IP\Address An address representing the result of the operation.
 	 */
-	public abstract function bitwise_not();
+	abstract public function bitwise_not(): Address;
 
 	/**
 	 * Compare this IP Address with another.
@@ -143,16 +143,16 @@ abstract class Address implements \ArrayAccess
 	 * @param IP\Address $other The instance to compare to.
 	 * @return int The result of the comparison.
 	 */
-	public abstract function compare_to(IP\Address $other);
+	abstract public function compare_to(IP\Address $other): int;
 
 	/**
 	 * Convert this object to a string representation
 	 *
 	 * @return string This IP address expressed as a string.
 	 */
-	public function __toString()
+	public function __toString(): string
 	{
-		return $this->format(IP\Address::FORMAT_COMPACT);
+		return $this->format(self::FORMAT_COMPACT);
 	}
 
 	/**
@@ -160,7 +160,7 @@ abstract class Address implements \ArrayAccess
 	 *
 	 * @return string This IP address expressed as a string.
 	 */
-	public abstract function format($mode);
+	abstract public function format(int $mode): string;
 
 	/**
 	 * Check that this instance and the supplied instance are of the same class.
@@ -168,10 +168,11 @@ abstract class Address implements \ArrayAccess
 	 * @param IP\Address $other The object to check.
 	 * @throws \InvalidArgumentException if objects are of the same class.
 	 */
-	protected function check_types(IP\Address $other)
-	{
-		if (get_class($this) != get_class($other))
-			throw new \InvalidArgumentException('Incompatible types.');
+	protected function check_types(IP\Address $other): void
+    {
+		if (get_class($this) !== get_class($other)) {
+            throw new \InvalidArgumentException('Incompatible types.');
+        }
 	}
 
 	/**

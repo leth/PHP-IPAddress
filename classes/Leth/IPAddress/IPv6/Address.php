@@ -96,7 +96,7 @@ class Address extends IP\Address
 		return implode(':', $hextets);
 	}
 
-	protected function __construct($address)
+	protected function __construct(\Math_BigInteger|int|string $address)
 	{
 		if ($address instanceOf \Math_BigInteger)
 		{
@@ -176,7 +176,7 @@ class Address extends IP\Address
 		return $this->bitwise_operation('~');
 	}
 
-	public function bitwise_operation(string $operation, Address $other = NULL): IPv6\Address
+	public function bitwise_operation(string $operation, IP\Address $other = NULL): IPv6\Address
 	{
 		if ($operation !== '~')
 		{
@@ -194,28 +194,31 @@ class Address extends IP\Address
 		return new IPv6\Address($result);
 	}
 
-	public function compare_to(IP\Address $other)
+	public function compare_to(IP\Address $other): int
 	{
 		$this->check_types($other);
 
-		if ($this->address < $other->address)
-			return -1;
-		elseif ($this->address > $other->address)
-			return 1;
-		else
-			return 0;
+		if ($this->address < $other->address) {
+            return -1;
+        }
+		elseif ($this->address > $other->address) {
+            return 1;
+        }
+		else {
+            return 0;
+        }
 	}
 
-	public function format($mode)
+	public function format(int $mode): string
 	{
-		list(,$hex) = unpack('H*', $this->address);
+		[, $hex] = unpack('H*', $this->address);
 		$parts = str_split($hex, 4);
 
-		if ($mode === IPv6\Address::FORMAT_MAY_MAPPED_COMPACT) {
+		if ($mode === self::FORMAT_MAY_MAPPED_COMPACT) {
 			if ($this->is_encoded_IPv4_address()) {
-				$mode = IPv6\Address::FORMAT_MAPPED_IPV4;
+				$mode = self::FORMAT_MAPPED_IPV4;
 			} else {
-				$mode = IPv6\Address::FORMAT_COMPACT;
+				$mode = IP\Address::FORMAT_COMPACT;
 			}
 		}
 
@@ -235,7 +238,6 @@ class Address extends IP\Address
 				list($a, $b) = str_split($parts[6], 2);
 				list($c, $d) = str_split($parts[7], 2);
 				return '::ffff:' . implode('.', array(hexdec($a), hexdec($b), hexdec($c), hexdec($d)));
-				break;
 
 			case IP\Address::FORMAT_COMPACT:
 				$best_pos   = $zeros_pos = FALSE;

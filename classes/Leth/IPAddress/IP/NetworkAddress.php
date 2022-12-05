@@ -279,8 +279,8 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	 *
 	 * @return integer
 	 */
-	public function get_NetworkAddress_count()
-	{
+	public function get_NetworkAddress_count(): int
+    {
 		return 2 ** (static::MAX_SUBNET - $this->cidr);
 	}
 

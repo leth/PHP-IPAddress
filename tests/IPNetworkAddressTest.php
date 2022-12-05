@@ -12,12 +12,12 @@ class IP_Address_Tester extends IP\Address
 	public function subtract($value): IP\Address {}
 
 	public function bitwise_and(IP\Address $other) {}
-	public function bitwise_or(IP\Address $other) {}
-	public function bitwise_xor(IP\Address $other) {}
-	public function bitwise_not() {}
+	public function bitwise_or(IP\Address $other): Address {}
+	public function bitwise_xor(IP\Address $other): Address {}
+	public function bitwise_not(): Address {}
 
-	public function format($mode) { return __CLASS__; }
-	public function compare_to(IP\Address $other) {}
+	public function format(int $mode): string { return __CLASS__; }
+	public function compare_to(IP\Address $other): int {}
 }
 
 class IP_NetworkAddress_Tester extends IP\NetworkAddress

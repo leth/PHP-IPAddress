@@ -66,12 +66,12 @@ class Address extends IP\Address
 		parent::__construct($address);
 	}
 
-	protected static function _pack($address)
-	{
+	protected static function _pack(int $address): string
+    {
 		return pack('N', $address);
 	}
 
-	protected static function _unpack($address)
+	protected static function _unpack(string $address): int
 	{
 		$out = unpack('N', $address);
 		return $out[1];
@@ -165,7 +165,7 @@ class Address extends IP\Address
         }
 	}
 
-	public function format($mode)
+	public function format(int $mode): string
 	{
 		$address = static::_unpack($this->address);
 		switch ($mode) {
