@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -18,6 +19,7 @@
  */
 namespace Leth\IPAddress\IP;
 use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
+use ReturnTypeWillChange;
 
 /**
  * An abstract representation of an IP Address.
@@ -26,33 +28,34 @@ use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
  */
 abstract class Address implements \ArrayAccess
 {
-	const IP_VERSION = -1;
-	const FORMAT_FULL = 0;
-	const FORMAT_COMPACT = 1;
+	public const IP_VERSION  = -1;
+	public const FORMAT_FULL    = 0;
+	public const FORMAT_COMPACT = 1;
 
 	/**
 	 * Internal representation of the address. Format may vary.
-	 * @var mixed
+	 * @var numeric
 	 */
 	protected $address;
 
-	/**
-	 * Create an IP address object from the supplied address.
-	 *
-	 * @param string $address The address to represent.
-	 * @return IP\Address An instance of a subclass of IP\Address; either IPv4\Address or IPv6\Address
-	 */
-	public static function factory($address)
+    /**
+     * Create an IP address object from the supplied address.
+     *
+     * @param IP\Address|int|string|\Math_BigInteger $address The address to represent.
+     *
+     * @return \Leth\IPAddress\IP\Address An instance of a subclass of IP\Address; either IPv4\Address or IPv6\Address
+     */
+	public static function factory(IP\Address|int|string|\Math_BigInteger $address): IP\Address
 	{
-		if ($address instanceof IP\Address)
+		if ($address instanceof self)
 		{
 			return $address;
 		}
-		elseif (is_int($address) OR (is_string($address) AND filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)))
+		elseif (is_int($address) || (is_string($address) && filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)))
 		{
 			return IPv4\Address::factory($address);
 		}
-		elseif ($address instanceof \Math_BigInteger OR (is_string($address) AND filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)))
+		elseif ($address instanceof \Math_BigInteger || (is_string($address) && filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)))
 		{
 			return IPv6\Address::factory($address);
 		}
@@ -72,7 +75,7 @@ abstract class Address implements \ArrayAccess
 	 * @param IP\Address $b The right hand side of the comparison.
 	 * @return int The result of the comparison.
 	 */
-	public static function compare(IP\Address $a, IP\Address $b)
+	public static function compare(IP\Address $a, IP\Address $b): int
 	{
 		return $a->compare_to($b);
 	}
@@ -80,7 +83,7 @@ abstract class Address implements \ArrayAccess
 	/**
 	 * Create a new IP Address object.
 	 *
-	 * @param string $address The address to represent.
+	 * @param numeric $address The address to represent.
 	 */
 	protected function __construct($address)
 	{
@@ -93,7 +96,7 @@ abstract class Address implements \ArrayAccess
 	 * @param integer|\Math_BigInteger $value
 	 * @return IP\Address An address representing the result of the operation.
 	 */
-	public abstract function add($value);
+	abstract public function add($value): Address;
 
 	/**
 	 * Subtract the given value from this address.
@@ -101,7 +104,7 @@ abstract class Address implements \ArrayAccess
 	 * @param integer|\Math_BigInteger $value
 	 * @return IP\Address An address representing the result of the operation.
 	 */
-	public abstract function subtract($value);
+	abstract public function subtract($value): Address;
 
 	/**
 	 * Compute the bitwise AND of this address and another.
@@ -175,18 +178,17 @@ abstract class Address implements \ArrayAccess
 	 * Get the specified octet from this address.
 	 *
 	 * @param integer $number
-	 * @return integer An octet value the result of the operation.
+	 *
+	 * @return ?integer An octet value the result of the operation.
 	 */
-	public function get_octet($number)
-	{
+	public function get_octet(int $number): ?int
+    {
 		$address = unpack("C*", $this->address);
 		$index = (($number >= 0) ? $number : count($address) + $number);
 		$index++;
-		if (!isset($address[$index]))
-			//throw new \InvalidArgumentException("The specified octet out of range");
-			return NULL;
-		return $address[$index];
-	}
+
+        return $address[$index] ?? null;
+    }
 
 	/**
 	 * Whether octet index in allowed range
@@ -194,18 +196,19 @@ abstract class Address implements \ArrayAccess
 	 * @param integer $offset
 	 * @return boolean 
 	 */
-	public function offsetExists($offset)
+	public function offsetExists($offset): bool
 	{
-		return ($this->get_octet($offset) != NULL);
+		return ($this->get_octet($offset) !== NULL);
 	}
 
 	/**
 	 * Get the octet value from index
 	 *
 	 * @param integer $offset
-	 * @return integer 
+	 *
+	 * @return integer|null
 	 */
-	public function offsetGet($offset)
+	public function offsetGet($offset): ?int
 	{
 		return $this->get_octet($offset);
 	}
@@ -217,7 +220,8 @@ abstract class Address implements \ArrayAccess
 	 * @param mixed $value
 	 * @throws \LogicException
 	 */
-	public function offsetSet($offset, $value)
+	#[ReturnTypeWillChange]
+    public function offsetSet($offset, $value): mixed
 	{
 		throw new \LogicException('Operation unsupported');
 	}
@@ -228,7 +232,8 @@ abstract class Address implements \ArrayAccess
 	 * @param integer $offset
 	 * @throws \LogicException
 	 */
-	public function offsetUnset($offset)
+	#[ReturnTypeWillChange]
+    public function offsetUnset($offset): void
 	{
 		throw new \LogicException('Operation unsupported');
 	}

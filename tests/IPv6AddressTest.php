@@ -4,13 +4,13 @@ use PHPUnit\Framework\TestCase;
 
 class TestingIPv6_Address extends IPv6\Address
 {
-	public static function factory($address)
+	public static function factory(IP\Address|int|string|\Math_BigInteger $address): TestingIPv6_Address
 	{
 		return new TestingIPv6_Address($address);
 	}
 
-	public function call_bitwise_operation($flag, IP\Address $other = NULL)
-	{
+	public function call_bitwise_operation($flag, IP\Address $other = NULL): void
+    {
 		$this->bitwise_operation($flag, $other);
 	}
 }
@@ -24,8 +24,8 @@ class TestingIPv6_Address extends IPv6\Address
 class IPv6_Address_Test extends TestCase
 {
 
-	public function providerFactory()
-	{
+	public function providerFactory(): array
+    {
 		return array(
 			array(
 				'::1',
@@ -53,8 +53,8 @@ class IPv6_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($input, $compact, $abbr, $full)
-	{
+	public function testFactory($input, $compact, $abbr, $full): void
+    {
 		$instance = IPv6\Address::factory($input);
 
 		$this->assertNotNull($instance);
@@ -75,17 +75,18 @@ class IPv6_Address_Test extends TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
-	 * @dataProvider providerFormatException
+	 *
+     * @dataProvider providerFormatException
 	 */
 	public function testFormatException($input, $mode)
 	{
-		$instance = IPv6\Address::factory($input);
+        $this->expectException(InvalidArgumentException::class);
+        $instance = IPv6\Address::factory($input);
 		echo $instance->format($mode);
 	}
 
-	public function providerFactoryException()
-	{
+	public function providerFactoryException(): array
+    {
 		return array(
 			array('256.0.0.1'),
 			array('127.-1.0.1'),
@@ -95,21 +96,21 @@ class IPv6_Address_Test extends TestCase
 			array('-12345'),
 			array('0000:0000:0000:ffff:0127:0000:0000:000g'),
 			array('000000000000ffff0127000000000001'),
-			array(array()),
 		);
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
-	 * @dataProvider providerFactoryException
+	 *
+     * @dataProvider providerFactoryException
 	 */
-	public function testFactoryException($input)
-	{
-		IPv6\Address::factory($input);
+	public function testFactoryException($input): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        IPv6\Address::factory($input);
 	}
 
-	public function providerAddSubtract()
-	{
+	public function providerAddSubtract(): array
+    {
 		$data = array(
 			array('::'  , 0, '::' ),
 			array('::1' , 0, '::1' ),
@@ -121,7 +122,7 @@ class IPv6_Address_Test extends TestCase
 			array('::10', new \Math_BigInteger(2), '::12' ),
 		);
 
-		for ($i=0; $i < count($data); $i++)
+		for ($i=0, $iMax = count($data); $i < $iMax; $i++)
 		{
 			$data[$i][0] = IPv6\Address::factory($data[$i][0]);
 			$data[$i][2] = IPv6\Address::factory($data[$i][2]);
@@ -140,8 +141,8 @@ class IPv6_Address_Test extends TestCase
 		$this->assertEquals(0, $again->compare_to($left));
 	}
 
-	public function providerCompareTo()
-	{
+	public function providerCompareTo(): array
+    {
 		$data = array(
 			array('::', '::', 0),
 			array('::1', '::1', 0),
@@ -151,7 +152,7 @@ class IPv6_Address_Test extends TestCase
 			array('::a', '::b', -1),
 		);
 
-		for ($i=0; $i < count($data); $i++){
+		for ($i=0, $iMax = count($data); $i < $iMax; $i++){
 			$data[$i][0] = IPv6\Address::factory($data[$i][0]);
 			$data[$i][1] = IPv6\Address::factory($data[$i][1]);
 		}
@@ -166,8 +167,8 @@ class IPv6_Address_Test extends TestCase
 		$this->assertEquals($expected, $left->compare_to($right));
 	}
 
-	public function providerBitwise()
-	{
+	public function providerBitwise(): array
+    {
 		$data = array(
 			//     OP1    OP2    AND    OR     XOR     NOT
 			array('::1', '::1', '::1', '::1', '::0', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:fffe'),
@@ -176,7 +177,7 @@ class IPv6_Address_Test extends TestCase
 			array('::' , '::' , '::0', '::0', '::0', 'ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff'),
 		);
 
-		for ($i=0; $i < count($data); $i++) {
+		for ($i=0, $iMax = count($data); $i < $iMax; $i++) {
 			for ($j=0; $j < 6; $j++) {
 				$data[$i][$j] = IPv6\Address::factory($data[$i][$j]);
 			}
@@ -188,16 +189,16 @@ class IPv6_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerBitwise
 	 */
-	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not)
-	{
+	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not): void
+    {
 		$this->assertEquals((string) $ex_and, (string) $ip1->bitwise_and($ip2));
 		$this->assertEquals((string) $ex_or , (string) $ip1->bitwise_or($ip2));
 		$this->assertEquals((string) $ex_xor, (string) $ip1->bitwise_xor($ip2));
 		$this->assertEquals((string) $ex_not, (string) $ip1->bitwise_not());
 	}
 
-	public function testBitwiseException()
-	{
+	public function testBitwiseException(): void
+    {
 
 		$ip = TestingIPv6_Address::factory('::1');
 

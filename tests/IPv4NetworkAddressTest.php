@@ -126,12 +126,10 @@ class IPv4_NetworkAddress_Test extends TestCase
 		$this->assertEquals($expected, $block->split($degree));
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testSplitBeyondRange()
+    public function testSplitBeyondRange()
 	{
-		$block = IPv4\NetworkAddress::factory('192.168.0.0/32');
+        $this->expectException(InvalidArgumentException::class);
+        $block = IPv4\NetworkAddress::factory('192.168.0.0/32');
 		$block->split();
 	}
 

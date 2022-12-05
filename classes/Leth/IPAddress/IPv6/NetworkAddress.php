@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -21,18 +22,18 @@ use \Leth\IPAddress\IPv6;
 
 class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 {
-	const IP_VERSION = 6;
-	const MAX_SUBNET = 128;
+	public const IP_VERSION = 6;
+	public const MAX_SUBNET = 128;
 
-	public static function generate_subnet_mask($subnet)
+	public static function generate_subnet_mask(int $cidr): IPv6\Address
 	{
 		$masks = array();
 		for ($i=1; $i <= 4; $i++)
 		{
 			// left shift operates over arch-specific integer sizes,
 			// so we have to special case 32 bit shifts
-			$shift = min(32, max(0, 32*$i  - $subnet));
-			if ($shift == 32)
+			$shift = min(32, max(0, 32*$i  - $cidr));
+			if ($shift === 32)
 			{
 				$masks[] = 0;
 			}
@@ -48,10 +49,10 @@ class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 	/**
 	 * Gets the Global subnet mask for this IP Protocol
 	 *
-	 * @return IP\Address An IP Address representing the mask.
+	 * @return Address An IP Address representing the mask.
 	 * @author Marcus Cobden
 	 */
-	public static function get_global_netmask()
+	public static function get_global_netmask(): Address
 	{
 		return static::generate_subnet_mask(static::MAX_SUBNET);
 	}

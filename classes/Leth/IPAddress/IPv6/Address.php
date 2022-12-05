@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -21,15 +22,15 @@ use \Leth\IPAddress\IP, \Leth\IPAddress\IPv6, \Leth\IPAddress\IPv4;
 
 class Address extends IP\Address
 {
-	const IP_VERSION = 6;
-	const FORMAT_ABBREVIATED = 2;
-	const FORMAT_MAPPED_IPV4 = 3;
+	public const IP_VERSION         = 6;
+	public const FORMAT_ABBREVIATED = 2;
+	public const FORMAT_MAPPED_IPV4 = 3;
 	// format mapped v4 if possible, else compact
-	const FORMAT_MAY_MAPPED_COMPACT = 4;
+	public const FORMAT_MAY_MAPPED_COMPACT = 4;
 
-	public static function factory($address)
+	public static function factory(IP\Address|int|string|\Math_BigInteger $address): IPv6\Address
 	{
-		if ($address instanceof IPv6\Address)
+		if ($address instanceof self)
 		{
 			return $address;
 		}
@@ -66,8 +67,8 @@ class Address extends IP\Address
 	 * @param string $address IPv6 address to be padded
 	 * @return string A fully padded string IPv6 address
 	 */
-	public static function pad($address)
-	{
+	public static function pad(string $address): string
+    {
 		$parts = explode(':', $address);
 		$count = count($parts);
 
@@ -78,7 +79,7 @@ class Address extends IP\Address
 			{
 				$hextets[] = $part;
 			}
-			elseif ($part == '' && 0 < $i && $i < $count - 1) // missing hextets in ::
+			elseif ($part === '' && 0 < $i && $i < $count - 1) // missing hextets in ::
 			{
 				$missing = 8 - $count + 1;
 				while ($missing--)
@@ -107,29 +108,29 @@ class Address extends IP\Address
 		}
 	}
 
-	public function is_encoded_IPv4_address()
-	{
+	public function is_encoded_IPv4_address(): bool
+    {
 		return strncmp($this->address, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff", 12) === 0;
 	}
 
-	public function as_IPv4_address()
-	{
+	public function as_IPv4_address(): IPv4\Address
+    {
 		if(!$this->is_encoded_IPv4_address())
-			throw \InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
-		list(,$hex) = unpack('H*', $this->address);
+			throw new \InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
+		[,$hex] = unpack('H*', $this->address);
 		$parts = array_map('hexdec', array_slice(str_split($hex, 2), 12));
 		$address = implode('.', $parts);
 		return IPv4\Address::factory($address);
 	}
 
-	public function add($value)
-	{
+	public function add($value): Address
+    {
 		$left = new \Math_BigInteger($this->address, 256);
 		$right = ($value instanceof \Math_BigInteger) ? $value : new \Math_BigInteger($value);
 		return new IPv6\Address($left->add($right));
 	}
 
-	public function subtract($value)
+	public function subtract($value): IPv6\Address
 	{
 		$left = new \Math_BigInteger($this->address, 256);
 		$right = ($value instanceof \Math_BigInteger) ? $value : new \Math_BigInteger($value);
@@ -139,9 +140,9 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise & (AND) of a given IP address.
 	  * @param IP\Address $other is the ip to be compared against
-	  * @return IP\Address
+	  * @return IPv6\Address
 	  */
-	public function bitwise_and(IP\Address $other)
+	public function bitwise_and(IP\Address $other): IPv6\Address
 	{
 		return $this->bitwise_operation('&', $other);
 	}
@@ -149,9 +150,9 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise | (OR) of a given IP address.
 	  * @param IP\Address $other is the ip to be compared against
-	  * @return IP\Address
+	  * @return IPv6\Address
 	  */
-	public function bitwise_or(IP\Address $other)
+	public function bitwise_or(IP\Address $other): IPv6\Address
 	{
 		return $this->bitwise_operation('|', $other);
 	}
@@ -159,47 +160,36 @@ class Address extends IP\Address
 	/**
 	  * Calculates the Bitwise ^ (XOR) of a given IP address.
 	  * @param IP\Address $other is the ip to be compared against
-	  * @return IP\Address
+	  * @return IPv6\Address
 	  */
-	public function bitwise_xor(IP\Address $other)
+	public function bitwise_xor(IP\Address $other): IPv6\Address
 	{
 		return $this->bitwise_operation('^', $other);
 	}
 
 	/**
 	  * Calculates the Bitwise ~ (NOT) of a given IP address.
-	  * @return IP\Address
+	  * @return IPv6\Address
 	  */
-	public function bitwise_not()
+	public function bitwise_not(): IPv6\Address
 	{
 		return $this->bitwise_operation('~');
 	}
 
-	public function bitwise_operation($operation, $other = NULL)
+	public function bitwise_operation(string $operation, Address $other = NULL): IPv6\Address
 	{
-		if ($operation != '~')
+		if ($operation !== '~')
 		{
 			$this->check_types($other);
 		}
 
-		switch ($operation) {
-			case '&':
-				$result = $other->address & $this->address;
-				break;
-			case '|':
-				$result = $other->address | $this->address;
-				break;
-			case '^':
-				$result = $other->address ^ $this->address;
-				break;
-			case '~':
-				$result = ~$this->address;
-				break;
-
-			default:
-				throw new \InvalidArgumentException('Unknown Operation type \''.$operation.'\'.');
-				break;
-		}
+        $result = match ($operation) {
+            '&' => $other->address & $this->address,
+            '|' => $other->address | $this->address,
+            '^' => $other->address ^ $this->address,
+            '~' => ~$this->address,
+            default => throw new \InvalidArgumentException('Unknown Operation type \'' . $operation . '\'.'),
+        };
 
 		return new IPv6\Address($result);
 	}

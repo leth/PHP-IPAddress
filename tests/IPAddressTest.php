@@ -60,12 +60,13 @@ class IP_Address_Test extends TestCase
 	}
 
 	/**
-	 * @expectedException \InvalidArgumentException
-	 * @dataProvider providerFactoryException
+	 *
+     * @dataProvider providerFactoryException
 	 */
 	public function testFactoryException($input)
 	{
-		IP\Address::factory($input);
+        $this->expectException(\InvalidArgumentException::class);
+        IP\Address::factory($input);
 	}
 
 	public function providerCompare()
