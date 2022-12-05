@@ -1,0 +1,15 @@
+parameters:
+	level: 3
+	paths:
+		- classes
+	fileExtensions:
+		- php
+	reportUnmatchedIgnoredErrors: false
+	checkMissingIterableValueType: false
+	checkGenericClassInNonGenericObjectType: false
+	parallel:
+		processTimeout: 300.0
+		jobSize: 20
+		maximumNumberOfProcesses: 32
+		minimumNumberOfJobsPerProcess: 4
+includes:
