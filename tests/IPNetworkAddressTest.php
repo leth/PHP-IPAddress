@@ -8,21 +8,21 @@ class IP_Address_Tester extends IP\Address
 {
 	public function __construct() {}
 
-	public function add($value): IP\Address {}
-	public function subtract($value): IP\Address {}
+	public function add($value): IP\Address {return Address::factory('0.0.0.0');}
+	public function subtract($value): IP\Address {return Address::factory('0.0.0.0');}
 
-	public function bitwise_and(IP\Address $other) {}
-	public function bitwise_or(IP\Address $other): Address {}
-	public function bitwise_xor(IP\Address $other): Address {}
-	public function bitwise_not(): Address {}
+	public function bitwise_and(IP\Address $other) {return  $other;}
+	public function bitwise_or(IP\Address $other): Address {return  $other;}
+	public function bitwise_xor(IP\Address $other): Address {return  $other;}
+	public function bitwise_not(): Address {return Address::factory('0.0.0.0');}
 
 	public function format(int $mode): string { return __CLASS__; }
-	public function compare_to(IP\Address $other): int {}
+	public function compare_to(IP\Address $other): int {return  0;}
 }
 
 class IP_NetworkAddress_Tester extends IP\NetworkAddress
 {
-	public function split(int $times = 1): array {}
+	public function split(int $times = 1): array {return  [];}
 }
 
 class IPv4_NetworkAddress_Tester extends IPv4\NetworkAddress
@@ -33,7 +33,7 @@ class IPv4_NetworkAddress_Tester extends IPv4\NetworkAddress
 		return new IPv4_NetworkAddress_Tester($ip, $cidr);
 	}
 
-	public function test_check_IP_version($other): void
+	public function test_check_IP_version(NetworkAddress $other): void
     {
 		$this->check_IP_version($other->address);
 	}
@@ -46,7 +46,7 @@ class IPv6_NetworkAddress_Tester extends IPv6\NetworkAddress
 		$ip = IPv6\Address::factory($address);
 		return new IPv6_NetworkAddress_Tester($ip, $cidr);
 	}
-	public function test_check_IP_version($other): void
+	public function test_check_IP_version(NetworkAddress $other): void
 	{
 		$this->check_IP_version($other->address);
 	}
@@ -60,8 +60,8 @@ class IPv6_NetworkAddress_Tester extends IPv6\NetworkAddress
  */
 class IP_NetworkAddress_Test extends TestCase
 {
-	public function providerFactory()
-	{
+	public function providerFactory(): array
+    {
 		return array(
 			array('127.0.0.1/16', NULL, '127.0.0.1', 16, '127.0.0.0'),
 			array('127.0.0.1', 16, '127.0.0.1', 16, '127.0.0.0'),
@@ -81,8 +81,8 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($address, $cidr, $expected_address, $expected_cidr, $expected_subnet)
-	{
+	public function testFactory(string|IP\NetworkAddress $address, string|int|null $cidr, string $expected_address, int $expected_cidr, string $expected_subnet): void
+    {
 		$ip = IP\NetworkAddress::factory($address, $cidr);
 
 		$this->assertEquals($expected_cidr, $ip->get_cidr());
@@ -103,7 +103,7 @@ class IP_NetworkAddress_Test extends TestCase
 	 * @dataProvider providerFactoryThrowsException
 	 *
      */
-	public function testFactoryThrowsException($address, $cidr): void
+	public function testFactoryThrowsException(IP_Address_Tester $address, int $cidr): void
     {
         $this->expectException(\InvalidArgumentException::class);
         IP\NetworkAddress::factory($address, $cidr);
@@ -124,7 +124,7 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider provideFactoryParseCIDR
 	 */
-	public function testParseCIDR($address, $cidr, $expected): void
+	public function testParseCIDR(string $address, string|int|null $cidr, int $expected): void
     {
 		$network = IP\NetworkAddress::factory($address, $cidr);
 		$this->assertEquals($expected, $network->get_cidr());
@@ -142,7 +142,7 @@ class IP_NetworkAddress_Test extends TestCase
 	 *
      * @dataProvider providerUnimplementedException
 	 */
-	public function testUnimplementedException($class, $method): void
+	public function testUnimplementedException(string $class, string $method): void
     {
         $this->expectException(\LogicException::class);
         $class::$method(NULL);
@@ -171,7 +171,7 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerCompare
 	 */
-	public function testCompare($left, $right, $expected): void
+	public function testCompare(IP\NetworkAddress $left, IP\NetworkAddress $right, int $expected): void
 	{
 		$cmp = IP\NetworkAddress::compare($left, $right);
 
@@ -214,8 +214,8 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerAddressInNetwork
 	 */
-	public function testAddressInNetwork($network, $index, $from_start, $expected)
-	{
+	public function testAddressInNetwork(IP\NetworkAddress $network, int|Math_BigInteger $index,  ?bool $from_start, string $expected): void
+    {
 		$address = $network->get_address_in_network($index, $from_start);
 		$this->assertEquals($expected, (string) $address);
 	}
@@ -232,8 +232,8 @@ class IP_NetworkAddress_Test extends TestCase
 		);
 	}
 
-	public function providerCheck_IP_version_fail()
-	{
+	public function providerCheck_IP_version_fail(): array
+    {
 		[[$a4, $b4, $a6, $b6]] = $this->providerCheck_IP_version();
 		return array(
 			array($a4, $a6),
@@ -251,8 +251,8 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerCheck_IP_version_fail
 	 */
-	public function test_check_IP_version_fail($left, $right)
-	{
+	public function test_check_IP_version_fail(IPv4_NetworkAddress_Tester|IPv6_NetworkAddress_Tester $left, IPv4_NetworkAddress_Tester|IPv6_NetworkAddress_Tester $right): void
+    {
 		try
 		{
 			$left->test_check_IP_version($right);
@@ -275,8 +275,8 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerCheck_IP_version
 	 */
-	public function test_check_IP_version($a4, $b4, $a6, $b6)
-	{
+	public function test_check_IP_version(IPv4_NetworkAddress_Tester $a4, IPv4_NetworkAddress_Tester $b4, IPv6_NetworkAddress_Tester $a6, IPv6_NetworkAddress_Tester $b6): void
+    {
 		try
 		{
 			$a4->test_check_IP_version($b4);
@@ -317,14 +317,14 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerSubnets
 	 */
-	public function testSubnets($sub1, $sub2, $shares, $encloses)
-	{
+	public function testSubnets(IP\NetworkAddress $sub1, IP\NetworkAddress $sub2, bool $shares, bool $encloses): void
+    {
 		$this->assertEquals($shares, $sub1->shares_subnet_space($sub2));
 		$this->assertEquals($encloses, $sub1->encloses_subnet($sub2));
 	}
 
-	public function providerEnclosesAddress()
-	{
+	public function providerEnclosesAddress(): array
+    {
 		$data = array(
 			array('2000::/3','2001:630:d0:f104::80a', true),
 			array('2000::/3','2001:630:d0:f104::80a', true),
@@ -349,13 +349,13 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerEnclosesAddress
 	 */
-	public function testEnclosesAddress($subnet, $address, $expected)
-	{
+	public function testEnclosesAddress(IP\NetworkAddress $subnet, IP\Address $address, bool $expected): void
+    {
 		$this->assertEquals($expected, $subnet->encloses_address($address));
 	}
 
-	public function provideNetworkIdentifiers()
-	{
+	public function provideNetworkIdentifiers(): array
+    {
 		$data = array(
 			array('2000::/3', true),
 			array('2000::1/3', false),
@@ -374,14 +374,14 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider provideNetworkIdentifiers
 	 */
-	public function testNetworkIdentifiers($subnet, $expected)
-	{
+	public function testNetworkIdentifiers(IP\NetworkAddress $subnet, bool $expected): void
+    {
 		$this->assertEquals($expected, $subnet->is_network_identifier());
 		$this->assertTrue($subnet->get_network_identifier()->is_network_identifier());
 	}
 
-	public function test__toString()
-	{
+	public function test__toString(): void
+    {
 		$ip = '192.128.1.1/24';
 		$this->assertEquals($ip, (string) IP\NetworkAddress::factory($ip));
 
@@ -436,13 +436,13 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerExcluding
 	 */
-	public function testExcluding($block, $excluded, $expected): void
+	public function testExcluding(IP\NetworkAddress $block, array $excluded, array $expected): void
     {
 		$this->assertEquals($expected, $block->excluding($excluded));
 	}
 
-	public function provideMerge()
-	{
+	public function provideMerge(): array
+    {
 		$data = array(
 			// Simple merge
 			array(
@@ -523,7 +523,7 @@ class IP_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider provideMerge
 	 */
-	public function testMerge($net_addrs, $expected): void
+	public function testMerge(array $net_addrs, array $expected): void
     {
 		$this->assertEquals($expected, IP\NetworkAddress::merge($net_addrs));
 	}

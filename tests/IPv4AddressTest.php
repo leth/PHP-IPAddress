@@ -42,7 +42,7 @@ class IPv4_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($input, $expected): void
+	public function testFactory(mixed $input, mixed $expected): void
     {
 		$instance = IPv4\Address::factory($input);
 		$this->assertNotNull($instance);
@@ -86,7 +86,7 @@ class IPv4_Address_Test extends TestCase
 	 *
      * @dataProvider providerFormatException
 	 */
-	public function testFormatException($input, $mode): void
+	public function testFormatException(mixed $input, mixed $mode): void
     {
         $this->expectException(InvalidArgumentException::class);
         $instance = IPv4\Address::factory($input);
@@ -97,7 +97,7 @@ class IPv4_Address_Test extends TestCase
 	 *
      * @dataProvider providerFactoryException
 	 */
-	public function testFactoryException($input): void
+	public function testFactoryException(mixed $input): void
     {
         $this->expectException(InvalidArgumentException::class);
         IPv4\Address::factory($input);
@@ -117,7 +117,7 @@ class IPv4_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerBitwise
 	 */
-	public function testBitwise($ip1, $ip2, $ex_and, $ex_or, $ex_xor, $ex_not): void
+	public function testBitwise(string $ip1, string $ip2, string $ex_and, string $ex_or, string $ex_xor, string $ex_not): void
     {
 		$ip1 = IPv4\Address::factory($ip1);
 		$ip2 = IPv4\Address::factory($ip2);
@@ -177,7 +177,7 @@ class IPv4_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerAddSubtract
 	 */
-	public function testAddSubtract($left, $right, $expected): void
+	public function testAddSubtract(IPv4\Address $left, int $right, IPv4\Address $expected): void
     {
 		$result = $left->add($right);
 		$this->assertEquals(0, $result->compare_to($expected));
@@ -208,7 +208,7 @@ class IPv4_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerAsIPv6Address
 	 */
-	public function testAsIPv6Address($input, $expected_equal): void
+	public function testAsIPv6Address(IPv4\Address $input, IPv6\Address $expected_equal): void
     {
 		$converted = $input->as_IPv6_address();
 

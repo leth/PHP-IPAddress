@@ -43,9 +43,9 @@ abstract class Address implements \ArrayAccess
      *
      * @param IP\Address|int|string|\Math_BigInteger $address The address to represent.
      *
-     * @return \Leth\IPAddress\IP\Address An instance of a subclass of IP\Address; either IPv4\Address or IPv6\Address
+     * @return \Leth\IPAddress\IP\Address|\Leth\IPAddress\IPv4\Address|\Leth\IPAddress\IPv6\Address An instance of a subclass of IP\Address; either IPv4\Address or IPv6\Address
      */
-	public static function factory(IP\Address|int|string|\Math_BigInteger $address): IP\Address
+	public static function factory(IP\Address|int|string|\Math_BigInteger $address): IP\Address|Ipv4\Address|IPv6\Address
 	{
 		if ($address instanceof self)
 		{
