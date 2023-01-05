@@ -35,3 +35,5 @@ jobs:
         run: composer run-script test
         env:
           MATH_BIGINTEGER_MODE: ${{ matrix.math_biginteger_mode }}
+
+      - uses: php-actions/phpstan@v3
