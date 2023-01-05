@@ -38,13 +38,13 @@ abstract class Address implements \ArrayAccess
 	 */
 	protected $address;
 
-    /**
-     * Create an IP address object from the supplied address.
-     *
-     * @param IP\Address|int|string|\Math_BigInteger $address The address to represent.
-     *
-     * @return \Leth\IPAddress\IP\Address|\Leth\IPAddress\IPv4\Address|\Leth\IPAddress\IPv6\Address An instance of a subclass of IP\Address; either IPv4\Address or IPv6\Address
-     */
+	/**
+	 * Create an IP address object from the supplied address.
+	 *
+	 * @param IP\Address|int|string|\Math_BigInteger $address The address to represent.
+	 *
+	 * @return \Leth\IPAddress\IP\Address|\Leth\IPAddress\IPv4\Address|\Leth\IPAddress\IPv6\Address An instance of a subclass of IP\Address; either IPv4\Address or IPv6\Address
+	 */
 	public static function factory(IP\Address|int|string|\Math_BigInteger $address): IP\Address|Ipv4\Address|IPv6\Address
 	{
 		if ($address instanceof self)
@@ -169,10 +169,10 @@ abstract class Address implements \ArrayAccess
 	 * @throws \InvalidArgumentException if objects are of the same class.
 	 */
 	protected function check_types(IP\Address $other): void
-    {
+	{
 		if (get_class($this) !== get_class($other)) {
-            throw new \InvalidArgumentException('Incompatible types.');
-        }
+			throw new \InvalidArgumentException('Incompatible types.');
+		}
 	}
 
 	/**
@@ -183,13 +183,13 @@ abstract class Address implements \ArrayAccess
 	 * @return ?integer An octet value the result of the operation.
 	 */
 	public function get_octet(int $number): ?int
-    {
+	{
 		$address = unpack("C*", $this->address);
 		$index = (($number >= 0) ? $number : count($address) + $number);
 		$index++;
 
-        return $address[$index] ?? null;
-    }
+		return $address[$index] ?? null;
+	}
 
 	/**
 	 * Whether octet index in allowed range
@@ -222,7 +222,7 @@ abstract class Address implements \ArrayAccess
 	 * @throws \LogicException
 	 */
 	#[ReturnTypeWillChange]
-    public function offsetSet($offset, $value): mixed
+	public function offsetSet($offset, $value): mixed
 	{
 		throw new \LogicException('Operation unsupported');
 	}
@@ -234,7 +234,7 @@ abstract class Address implements \ArrayAccess
 	 * @throws \LogicException
 	 */
 	#[ReturnTypeWillChange]
-    public function offsetUnset($offset): void
+	public function offsetUnset($offset): void
 	{
 		throw new \LogicException('Operation unsupported');
 	}

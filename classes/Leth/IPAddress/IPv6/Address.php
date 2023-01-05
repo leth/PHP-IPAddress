@@ -68,7 +68,7 @@ class Address extends IP\Address
 	 * @return string A fully padded string IPv6 address
 	 */
 	public static function pad(string $address): string
-    {
+	{
 		$parts = explode(':', $address);
 		$count = count($parts);
 
@@ -109,12 +109,12 @@ class Address extends IP\Address
 	}
 
 	public function is_encoded_IPv4_address(): bool
-    {
+	{
 		return strncmp($this->address, "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\xff\xff", 12) === 0;
 	}
 
 	public function as_IPv4_address(): IPv4\Address
-    {
+	{
 		if(!$this->is_encoded_IPv4_address())
 			throw new \InvalidArgumentException('Not an IPv4 Address encoded in an IPv6 Address');
 		[,$hex] = unpack('H*', $this->address);
@@ -124,7 +124,7 @@ class Address extends IP\Address
 	}
 
 	public function add($value): Address
-    {
+	{
 		$left = new \Math_BigInteger($this->address, 256);
 		$right = ($value instanceof \Math_BigInteger) ? $value : new \Math_BigInteger($value);
 		return new IPv6\Address($left->add($right));
@@ -183,13 +183,13 @@ class Address extends IP\Address
 			$this->check_types($other);
 		}
 
-        $result = match ($operation) {
-            '&' => $other->address & $this->address,
-            '|' => $other->address | $this->address,
-            '^' => $other->address ^ $this->address,
-            '~' => ~$this->address,
-            default => throw new \InvalidArgumentException('Unknown Operation type \'' . $operation . '\'.'),
-        };
+		$result = match ($operation) {
+			'&' => $other->address & $this->address,
+			'|' => $other->address | $this->address,
+			'^' => $other->address ^ $this->address,
+			'~' => ~$this->address,
+			default => throw new \InvalidArgumentException('Unknown Operation type \'' . $operation . '\'.'),
+		};
 
 		return new IPv6\Address($result);
 	}
@@ -199,14 +199,14 @@ class Address extends IP\Address
 		$this->check_types($other);
 
 		if ($this->address < $other->address) {
-            return -1;
-        }
+			return -1;
+		}
 		elseif ($this->address > $other->address) {
-            return 1;
-        }
+			return 1;
+		}
 		else {
-            return 0;
-        }
+			return 0;
+		}
 	}
 
 	public function format(int $mode): string

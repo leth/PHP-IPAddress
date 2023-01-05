@@ -22,7 +22,7 @@ class IPv4_Address_Test extends TestCase
 {
 
 	public function providerFactory(): array
-    {
+	{
 		return array(
 			array('127.0.0.1',  '127.0.0.1'  ),
 			array('127.0.0.0',  '127.0.0.0'  ),
@@ -43,14 +43,14 @@ class IPv4_Address_Test extends TestCase
 	 * @dataProvider providerFactory
 	 */
 	public function testFactory(mixed $input, mixed $expected): void
-    {
+	{
 		$instance = IPv4\Address::factory($input);
 		$this->assertNotNull($instance);
 		$this->assertEquals($expected, (string) $instance);
 	}
 
 	public function providerFactoryException(): array
-    {
+	{
 		return array(
 			array('256.0.0.1'),
 			array('127.-1.0.1'),
@@ -66,13 +66,13 @@ class IPv4_Address_Test extends TestCase
 	}
 
 	public function testFormatInteger(): void
-    {
+	{
 		$ip = IPv4\Address::factory('127.0.0.1');
 		$this->assertEquals(2130706433, $ip->format(IPv4\Address::FORMAT_INTEGER));
 	}
 
 	public function providerFormatException(): array
-    {
+	{
 		$bad_mode = -1;
 		$data = $this->providerFactory();
 		foreach ($data as $i => $entry) {
@@ -84,27 +84,27 @@ class IPv4_Address_Test extends TestCase
 
 	/**
 	 *
-     * @dataProvider providerFormatException
+	 * @dataProvider providerFormatException
 	 */
 	public function testFormatException(mixed $input, mixed $mode): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        $instance = IPv4\Address::factory($input);
+	{
+		$this->expectException(InvalidArgumentException::class);
+		$instance = IPv4\Address::factory($input);
 		echo $instance->format($mode);
 	}
 
 	/**
 	 *
-     * @dataProvider providerFactoryException
+	 * @dataProvider providerFactoryException
 	 */
 	public function testFactoryException(mixed $input): void
-    {
-        $this->expectException(InvalidArgumentException::class);
-        IPv4\Address::factory($input);
+	{
+		$this->expectException(InvalidArgumentException::class);
+		IPv4\Address::factory($input);
 	}
 
 	public function providerBitwise(): array
-    {
+	{
 		return array(
 			//       OP1        OP2        AND        OR         XOR        NOT
 			array('0.0.0.1', '0.0.0.1', '0.0.0.1', '0.0.0.1', '0.0.0.0', '255.255.255.254'),
@@ -118,7 +118,7 @@ class IPv4_Address_Test extends TestCase
 	 * @dataProvider providerBitwise
 	 */
 	public function testBitwise(string $ip1, string $ip2, string $ex_and, string $ex_or, string $ex_xor, string $ex_not): void
-    {
+	{
 		$ip1 = IPv4\Address::factory($ip1);
 		$ip2 = IPv4\Address::factory($ip2);
 
@@ -147,7 +147,7 @@ class IPv4_Address_Test extends TestCase
 	// }
 
 	public function providerAddSubtract(): array
-    {
+	{
 		$data = array(
 			array('0.0.0.0'  , 0, '0.0.0.0'),
 			array('0.0.0.0'  , 1, '0.0.0.1'),
@@ -178,7 +178,7 @@ class IPv4_Address_Test extends TestCase
 	 * @dataProvider providerAddSubtract
 	 */
 	public function testAddSubtract(IPv4\Address $left, int $right, IPv4\Address $expected): void
-    {
+	{
 		$result = $left->add($right);
 		$this->assertEquals(0, $result->compare_to($expected));
 		$result = $result->subtract($right);
@@ -186,7 +186,7 @@ class IPv4_Address_Test extends TestCase
 	}
 
 	public function providerAsIPv6Address(): array
-    {
+	{
 		$data = array(
 			array('0.0.0.0'  , '::ffff:0:0'   ),
 			array('0.0.0.1'  , '::ffff:0:1'   ),
@@ -209,7 +209,7 @@ class IPv4_Address_Test extends TestCase
 	 * @dataProvider providerAsIPv6Address
 	 */
 	public function testAsIPv6Address(IPv4\Address $input, IPv6\Address $expected_equal): void
-    {
+	{
 		$converted = $input->as_IPv6_address();
 
 		$this->assertInstanceOf(Address::class, $converted);
@@ -217,7 +217,7 @@ class IPv4_Address_Test extends TestCase
 	}
 
 	public function testGetOctet(): void
-    {
+	{
 		$ip = IPv4\Address::factory('10.250.30.40');
 		$this->assertEquals(10, $ip->get_octet(-4));
 		$this->assertEquals(250, $ip->get_octet(-3));
@@ -232,7 +232,7 @@ class IPv4_Address_Test extends TestCase
 	}
 
 	public function testArrayAccess(): void
-    {
+	{
 		$ip = IPv4\Address::factory('10.250.30.40');
 		$this->assertEquals(10, $ip[-4]);
 		$this->assertEquals(250, $ip[1]);
@@ -242,17 +242,17 @@ class IPv4_Address_Test extends TestCase
 		$this->assertFalse(isset($ip[4]));
 	}
 
-    public function testArrayAccessSet(): void
-    {
-        $this->expectException(\LogicException::class);
-        $ip = IPv4\Address::factory('10.250.30.40');
+	public function testArrayAccessSet(): void
+	{
+		$this->expectException(\LogicException::class);
+		$ip = IPv4\Address::factory('10.250.30.40');
 		$ip[0] = 0;
 	}
 
-    public function testArrayAccessUnset(): void
-    {
-        $this->expectException(\LogicException::class);
-        $ip = IPv4\Address::factory('10.250.30.40');
+	public function testArrayAccessUnset(): void
+	{
+		$this->expectException(\LogicException::class);
+		$ip = IPv4\Address::factory('10.250.30.40');
 		unset($ip[0]);
 	}
 }

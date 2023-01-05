@@ -36,16 +36,16 @@ class Address extends IP\Address
 		{
 			$tmp = filter_var($address, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4);
 			if ($tmp === FALSE) {
-                throw new \InvalidArgumentException("'$address' is not a valid IPv4 Address");
-            }
+				throw new \InvalidArgumentException("'$address' is not a valid IPv4 Address");
+			}
 
 			$address = static::_pack(ip2long($address));
 		}
 		elseif ($address instanceOf \Math_BigInteger)
 		{
 			if ($address->compare(new \Math_BigInteger(pack('N', ip2long(static::MAX_IP)), 256)) > 0) {
-                throw new \InvalidArgumentException("IP value out of range.");
-            }
+				throw new \InvalidArgumentException("IP value out of range.");
+			}
 
 			$address = str_pad($address->toBytes(), 4, chr(0), STR_PAD_LEFT);
 		}
@@ -67,7 +67,7 @@ class Address extends IP\Address
 	}
 
 	protected static function _pack(int $address): string
-    {
+	{
 		return pack('N', $address);
 	}
 
@@ -78,7 +78,7 @@ class Address extends IP\Address
 	}
 
 	public function add($value): Address
-    {
+	{
 		if ($value instanceof \Math_BigInteger)
 		{
 			$value = (int)(string)$value;
@@ -87,7 +87,7 @@ class Address extends IP\Address
 	}
 
 	public function subtract($value): Address
-    {
+	{
 		if ($value instanceof \Math_BigInteger)
 		{
 			$value = (int)(string)$value;
@@ -100,7 +100,7 @@ class Address extends IP\Address
 	  * @param IPv4\Address $other is the ip to be compared against
 	  */
 	public function bitwise_and(IP\Address $other): Address
-    {
+	{
 		$this->check_types($other);
 		return new IPv4\Address($this->address & $other->address);
 	}
@@ -132,7 +132,7 @@ class Address extends IP\Address
 	  * @return IPv4\Address
 	  */
 	public function bitwise_not(): Address
-    {
+	{
 		return new IPv4\Address(~ $this->address);
 	}
 
@@ -151,18 +151,18 @@ class Address extends IP\Address
 	}
 
 	public function compare_to(IP\Address $other): int
-    {
+	{
 		$this->check_types($other);
 
 		if ($this->address < $other->address) {
-            return -1;
-        }
+			return -1;
+		}
 		elseif ($this->address > $other->address) {
-            return 1;
-        }
+			return 1;
+		}
 		else {
-            return 0;
-        }
+			return 0;
+		}
 	}
 
 	public function format(int $mode): string

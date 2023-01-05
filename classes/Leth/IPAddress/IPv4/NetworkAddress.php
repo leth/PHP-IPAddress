@@ -45,7 +45,7 @@ class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 	 * @author Marcus Cobden
 	 */
 	public static function get_global_netmask(): Address
-    {
+	{
 		return static::generate_subnet_mask(static::MAX_SUBNET);
 	}
 
@@ -54,12 +54,12 @@ class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 	 *
 	 */
 	public function get_NetworkAddress(): \Leth\IPAddress\IP\Address
-    {
+	{
 		return $this->get_network_start();
 	}
 
 	public function get_network_class(): string
-    {
+	{
 		if ($this->cidr > 24)
 		{
 			return '1/'. (2 ** ($this->cidr - 24)) .' C';
@@ -84,7 +84,7 @@ class NetworkAddress extends \Leth\IPAddress\IP\NetworkAddress
 	 *
 	 */
 	public function get_broadcast_address(): \Leth\IPAddress\IP\Address
-    {
+	{
 		return $this->get_network_end();
 	}
 
