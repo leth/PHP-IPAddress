@@ -2,7 +2,7 @@
   "name": "leth/ip-address",
   "description": "IPv4 and IPv6 address and subnet classes with awesome utility functions.",
   "version": "2.0.0",
-  "license": "LGPL-3.0",
+  "license": "LGPL-3.0-or-later",
   "support": {
     "source": "https://github.com/leth/PHP-IPAddress",
     "issues": "https://github.com/leth/PHP-IPAddress/issues"
