@@ -10,6 +10,9 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         php: ["8.1", "8.2", "8.3"]
         math_biginteger_mode: [INTERNAL, GMP, BCMATH]
+        include:
+          - os: ubuntu-latest
+            phpstan: yes
 
     name: "PHP ${{ matrix.php }} (bigint mode: ${{ matrix.math_biginteger_mode }}) (OS: ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
@@ -36,4 +39,5 @@ jobs:
         env:
           MATH_BIGINTEGER_MODE: ${{ matrix.math_biginteger_mode }}
 
-      - uses: php-actions/phpstan@v3
+      - if: ${{ matrix.phpstan }}
+        uses: php-actions/phpstan@v3
