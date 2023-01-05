@@ -11,7 +11,7 @@ jobs:
         php: ["8.1", "8.2", "8.3"]
         math_biginteger_mode: [INTERNAL, GMP, BCMATH]
 
-    name: PHP ${{ matrix.php }} test with bigint mode ${{ matrix.math_biginteger_mode }}
+    name: "PHP ${{ matrix.php }} (bigint mode: ${{ matrix.math_biginteger_mode }}) (OS: ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v3
