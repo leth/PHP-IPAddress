@@ -17,7 +17,7 @@
  * If not, see <http://www.gnu.org/licenses/>.
  */
 namespace Leth\IPAddress\IP;
-use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6;
+use \Leth\IPAddress\IP, \Leth\IPAddress\IPv4, \Leth\IPAddress\IPv6, \Traversable;
 
 /**
  * An abstract representation of an IP Address in a given network
@@ -565,9 +565,9 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	 * Get iterator for this network
 	 * Implement \IteratorAggregate
 	 *
-	 * @return NetworkAddressIterator
+	 * @return Traversable
 	 */
-	public function getIterator()
+	public function getIterator(): Traversable
 	{
 		return new NetworkAddressIterator($this);
 	}
@@ -590,7 +590,7 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 	 *
 	 * @return integer
 	 */
-	public function count()
+	public function count(): int
 	{
 		return $this->get_NetworkAddress_count();
 	}
