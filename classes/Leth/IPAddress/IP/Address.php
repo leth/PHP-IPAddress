@@ -191,10 +191,10 @@ abstract class Address implements \ArrayAccess
 	/**
 	 * Whether octet index in allowed range
 	 *
-	 * @param integer $offset
+	 * @param mixed $offset
 	 * @return boolean 
 	 */
-	public function offsetExists($offset): bool
+	public function offsetExists(mixed $offset): bool
 	{
 		return ($this->get_octet($offset) != NULL);
 	}
@@ -202,10 +202,10 @@ abstract class Address implements \ArrayAccess
 	/**
 	 * Get the octet value from index
 	 *
-	 * @param integer $offset
+	 * @param mixed $offset
 	 * @return mixed
 	 */
-	public function offsetGet($offset): mixed
+	public function offsetGet(mixed $offset): mixed
 	{
 		return $this->get_octet($offset);
 	}
@@ -213,13 +213,13 @@ abstract class Address implements \ArrayAccess
 	/**
 	 * Operation unsupported
 	 *
-	 * @param integer $offset
+	 * @param mixed $offset
 	 * @param mixed $value
 	 * @throws \LogicException
      *
      * @return void
 	 */
-	public function offsetSet($offset, $value): void
+	public function offsetSet(mixed $offset, mixed $value): void
 	{
 		throw new \LogicException('Operation unsupported');
 	}
@@ -227,12 +227,12 @@ abstract class Address implements \ArrayAccess
 	/**
 	 * Operation unsupported
 	 *
-	 * @param integer $offset
+	 * @param mixed $offset
 	 * @throws \LogicException
      *
      * @return void
 	 */
-	public function offsetUnset($offset): void
+	public function offsetUnset(mixed $offset): void
 	{
 		throw new \LogicException('Operation unsupported');
 	}
