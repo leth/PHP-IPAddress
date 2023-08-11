@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 /*
  * This file is part of the PHP-IPAddress library.
  *
@@ -47,7 +48,7 @@ class NetworkAddressIterator implements \Iterator
 	 *
 	 * @return void
 	 */
-	public function rewind()
+	public function rewind(): void
 	{
 		$this->position = $this->network->get_network_start();
 	}
@@ -58,7 +59,7 @@ class NetworkAddressIterator implements \Iterator
 	 *
 	 * @return IP\Address
 	 */
-	public function current()
+	public function current(): IP\Address
 	{
 		return $this->position;
 	}
@@ -69,7 +70,7 @@ class NetworkAddressIterator implements \Iterator
 	 *
 	 * @return string
 	 */
-	public function key()
+	public function key(): string
 	{
 		return $this->position->__toString();
 	}
@@ -80,7 +81,7 @@ class NetworkAddressIterator implements \Iterator
 	 *
 	 * @return void
 	 */
-	public function next()
+	public function next(): void
 	{
 		$this->position = $this->position->add(1);
 	}
@@ -91,7 +92,7 @@ class NetworkAddressIterator implements \Iterator
 	 *
 	 * @return boolean
 	 */
-	public function valid()
+	public function valid(): bool
 	{
 		return ($this->position->compare_to($this->network->get_network_end()) <= 0);
 	}

@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class IPv4_NetworkAddress_Test extends TestCase
 {
 
-	public function providerSubnet()
+	public function providerSubnet(): array
 	{
 		$data = array(
 			array(32, '255.255.255.255', 1,          '1/256 C'),
@@ -50,7 +50,7 @@ class IPv4_NetworkAddress_Test extends TestCase
 		);
 
 		// Collapse redundant 0s
-		for ($i=0; $i < count($data); $i++) {
+		for ($i=0, $iMax = count($data); $i < $iMax; $i++) {
 			$data[$i][1] = str_replace('00','0', $data[$i][1]);
 			$data[$i][1] = str_replace('00','0', $data[$i][1]);
 		}
@@ -61,8 +61,9 @@ class IPv4_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerSubnet
 	 */
-	public function testSubnets($cidr, $subnet, $address_count, $network_class)
+	public function testSubnets(int $cidr, string $subnet, int $address_count, string $network_class): void
 	{
+		/** @var IPv4\NetworkAddress $net */
 		$net = IPv4\NetworkAddress::factory('0.0.0.0', $cidr);
 
 		$this->assertEquals($subnet, (string) $net->get_subnet_mask());
@@ -70,12 +71,12 @@ class IPv4_NetworkAddress_Test extends TestCase
 		$this->assertEquals($network_class, $net->get_network_class());
 	}
 
-	public function testGlobalNetmask()
+	public function testGlobalNetmask(): void
 	{
 		$this->assertEquals('255.255.255.255', (string) IPv4\NetworkAddress::get_global_netmask());
 	}
 
-	public function testDodgyBitwiseStuff()
+	public function testDodgyBitwiseStuff(): void
 	{
 		$block = IPv4\NetworkAddress::factory('10.13.112.20/30');
 		$address = IPv4\Address::factory('10.13.112.21');
@@ -83,7 +84,7 @@ class IPv4_NetworkAddress_Test extends TestCase
 		$this->assertTrue($block->encloses_address($address));
 	}
 
-	public function providerNetworkBroadcastAddress()
+	public function providerNetworkBroadcastAddress(): array
 	{
 		return array(
 			array(IPv4\NetworkAddress::factory('192.168.1.1/24'), '192.168.1.0', '192.168.1.255'),
@@ -94,13 +95,13 @@ class IPv4_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerNetworkBroadcastAddress
 	 */
-	public function testNetworkBroadcastAddress($ip, $ex_network, $ex_broadcast)
+	public function testNetworkBroadcastAddress(IPv4\NetworkAddress $ip, string $ex_network, string $ex_broadcast): void
 	{
 		$this->assertEquals($ex_network, (string) $ip->get_NetworkAddress());
 		$this->assertEquals($ex_broadcast, (string) $ip->get_broadcast_address());
 	}
 
-	public function providerSplit()
+	public function providerSplit(): array
 	{
 		$data = array(
 			array('192.168.0.0/24', 0, array('192.168.0.0/24')),
@@ -121,21 +122,19 @@ class IPv4_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerSplit
 	 */
-	public function testSplit($block, $degree, $expected)
+	public function testSplit(IPv4\NetworkAddress $block, int $degree, array $expected): void
 	{
 		$this->assertEquals($expected, $block->split($degree));
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testSplitBeyondRange()
+	public function testSplitBeyondRange(): void
 	{
+		$this->expectException(InvalidArgumentException::class);
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/32');
 		$block->split();
 	}
 
-	public function testIteratorInterface()
+	public function testIteratorInterface(): void
 	{
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/30');
 		$expected = array('192.168.0.0', '192.168.0.1', '192.168.0.2', '192.168.0.3');
@@ -148,7 +147,7 @@ class IPv4_NetworkAddress_Test extends TestCase
 		$this->assertEquals($expected, array_map('strval', $block->toArray()));
 	}
 
-	public function testTwoIterators()
+	public function testTwoIterators(): void
 	{
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/31');
 		$expected = array('192.168.0.0', '192.168.0.0', '192.168.0.1', '192.168.0.1', '192.168.0.0', '192.168.0.1');
@@ -164,13 +163,13 @@ class IPv4_NetworkAddress_Test extends TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testCountableInterface()
+	public function testCountableInterface(): void
 	{
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/30');
 		$this->assertCount(4, $block);
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/24');
-		$this->assertEquals(pow(2, 8), count($block));
+		$this->assertCount(2 ** 8, $block);
 		$block = IPv4\NetworkAddress::factory('192.168.0.0/16');
-		$this->assertEquals(pow(2, 16), count($block));
+		$this->assertCount(2 ** 16, $block);
 	}
 }

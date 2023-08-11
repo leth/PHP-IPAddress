@@ -7,20 +7,26 @@ jobs:
     strategy:
       max-parallel: 3
       matrix:
-        os: [ubuntu-latest]
-        php: ["5.6", "7.0", "7.1", "7.2", "7.3", "7.4"]
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        php: ["8.1", "8.2", "8.3"]
         math_biginteger_mode: [INTERNAL, GMP, BCMATH]
+        include:
+          - os: ubuntu-latest
+            phpstan: yes
 
-    name: PHP ${{ matrix.php }} test with bigint mode ${{ matrix.math_biginteger_mode }}
+    name: "PHP ${{ matrix.php }} (bigint mode: ${{ matrix.math_biginteger_mode }}) (OS: ${{ matrix.os }})"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v3
 
-      - name: Install PHP
-        uses: shivammathur/setup-php@master
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extension-csv: xdebug, dom, gmp, bcmath
+          extensions: xdebug, dom, gmp, bcmath
+          coverage: xdebug
+        env:
+          fail-fast: true
 
       - name: Validate composer.json and composer.lock
         run: composer validate
@@ -32,3 +38,6 @@ jobs:
         run: composer run-script test
         env:
           MATH_BIGINTEGER_MODE: ${{ matrix.math_biginteger_mode }}
+
+      - if: ${{ matrix.phpstan }}
+        uses: php-actions/phpstan@v3

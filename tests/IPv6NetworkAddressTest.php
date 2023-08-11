@@ -10,12 +10,12 @@ use PHPUnit\Framework\TestCase;
  */
 class IPv6_NetworkAddress_Test extends TestCase
 {
-	public function test_global_netmask()
+	public function test_global_netmask(): void
 	{
 		$this->assertEquals('ffff:ffff:ffff:ffff:ffff:ffff:ffff:ffff', (string) IPv6\NetworkAddress::get_global_netmask());
 	}
 
-	public function providerSplit()
+	public function providerSplit(): array
 	{
 		$data = array(
 			array('::0/126', 0, array('::0/126')),
@@ -36,21 +36,19 @@ class IPv6_NetworkAddress_Test extends TestCase
 	/**
 	 * @dataProvider providerSplit
 	 */
-	public function testSplit($block, $degree, $expected)
+	public function testSplit(IPv6\NetworkAddress $block, int $degree, array $expected): void
 	{
 		$this->assertEquals($expected, $block->split($degree));
 	}
 
-	/**
-	 * @expectedException InvalidArgumentException
-	 */
-	public function testSplitBeyondRange()
+	public function testSplitBeyondRange(): void
 	{
+		$this->expectException(InvalidArgumentException::class);
 		$block = IPv6\NetworkAddress::factory('::0/128');
 		$block->split();
 	}
 
-	public function testIterationInterface()
+	public function testIterationInterface(): void
 	{
 		$block = IPv6\NetworkAddress::factory('::0/126');
 		$expected = array('::0', '::1', '::2', '::3');
@@ -62,11 +60,11 @@ class IPv6_NetworkAddress_Test extends TestCase
 		$this->assertEquals($expected, $actual);
 	}
 
-	public function testCountableInterface()
+	public function testCountableInterface(): void
 	{
 		$block = IPv6\NetworkAddress::factory('::0/126');
-		$this->assertEquals(4, count($block));
+		$this->assertCount(4, $block);
 		$block = IPv6\NetworkAddress::factory('::0/120');
-		$this->assertEquals(pow(2, 8), count($block));
+		$this->assertCount(2 ** 8, $block);
 	}
 }

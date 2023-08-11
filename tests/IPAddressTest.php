@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 class IP_Address_Test extends TestCase
 {
 
-	public function providerFactory()
+	public function providerFactory(): array
 	{
 		return array(
 			array('IPv4\\Address', '127.0.0.1',   '127.000.000.001',   '127.0.0.1'),
@@ -37,7 +37,7 @@ class IP_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerFactory
 	 */
-	public function testFactory($expected_class, $input, $full, $compact)
+	public function testFactory(string $expected_class, mixed $input, string $full, string $compact): void
 	{
 		$expected_class = 'Leth\\IPAddress\\'.$expected_class;
 		$instances = array(IP\Address::factory($input), $expected_class::factory($input));
@@ -50,7 +50,7 @@ class IP_Address_Test extends TestCase
 		}
 	}
 
-	public function providerFactoryException()
+	public function providerFactoryException(): array
 	{
 		return array(
 			array('cake'),
@@ -60,15 +60,16 @@ class IP_Address_Test extends TestCase
 	}
 
 	/**
-	 * @expectedException \InvalidArgumentException
+	 *
 	 * @dataProvider providerFactoryException
 	 */
-	public function testFactoryException($input)
+	public function testFactoryException(mixed $input): void
 	{
+		$this->expectException(\InvalidArgumentException::class);
 		IP\Address::factory($input);
 	}
 
-	public function providerCompare()
+	public function providerCompare(): array
 	{
 		return array(
 			array('127.0.0.1', '127.0.0.1', 0),
@@ -83,11 +84,11 @@ class IP_Address_Test extends TestCase
 	/**
 	 * @dataProvider providerCompare
 	 */
-	public function testCompare($a, $b, $expected)
+	public function testCompare(string $a, string $b, int $expected): void
 	{
 		$result = IP\Address::compare(IP\Address::factory($a), IP\Address::factory($b));
 
 		// Division is to ensure things are either -1, 0 or 1. abs() is to preseve sign.
-		$this->assertEquals($expected, $result == 0 ? 0: $result / abs($result));
+		$this->assertEquals($expected, $result === 0 ? 0: $result / abs($result));
 	}
 }
