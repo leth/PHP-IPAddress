@@ -241,7 +241,8 @@ class Address extends IP\Address
 
 			case IP\Address::FORMAT_COMPACT:
 				$best_pos   = $zeros_pos = FALSE;
-				$best_count = $zeros_count = 0;
+				$best_count = 1;
+				$zeros_count = 0;
 				foreach ($parts as $i => $quad)
 				{
 					$parts[$i] = ($quad === '0000') ? '0' : ltrim($quad, '0');
