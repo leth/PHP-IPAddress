@@ -183,6 +183,7 @@ abstract class NetworkAddress implements \IteratorAggregate, \Countable
 				usort($net_addrs, array(__CLASS__, 'compare'));
 
 				$last_added = NULL;
+				$a = $b = NULL;
 				for ($i = 0; $i < count($net_addrs) - 1; $i++) {
 					$a = $net_addrs[$i];
 					$b = $net_addrs[$i + 1];
